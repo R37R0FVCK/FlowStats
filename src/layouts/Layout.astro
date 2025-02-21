@@ -1,4 +1,5 @@
 ---
+import Cabecera from "../components/Cabecera.astro";
 const { title } = Astro.props;
 ---
 
@@ -10,9 +11,20 @@ const { title } = Astro.props;
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		<link rel="stylesheet" href="/src/styles/global.css" />
+		<!--Fuentes de API google -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Zen+Dots&display=swap"
+			rel="stylesheet"
+		/>
 	</head>
 	<body>
-		<slot />
+		<Cabecera />
+		<main>
+			<slot />
+		</main>
 	</body>
 </html>
 
@@ -22,5 +34,8 @@ const { title } = Astro.props;
 		margin: 0;
 		width: 100%;
 		height: 100%;
+	}
+	main {
+		padding: 1rem;
 	}
 </style>

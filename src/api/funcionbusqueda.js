@@ -1,24 +1,24 @@
-import { PrismaClient } from "@prisma/client";
-const prismabusqueda = new PrismaClient();
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 
-export default async function busqueda(peticion, respuesta) {
-    const { cons } = peticion.query;
+const busqueda = async (req, res) => {
+    const { cons } = req.query;
     if (!cons) {
-        const respuestaerror = "los datos introducidos no han podido ser procesados";
-        return respuesta.status(400).json({ error: respuestaerror });
+        return res.status(400).json({ error: "Los datos introducidos no han podido ser procesados" });
     }
 
     try {
-        const busqueda = await prismabusqueda.artista.findMany({
+        const busqueda = await prisma.artista.findMany({
             where: {
                 nom_art: {
                     contains: cons,
-                    mode: 'insensitive',
                 },
             },
         });
-        respuesta.json(busqueda);
+        res.json(busqueda);
     } catch (error) {
-        respuesta.status(500).json({ error: 'Error al realizar la búsqueda: ' + error.message });
+        res.status(500).json({ error: 'Error al realizar la búsqueda: ' + error.message });
     }
-}
+};
+
+export default busqueda;

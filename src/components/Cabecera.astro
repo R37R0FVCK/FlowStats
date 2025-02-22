@@ -22,10 +22,34 @@
         </div>
     </div>
     <span class="block w-full bg-black h-2"></span>
-
+    <!--Barra de navegacion para enrutamiento entre paginas-->
+    <nav class="flex justify-center h-12">
+        <button class="boton-oscuro text-orange-400 px-4 py-2 flex-1 h-full"
+            >Inicio</button
+        >
+        <button class="boton-oscuro text-orange-400 px-4 py-2 flex-1 h-full"
+            >Noticias</button
+        >
+        <button class="boton-oscuro text-orange-400 px-4 py-2 flex-1 h-full"
+            >Estadisticas</button
+        >
+        <button class="boton-oscuro text-orange-400 px-4 py-2 flex-1 h-full"
+            >Explorar</button
+        >
+        <button class="boton-oscuro text-orange-400 px-4 py-2 flex-1 h-full"
+            >Contacto</button
+        >
+    </nav>
     <style>
         .fuente_zen_dots {
             font-family: "Zen Dots";
+        }
+        .boton-oscuro {
+            background-color: rgb(55, 47, 58);
+            transition: background-color 0.5s ease;
+        }
+        .boton-oscuro:hover {
+            background-color: rgb(106, 98, 98);
         }
     </style>
 </header>

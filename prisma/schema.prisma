@@ -33,10 +33,10 @@ model Artista {
   oyentes_art        Int
   nacionalidad_art   String
   anio_comienzo_art  Int
-  cod_man            Int
+  cod_manager        Int
   cod_sello          Int
   canciones          Compone[]
-  manager            Manager   @relation(fields: [cod_man], references: [cod_manager])
+  manager            Manager   @relation(fields: [cod_manager], references: [cod_manager])
   sello              SelloDiscografico @relation(fields: [cod_sello], references: [cod_sello])
 }
 
@@ -50,10 +50,10 @@ model Productor {
   oyentes_prod       Int
   nacionalidad_prod  String
   anio_comienzo_prod Int
-  cod_man            Int
+  cod_manager            Int
   cod_sello          Int
   canciones          Produce[]
-  manager            Manager   @relation(fields: [cod_man], references: [cod_manager])
+  manager            Manager   @relation(fields: [cod_manager], references: [cod_manager])
   sello              SelloDiscografico @relation(fields: [cod_sello], references: [cod_sello])
 }
 

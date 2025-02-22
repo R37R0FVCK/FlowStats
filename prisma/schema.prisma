@@ -1,0 +1,104 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Modelo para Manager
+model Manager {
+  cod_manager        Int     @id @default(autoincrement())
+  nom_manager        String
+  apel_manager       String
+  nacionalidad_manager String
+  artistas           Artista[]
+  productores        Productor[]
+}
+
+// Modelo para Artista
+model Artista {
+  cod_art            Int     @id @default(autoincrement())
+  nom_art            String
+  apel_art           String
+  nombre_real_art    String
+  edad_art           Int
+  oyentes_art        Int
+  nacionalidad_art   String
+  anio_comienzo_art  Int
+  cod_man            Int
+  cod_sello          Int
+  canciones          Compone[]
+  manager            Manager   @relation(fields: [cod_man], references: [cod_manager])
+  sello              SelloDiscografico @relation(fields: [cod_sello], references: [cod_sello])
+}
+
+// Modelo para Productor
+model Productor {
+  cod_prod           Int     @id @default(autoincrement())
+  nom_prod           String
+  apel_prod          String
+  nombre_real_prod   String
+  edad_prod          Int
+  oyentes_prod       Int
+  nacionalidad_prod  String
+  anio_comienzo_prod Int
+  cod_man            Int
+  cod_sello          Int
+  canciones          Produce[]
+  manager            Manager   @relation(fields: [cod_man], references: [cod_manager])
+  sello              SelloDiscografico @relation(fields: [cod_sello], references: [cod_sello])
+}
+
+// Modelo para SelloDiscografico
+model SelloDiscografico {
+  cod_sello          Int     @id @default(autoincrement())
+  nom_sello          String
+  num_artistas       Int
+  propietario        String
+  anio_fundacion     Int
+  pais               String
+  artistas           Artista[]
+  productores        Productor[]
+}
+
+// Modelo para Cancion
+model Cancion {
+  cod_cancion        Int      @id @default(autoincrement())
+  fecha_lanzamiento  DateTime
+  titulo             String
+  genero_cancion     String
+  num_reproducciones Int
+  colaboraciones     String
+  videoclip          String
+  tipo_discografia   String
+  artistas           Compone[]
+  productores        Produce[]
+}
+
+// Tabla intermedia para la relación N:M entre Artista y Cancion
+model Compone {
+  cod_art            Int
+  cod_cancion        Int
+  artista            Artista   @relation(fields: [cod_art], references: [cod_art])
+  cancion            Cancion   @relation(fields: [cod_cancion], references: [cod_cancion])
+
+  @@id([cod_art, cod_cancion])
+}
+
+// Tabla intermedia para la relación N:M entre Productor y Cancion
+model Produce {
+  cod_productor      Int
+  cod_cancion        Int
+  productor          Productor @relation(fields: [cod_productor], references: [cod_prod])
+  cancion            Cancion   @relation(fields: [cod_cancion], references: [cod_cancion])
+
+  @@id([cod_productor, cod_cancion])
+}

@@ -22,4 +22,11 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+#archivo env de la configuracion de la BBDD
 .env
+
+#atchivo de migraciones de la base de datos
+prisma/migrations/
+
+

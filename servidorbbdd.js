@@ -1,29 +1,33 @@
 import express from 'express';
 import cors from 'cors';
+import bodyParser from 'body-parser';
 import busquedacantantes from './src/api/funcionbusquedacantantes.js';
 import ObtenerAllCantantes from './src/api/ObtenerAllCantantes.js';
+import Añadircantantes from './src/scripts/añadircantantesAstrodb.js';
+import insertarUsuario from './src/api/insertarUsuario.js';
 
-const app = express();
+const api = express();
 const puertoacceso = 3000;
 
 // Configurar CORS
-app.use(cors());
+api.use(cors());
+
+// Middleware para parsear JSON y URL-encoded
+api.use(express.json());
+api.use(bodyParser.urlencoded({ extended: true }));
 
 // Ruta para buscar cantantes por nombre
-app.get('/api/search', busquedacantantes);
-
-app.listen(puertoacceso, () => {
-    console.log(`Servidor de obtención de cantantes por nombres en http://localhost:${puertoacceso}`);
-});
-
-// Configurar otro servidor para obtener todos los cantantes
-const appgetcantantes = express();
-const puertoacceso2 = 3001;
-appgetcantantes.use(cors());
+api.get('/api/search', busquedacantantes);
 
 // Ruta para obtener todos los cantantes
-appgetcantantes.get('/api/getcantantes', ObtenerAllCantantes);
+api.get('/api/obtenercantantes', ObtenerAllCantantes);
 
-appgetcantantes.listen(puertoacceso2, () => {
-    console.log(`Servidor de obtención de cantantes en http://localhost:${puertoacceso2}`);
+// Ruta para añadir cantantes desde una URL
+api.post('/api/anadircantantes', Añadircantantes);
+
+// Ruta para insertar un usuario
+api.post('/api/insertarUsuario', insertarUsuario);
+
+api.listen(puertoacceso, () => {
+    console.log(`Servidor corriendo en http://localhost:${puertoacceso}`);
 });

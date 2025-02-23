@@ -30,3 +30,4 @@ pnpm-debug.log*
 prisma/migrations/
 
 
+src/pages/Listacantantes.astro

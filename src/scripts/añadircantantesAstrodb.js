@@ -3,13 +3,9 @@ import fetch from 'node-fetch';
 
 const prisma = new PrismaClient();
 
+const url = 'http://localhost:3000/api/obtenercantantes';
+
 const Añadircantantes = async (peticion, respuesta) => {
-    const { url } = peticion.body;
-
-    if (!url) {
-        return respuesta.status(400).json({ error: 'Falta la URL' });
-    }
-
     try {
         const response = await fetch(url);
         if (!response.ok) {
@@ -19,7 +15,7 @@ const Añadircantantes = async (peticion, respuesta) => {
         const datos = await response.json();
 
         for (const cantante of datos) {
-            await prisma.cantante.create({
+            await prisma.artista.create({
                 data: {
                     cod_art: cantante.cod_art,
                     nom_art: cantante.nom_art,

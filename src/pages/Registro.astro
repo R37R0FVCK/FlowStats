@@ -1,15 +1,51 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { db, User } from "astro:db";
+
+if (Astro.request.method === "POST") {
+    // Parse form data
+    const formData = await Astro.request.formData();
+    const nombre = formData.get("nombre");
+    const contraseña = formData.get("contraseña");
+    const apellidos = formData.get("apellidos");
+    const correo = formData.get("correo");
+    const direccion = formData.get("direccion");
+    const fecha_nacimiento = formData.get("fecha_nacimiento");
+    const tipo_usuario = formData.get("tipo_usuario");
+    const telefono = formData.get("telefono");
+
+    if (
+        typeof nombre === "string" &&
+        typeof contraseña === "string" &&
+        typeof apellidos === "string" &&
+        typeof correo === "string" &&
+        typeof direccion === "string" &&
+        typeof fecha_nacimiento === "string" &&
+        typeof tipo_usuario === "string" &&
+        typeof telefono === "string"
+    ) {
+        // Insert form data into the User table
+        await db.insert(User).values({
+            nombre,
+            contraseña,
+            apellidos,
+            correo,
+            direccion,
+            fecha_nacimiento,
+            tipo_usuario,
+            telefono,
+        });
+    }
+}
+
+// Render the new list of users on each request
+const users = await db.select().from(User);
 ---
 
 <Layout title="Registro">
     <div class="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
         <h2 class="text-2xl font-bold mb-6 text-center">Registro de Usuario</h2>
-        <form
-            method="POST"
-            action="http://localhost:3000/api/insertarUsuario"
-            class="flex flex-col space-y-4"
-        >
+        <form method="POST" class="flex flex-col space-y-4">
             <label class="block">
                 <span class="text-gray-700">Nombre:</span>
                 <input
@@ -96,5 +132,43 @@ import Layout from "../layouts/Layout.astro";
                 >Registrar</button
             >
         </form>
+        <div class="mt-10">
+            <h3 class="text-xl font-bold mb-4">Usuarios Registrados</h3>
+            {
+                users.length === 0 ? (
+                    <p class="text-gray-700">No hay usuarios registrados.</p>
+                ) : (
+                    <ul class="space-y-2">
+                        {users.map((user) => (
+                            <li class="p-4 bg-gray-100 rounded-md shadow-sm">
+                                <p>
+                                    <strong>Nombre:</strong> {user.nombre}
+                                </p>
+                                <p>
+                                    <strong>Apellidos:</strong> {user.apellidos}
+                                </p>
+                                <p>
+                                    <strong>Correo:</strong> {user.correo}
+                                </p>
+                                <p>
+                                    <strong>Dirección:</strong> {user.direccion}
+                                </p>
+                                <p>
+                                    <strong>Fecha de Nacimiento:</strong>{" "}
+                                    {user.fecha_nacimiento}
+                                </p>
+                                <p>
+                                    <strong>Tipo de Usuario:</strong>{" "}
+                                    {user.tipo_usuario}
+                                </p>
+                                <p>
+                                    <strong>Teléfono:</strong> {user.telefono}
+                                </p>
+                            </li>
+                        ))}
+                    </ul>
+                )
+            }
+        </div>
     </div>
 </Layout>

@@ -15,4 +15,7 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+  //Importante para que funciona la inserccion 
+  // y otras operaciones de astro-db
+  output: "server",
 });

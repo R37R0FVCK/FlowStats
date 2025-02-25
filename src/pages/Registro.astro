@@ -1,45 +1,58 @@
 ---
+import { date } from "astro:schema";
 import Layout from "../layouts/Layout.astro";
-import { db, User } from "astro:db";
+import { db, Usuario } from "astro:db";
 
+const fecha = new Date();
 if (Astro.request.method === "POST") {
     // Parse form data
     const formData = await Astro.request.formData();
+    const nombre_usuario = formData.get("nombre_usuario");
     const nombre = formData.get("nombre");
-    const contraseña = formData.get("contraseña");
     const apellidos = formData.get("apellidos");
-    const correo = formData.get("correo");
-    const direccion = formData.get("direccion");
-    const fecha_nacimiento = formData.get("fecha_nacimiento");
-    const tipo_usuario = formData.get("tipo_usuario");
-    const telefono = formData.get("telefono");
+    const contraseña = formData.get("contraseña");
+    const correo_electronico = formData.get("correo_electronico");
+    const direccion_usu = formData.get("direccion_usu");
+    const telefono_usu = formData.get("telefono_usu");
+    const fechanacimientotexto = formData.get("fecha_nacimiento");
+    const tipousuariotexto = formData.get("tipo_usu");
+    const fecharegistrotexto = formData.get("fecha_registro");
 
     if (
+        typeof nombre_usuario === "string" &&
         typeof nombre === "string" &&
-        typeof contraseña === "string" &&
         typeof apellidos === "string" &&
-        typeof correo === "string" &&
-        typeof direccion === "string" &&
-        typeof fecha_nacimiento === "string" &&
-        typeof tipo_usuario === "string" &&
-        typeof telefono === "string"
+        typeof contraseña === "string" &&
+        typeof correo_electronico === "string" &&
+        typeof direccion_usu === "string" &&
+        typeof telefono_usu === "string" &&
+        typeof fechanacimientotexto === "string" &&
+        typeof tipousuariotexto === "string" &&
+        typeof fecharegistrotexto === "string"
     ) {
-        // Insert form data into the User table
-        await db.insert(User).values({
+        // conversiones de texto a sus tipos adecuados
+        const fecha_nacimiento = new Date(fechanacimientotexto);
+        const fecha_registro = new Date(fecharegistrotexto);
+
+        const tipo_usu = tipousuariotexto === "true";
+
+        await db.insert(Usuario).values({
+            nombre_usuario,
             nombre,
-            contraseña,
             apellidos,
-            correo,
-            direccion,
+            contraseña,
+            correo_electronico,
+            direccion_usu,
+            telefono_usu,
             fecha_nacimiento,
-            tipo_usuario,
-            telefono,
+            tipo_usu,
+            fecha_registro,
         });
     }
 }
 
-// Render the new list of users on each request
-const users = await db.select().from(User);
+// Render the new list of usuarios on each request
+const usuarios = await db.select().from(Usuario);
 ---
 
 <Layout title="Registro">
@@ -47,21 +60,21 @@ const users = await db.select().from(User);
         <h2 class="text-2xl font-bold mb-6 text-center">Registro de Usuario</h2>
         <form method="POST" class="flex flex-col space-y-4">
             <label class="block">
-                <span class="text-gray-700">Nombre:</span>
+                <span class="text-gray-700">Nombre de Usuario:</span>
                 <input
                     type="text"
-                    name="nombre"
-                    id="nombre"
+                    name="nombre_usuario"
+                    id="nombre_usuario"
                     required
                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 />
             </label>
             <label class="block">
-                <span class="text-gray-700">Contraseña:</span>
+                <span class="text-gray-700">Nombre:</span>
                 <input
-                    type="password"
-                    name="contraseña"
-                    id="contraseña"
+                    type="text"
+                    name="nombre"
+                    id="nombre"
                     required
                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 />
@@ -77,11 +90,21 @@ const users = await db.select().from(User);
                 />
             </label>
             <label class="block">
-                <span class="text-gray-700">Correo:</span>
+                <span class="text-gray-700">Contraseña:</span>
+                <input
+                    type="password"
+                    name="contraseña"
+                    id="contraseña"
+                    required
+                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                />
+            </label>
+            <label class="block">
+                <span class="text-gray-700">Correo Electrónico:</span>
                 <input
                     type="email"
-                    name="correo"
-                    id="correo"
+                    name="correo_electronico"
+                    id="correo_electronico"
                     required
                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 />
@@ -90,8 +113,18 @@ const users = await db.select().from(User);
                 <span class="text-gray-700">Dirección:</span>
                 <input
                     type="text"
-                    name="direccion"
-                    id="direccion"
+                    name="direccion_usu"
+                    id="direccion_usu"
+                    required
+                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                />
+            </label>
+            <label class="block">
+                <span class="text-gray-700">Teléfono:</span>
+                <input
+                    type="text"
+                    name="telefono_usu"
+                    id="telefono_usu"
                     required
                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 />
@@ -108,20 +141,22 @@ const users = await db.select().from(User);
             </label>
             <label class="block">
                 <span class="text-gray-700">Tipo de Usuario:</span>
-                <input
-                    type="text"
-                    name="tipo_usuario"
-                    id="tipo_usuario"
+                <select
+                    name="tipo_usu"
+                    id="tipo_usu"
                     required
                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                />
+                >
+                    <option value="true">Administrador</option>
+                    <option value="false">Usuario Normal</option>
+                </select>
             </label>
             <label class="block">
-                <span class="text-gray-700">Teléfono:</span>
+                <span class="text-gray-700">Fecha de Registro:</span>
                 <input
-                    type="text"
-                    name="telefono"
-                    id="telefono"
+                    type="date"
+                    name="fecha_registro"
+                    id="fecha_registro"
                     required
                     class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 />
@@ -135,34 +170,48 @@ const users = await db.select().from(User);
         <div class="mt-10">
             <h3 class="text-xl font-bold mb-4">Usuarios Registrados</h3>
             {
-                users.length === 0 ? (
+                usuarios.length === 0 ? (
                     <p class="text-gray-700">No hay usuarios registrados.</p>
                 ) : (
                     <ul class="space-y-2">
-                        {users.map((user) => (
+                        {usuarios.map((usuario) => (
                             <li class="p-4 bg-gray-100 rounded-md shadow-sm">
                                 <p>
-                                    <strong>Nombre:</strong> {user.nombre}
+                                    <strong>Nombre de Usuario:</strong>{" "}
+                                    {usuario.nombre_usuario}
                                 </p>
                                 <p>
-                                    <strong>Apellidos:</strong> {user.apellidos}
+                                    <strong>Nombre:</strong> {usuario.nombre}
                                 </p>
                                 <p>
-                                    <strong>Correo:</strong> {user.correo}
+                                    <strong>Apellidos:</strong>{" "}
+                                    {usuario.apellidos}
                                 </p>
                                 <p>
-                                    <strong>Dirección:</strong> {user.direccion}
+                                    <strong>Correo Electrónico:</strong>{" "}
+                                    {usuario.correo_electronico}
+                                </p>
+                                <p>
+                                    <strong>Dirección:</strong>{" "}
+                                    {usuario.direccion_usu}
+                                </p>
+                                <p>
+                                    <strong>Teléfono:</strong>{" "}
+                                    {usuario.telefono_usu}
                                 </p>
                                 <p>
                                     <strong>Fecha de Nacimiento:</strong>{" "}
-                                    {user.fecha_nacimiento}
+                                    {usuario.fecha_nacimiento}
                                 </p>
                                 <p>
                                     <strong>Tipo de Usuario:</strong>{" "}
-                                    {user.tipo_usuario}
+                                    {usuario.tipo_usu
+                                        ? "Administrador"
+                                        : "Usuario Normal"}
                                 </p>
                                 <p>
-                                    <strong>Teléfono:</strong> {user.telefono}
+                                    <strong>Fecha de Registro:</strong>{" "}
+                                    {usuario.fecha_registro}
                                 </p>
                             </li>
                         ))}

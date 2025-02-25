@@ -2,14 +2,17 @@ import { column, defineDb } from 'astro:db';
 
 const User = {
   columns: {
-    nombre: column.text({ primaryKey: true }),
-    contraseña: column.text({ unique: true }),
+    cod_usuario: column.number({ primaryKey: true, autoIncrement: true }),
+    nombre_usuario: column.text(),
+    nombre: column.text(),
     apellidos: column.text(),
-    correo: column.text({ unique: true }),
-    direccion: column.text(),
-    fecha_nacimiento: column.text(),
-    tipo_usuario: column.text(),
-    telefono: column.text({ unique: true }),
+    contrasena: column.text(),
+    correo_electronico: column.text(),
+    direccion_usu: column.text(),
+    telefono_usu: column.text(),
+    tipo_usu: column.boolean(),
+    fecha_nacimiento: column.date(),
+    fecha_registro: column.date(),
   }
 };
 

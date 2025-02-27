@@ -46,8 +46,8 @@ const Artista = {
     nacionalidad_art: column.text(),
     anio_comienzo_art: column.number(),
     img_art: column.text(),
-    cod_manager: column.number({ references: () => Manager.columns.cod_manager }),
-    cod_sello: column.number({ references: () => Sello_Discografico.columns.cod_sello }),
+    cod_manager: column.number(),
+    cod_sello: column.number(),
   }
 };
 const Productor = {
@@ -60,8 +60,8 @@ const Productor = {
     nacionalidad_prod: column.text(),
     anio_comienzo_prod: column.number(),
     img_prod: column.text(),
-    cod_manager: column.number({ references: () => Manager.columns.cod_manager }),
-    cod_sello: column.number({ references: () => Sello_Discografico.columns.cod_sello }),
+    cod_manager: column.number(),
+    cod_sello: column.number(),
 
 
   }
@@ -72,23 +72,23 @@ const Album = {
     cod_album: column.number({ primaryKey: true, autoIncrement: true }),
     nom_album: column.text(),
     fecha_lanzamiento_album: column.date(),
-    duracion: column.number(),//posible cambio
+    duracion: column.text(),//posible cambio
     num_canciones: column.number(),
     img_album: column.text(),
-    cod_art: column.number({ references: () => Artista.columns.cod_art }),
+    cod_art: column.number(),
   }
 };
 const Cancion = {
   columns: {
     cod_cancion: column.number({ primaryKey: true, autoIncrement: true }),
-    fecha_lanzamiento_cancion: column.date(),
+    fecha_lanzamiento: column.date(),
     titulo: column.text(),
     genero_cancion: column.text(),
     num_reproducciones: column.number(),
     colaboraciones: column.text(),
-    videoclip: column.text(),
+    tipo_reproduccion: column.text(),
     tipo_discografia: column.text(),
-    cod_album: column.number({ references: () => Album.columns.cod_album }),
+    cod_album: column.number(),
   }
 };
 const Concierto = {
@@ -99,7 +99,7 @@ const Concierto = {
     hora_con: column.date(),// posible cambio
     ciudad_con: column.text(),
     ubicacion_con: column.text(),
-    cod_art: column.number({ references: () => Artista.columns.cod_art }),
+    cod_art: column.number(),
   }
 };
 
@@ -107,45 +107,45 @@ const Concierto = {
 const Produce = {
   columns: {
     cod_prod: column.number({ primaryKey: true, autoIncrement: true }),
-    cod_productor: column.number({ references: () => Productor.columns.cod_productor }),
-    cod_cancion: column.number({ references: () => Cancion.columns.cod_cancion }),
+    cod_productor: column.number(),
+    cod_cancion: column.number(),
   }
 };
 const Compone = {
   columns: {
     cod_comp: column.number({ primaryKey: true, autoIncrement: true }),
-    cod_art: column.number({ references: () => Artista.columns.cod_art }),
-    cod_cancion: column.number({ references: () => Cancion.columns.cod_cancion }),
+    cod_art: column.number(),
+    cod_cancion: column.number(),
   }
 };
 const Asiste = {
   columns: {
     cod_as: column.number({ primaryKey: true, autoIncrement: true }),
-    cod_concierto: column.number({ references: () => Concierto.columns.cod_concierto }),
-    cod_usuario: column.number({ references: () => Usuario.columns.cod_usuario }),
+    cod_concierto: column.number(),
+    cod_usuario: column.number(),
 
   }
 };
 const Gusta = {
   columns: {
     cod_gusta: column.number({ primaryKey: true, autoIncrement: true }),
-    cod_usuario: column.number({ references: () => Usuario.columns.cod_usuario }),
-    cod_art: column.number({ references: () => Artista.columns.cod_art }),
+    cod_usuario: column.number(),
+    cod_art: column.number(),
 
   }
 };
 const Escucha = {
   columns: {
     cod_escucha: column.number({ primaryKey: true, autoIncrement: true }),
-    cod_usuario: column.number({ references: () => Usuario.columns.cod_usuario }),
-    cod_cancion: column.number({ references: () => Cancion.columns.cod_cancion }),
+    cod_usuario: column.number(),
+    cod_cancion: column.number(),
   }
 }
 const Ve = {
   columns: {
     cod_ve: column.number({ primaryKey: true, autoIncrement: true }),
-    cod_usuario: column.number({ references: () => Usuario.columns.cod_usuario }),
-    cod_album: column.number({ references: () => Album.columns.cod_album }),
+    cod_usuario: column.number(),
+    cod_album: column.number(),
   }
 };
 

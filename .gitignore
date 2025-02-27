@@ -31,3 +31,5 @@ prisma/migrations/
 
 
 src/pages/Listacantantes.astro
+singers.json
+managers.json

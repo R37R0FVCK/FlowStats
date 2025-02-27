@@ -71,7 +71,7 @@ const Album = {
   columns: {
     cod_album: column.number({ primaryKey: true, autoIncrement: true }),
     nom_album: column.text(),
-    fecha_lanzamiento_album: column.date(),
+    fecha_lanzamiento_album: column.text(),
     duracion: column.text(),//posible cambio
     num_canciones: column.number(),
     img_album: column.text(),
@@ -81,7 +81,7 @@ const Album = {
 const Cancion = {
   columns: {
     cod_cancion: column.number({ primaryKey: true, autoIncrement: true }),
-    fecha_lanzamiento: column.date(),
+    fecha_lanzamiento: column.text(),
     titulo: column.text(),
     genero_cancion: column.text(),
     num_reproducciones: column.number(),

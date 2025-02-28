@@ -3,7 +3,7 @@ import { date } from "astro:schema";
 import Layout from "../layouts/Layout.astro";
 import { db, Usuario } from "astro:db";
 
-const fecha = new Date();
+const fecha_actual = new Date();
 if (Astro.request.method === "POST") {
     // Parse form data
     const formData = await Astro.request.formData();
@@ -16,7 +16,6 @@ if (Astro.request.method === "POST") {
     const telefono_usu = formData.get("telefono_usu");
     const fechanacimientotexto = formData.get("fecha_nacimiento");
     const tipousuariotexto = formData.get("tipo_usu");
-    const fecharegistrotexto = formData.get("fecha_registro");
 
     if (
         typeof nombre_usuario === "string" &&
@@ -27,14 +26,13 @@ if (Astro.request.method === "POST") {
         typeof direccion_usu === "string" &&
         typeof telefono_usu === "string" &&
         typeof fechanacimientotexto === "string" &&
-        typeof tipousuariotexto === "string" &&
-        typeof fecharegistrotexto === "string"
+        typeof tipousuariotexto === "string"
     ) {
         // conversiones de texto a sus tipos adecuados
         const fecha_nacimiento = new Date(fechanacimientotexto);
-        const fecha_registro = new Date(fecharegistrotexto);
 
         const tipo_usu = tipousuariotexto === "true";
+        const fecha_registro = fecha_actual;
 
         await db.insert(Usuario).values({
             nombre_usuario,
@@ -151,16 +149,7 @@ const usuarios = await db.select().from(Usuario);
                     <option value="false">Usuario Normal</option>
                 </select>
             </label>
-            <label class="block">
-                <span class="text-gray-700">Fecha de Registro:</span>
-                <input
-                    type="date"
-                    name="fecha_registro"
-                    id="fecha_registro"
-                    required
-                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                />
-            </label>
+
             <button
                 type="submit"
                 class="w-full bg-indigo-500 text-white py-2 px-4 rounded-md shadow-sm hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

@@ -31,5 +31,10 @@ prisma/migrations/
 
 
 src/pages/Listacantantes.astro
+
+# json de datos para astro db 
 singers.json
 managers.json
+sellos_discograficos.json
+canciones.json
+albumes.json

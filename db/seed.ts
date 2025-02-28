@@ -1,8 +1,9 @@
-import { db, Artista, Manager, Sello_Discografico, Cancion, Album } from 'astro:db';
+import { db, Artista, Manager, Sello_Discografico, Cancion, Album, Compone, Produce } from 'astro:db';
 
 // https://astro.build/db/seed
 export default async function seed() {
 
+    // Insertar datos de la tabla manager
     const managers = [
         {
             cod_manager: 1,
@@ -440,7 +441,7 @@ export default async function seed() {
     for (const manager of managers) {
         await db.insert(Manager).values(manager);
     }
-
+    //insertar datos de la tabla sello discografico
     const sellos_discograficos = [
         {
             cod_sello: 1,
@@ -654,7 +655,7 @@ export default async function seed() {
     for (const sellos of sellos_discograficos) {
         db.insert(Sello_Discografico).values(sellos);
     }
-
+    //insertar datos de la tabla artista 
     const artistas =
         [
             {
@@ -1663,6 +1664,8 @@ export default async function seed() {
     for (const artistainsertar of artistas) {
         await db.insert(Artista).values(artistainsertar);
     }
+
+    //insertar datos de la tabla cancion
     const canciones = [
         {
             cod_cancion: 1,
@@ -3541,6 +3544,7 @@ export default async function seed() {
 
 
     }
+    //insertar datos de la tabla album
     const albumes = [
         {
             cod_album: 1,
@@ -3763,6 +3767,2422 @@ export default async function seed() {
     for (const album of albumes) {
         await db.insert(Album).values(album);
     }
+
+    //insertar datos de la tabla compone
+    const compone = [
+        {
+            cod_comp: 1,
+            cod_art: 5,
+            cod_cancion: 1
+        },
+        {
+            cod_comp: 2,
+            cod_art: 17,
+            cod_cancion: 1
+        },
+        {
+            cod_comp: 3,
+            cod_art: 5,
+            cod_cancion: 2
+        },
+        {
+            cod_comp: 4,
+            cod_art: 6,
+            cod_cancion: 3
+        },
+        {
+            cod_comp: 5,
+            cod_art: 7,
+            cod_cancion: 3
+        },
+        {
+            cod_comp: 6,
+            cod_art: 8,
+            cod_cancion: 3
+        },
+        {
+            cod_comp: 7,
+            cod_art: 22,
+            cod_cancion: 3
+        },
+        {
+            cod_comp: 8,
+            cod_art: 26,
+            cod_cancion: 3
+        },
+        {
+            cod_comp: 9,
+            cod_art: 41,
+            cod_cancion: 3
+        },
+        {
+            cod_comp: 10,
+            cod_art: 21,
+            cod_cancion: 3
+        },
+        {
+            cod_comp: 11,
+            cod_art: 34,
+            cod_cancion: 4
+        },
+        {
+            cod_comp: 12,
+            cod_art: 7,
+            cod_cancion: 5
+        },
+        {
+            cod_comp: 13,
+            cod_art: 22,
+            cod_cancion: 5
+        },
+        {
+            cod_comp: 14,
+            cod_art: 8,
+            cod_cancion: 6
+        },
+        {
+            cod_comp: 15,
+            cod_art: 6,
+            cod_cancion: 7
+        },
+        {
+            cod_comp: 16,
+            cod_art: 23,
+            cod_cancion: 8
+        },
+        {
+            cod_comp: 17,
+            cod_art: 6,
+            cod_cancion: 9
+        },
+        {
+            cod_comp: 18,
+            cod_art: 42,
+            cod_cancion: 9
+        },
+        {
+            cod_comp: 19,
+            cod_art: 2,
+            cod_cancion: 10
+        },
+        {
+            cod_comp: 20,
+            cod_art: 39,
+            cod_cancion: 10
+        },
+        {
+            cod_comp: 21,
+            cod_art: 6,
+            cod_cancion: 11
+        },
+        {
+            cod_comp: 22,
+            cod_art: 38,
+            cod_cancion: 11
+        },
+        {
+            cod_comp: 23,
+            cod_art: 6,
+            cod_cancion: 12
+        },
+        {
+            cod_comp: 24,
+            cod_art: 6,
+            cod_cancion: 13
+        },
+        {
+            cod_comp: 25,
+            cod_art: 43,
+            cod_cancion: 13
+        },
+        {
+            cod_comp: 26,
+            cod_art: 17,
+            cod_cancion: 14
+        },
+        {
+            cod_comp: 27,
+            cod_art: 2,
+            cod_cancion: 15
+        },
+        {
+            cod_comp: 28,
+            cod_art: 8,
+            cod_cancion: 16
+        },
+        {
+            cod_comp: 29,
+            cod_art: 8,
+            cod_cancion: 17
+        },
+        {
+            cod_comp: 30,
+            cod_art: 6,
+            cod_cancion: 18
+        },
+        {
+            cod_comp: 31,
+            cod_art: 6,
+            cod_cancion: 19
+        },
+        {
+            cod_comp: 32,
+            cod_art: 20,
+            cod_cancion: 19
+        },
+        {
+            cod_comp: 33,
+            cod_art: 26,
+            cod_cancion: 20
+        },
+        {
+            cod_comp: 34,
+            cod_art: 8,
+            cod_cancion: 21
+        },
+        {
+            cod_comp: 35,
+            cod_art: 6,
+            cod_cancion: 22
+        },
+        {
+            cod_comp: 36,
+            cod_art: 7,
+            cod_cancion: 22
+        },
+        {
+            cod_comp: 37,
+            cod_art: 38,
+            cod_cancion: 23
+        },
+        {
+            cod_comp: 38,
+            cod_art: 4,
+            cod_cancion: 24
+        },
+        {
+            cod_comp: 39,
+            cod_art: 38,
+            cod_cancion: 25
+        },
+        {
+            cod_comp: 40,
+            cod_art: 37,
+            cod_cancion: 25
+        },
+        {
+            cod_comp: 41,
+            cod_art: 12,
+            cod_cancion: 26
+        },
+        {
+            cod_comp: 42,
+            cod_art: 13,
+            cod_cancion: 26
+        },
+        {
+            cod_comp: 43,
+            cod_art: 14,
+            cod_cancion: 26
+        },
+        {
+            cod_comp: 44,
+            cod_art: 13,
+            cod_cancion: 27
+        },
+        {
+            cod_comp: 45,
+            cod_art: 14,
+            cod_cancion: 27
+        },
+        {
+            cod_comp: 46,
+            cod_art: 13,
+            cod_cancion: 28
+        },
+        {
+            cod_comp: 47,
+            cod_art: 14,
+            cod_cancion: 28
+        },
+        {
+            cod_comp: 48,
+            cod_art: 4,
+            cod_cancion: 29
+        },
+        {
+            cod_comp: 49,
+            cod_art: 12,
+            cod_cancion: 30
+        },
+        {
+            cod_comp: 50,
+            cod_art: 1,
+            cod_cancion: 31
+        },
+        {
+            cod_comp: 51,
+            cod_art: 4,
+            cod_cancion: 31
+        },
+        {
+            cod_comp: 52,
+            cod_art: 20,
+            cod_cancion: 31
+        },
+        {
+            cod_comp: 53,
+            cod_art: 30,
+            cod_cancion: 31
+        },
+        {
+            cod_comp: 54,
+            cod_art: 7,
+            cod_cancion: 32
+        },
+        {
+            cod_comp: 55,
+            cod_art: 44,
+            cod_cancion: 32
+        },
+        {
+            cod_comp: 56,
+            cod_art: 7,
+            cod_cancion: 33
+        },
+        {
+            cod_comp: 57,
+            cod_art: 7,
+            cod_cancion: 34
+        },
+        {
+            cod_comp: 58,
+            cod_art: 39,
+            cod_cancion: 35
+        },
+        {
+            cod_comp: 59,
+            cod_art: 39,
+            cod_cancion: 36
+        },
+        {
+            cod_comp: 60,
+            cod_art: 39,
+            cod_cancion: 37
+        },
+        {
+            cod_comp: 61,
+            cod_art: 39,
+            cod_cancion: 38
+        },
+        {
+            cod_comp: 62,
+            cod_art: 39,
+            cod_cancion: 39
+        },
+        {
+            cod_comp: 63,
+            cod_art: 7,
+            cod_cancion: 40
+        },
+        {
+            cod_comp: 64,
+            cod_art: 4,
+            cod_cancion: 41
+        },
+        {
+            cod_comp: 65,
+            cod_art: 4,
+            cod_cancion: 42
+        },
+        {
+            cod_comp: 66,
+            cod_art: 4,
+            cod_cancion: 43
+        },
+        {
+            cod_comp: 67,
+            cod_art: 4,
+            cod_cancion: 44
+        },
+        {
+            cod_comp: 68,
+            cod_art: 4,
+            cod_cancion: 45
+        },
+        {
+            cod_comp: 69,
+            cod_art: 4,
+            cod_cancion: 46
+        },
+        {
+            cod_comp: 70,
+            cod_art: 4,
+            cod_cancion: 47
+        },
+        {
+            cod_comp: 71,
+            cod_art: 21,
+            cod_cancion: 47
+        },
+        {
+            cod_comp: 72,
+            cod_art: 4,
+            cod_cancion: 48
+        },
+        {
+            cod_comp: 73,
+            cod_art: 4,
+            cod_cancion: 49
+        },
+        {
+            cod_comp: 74,
+            cod_art: 4,
+            cod_cancion: 50
+        },
+        {
+            cod_comp: 75,
+            cod_art: 39,
+            cod_cancion: 50
+        },
+        {
+            cod_comp: 76,
+            cod_art: 4,
+            cod_cancion: 51
+        },
+        {
+            cod_comp: 77,
+            cod_art: 4,
+            cod_cancion: 52
+        },
+        {
+            cod_comp: 78,
+            cod_art: 17,
+            cod_cancion: 53
+        },
+        {
+            cod_comp: 79,
+            cod_art: 47,
+            cod_cancion: 53
+        },
+        {
+            cod_comp: 80,
+            cod_art: 3,
+            cod_cancion: 54
+        },
+        {
+            cod_comp: 81,
+            cod_art: 3,
+            cod_cancion: 55
+        },
+        {
+            cod_comp: 82,
+            cod_art: 3,
+            cod_cancion: 56
+        },
+        {
+            cod_comp: 83,
+            cod_art: 3,
+            cod_cancion: 57
+        },
+        {
+            cod_comp: 84,
+            cod_art: 3,
+            cod_cancion: 58
+        },
+        {
+            cod_comp: 85,
+            cod_art: 3,
+            cod_cancion: 59
+        },
+        {
+            cod_comp: 86,
+            cod_art: 3,
+            cod_cancion: 60
+        },
+        {
+            cod_comp: 87,
+            cod_art: 3,
+            cod_cancion: 61
+        },
+        {
+            cod_comp: 88,
+            cod_art: 3,
+            cod_cancion: 62
+        },
+        {
+            cod_comp: 89,
+            cod_art: 3,
+            cod_cancion: 63
+        },
+        {
+            cod_comp: 90,
+            cod_art: 3,
+            cod_cancion: 64
+        },
+        {
+            cod_comp: 91,
+            cod_art: 3,
+            cod_cancion: 65
+        },
+        {
+            cod_comp: 92,
+            cod_art: 3,
+            cod_cancion: 66
+        },
+        {
+            cod_comp: 93,
+            cod_art: 45,
+            cod_cancion: 66
+        },
+        {
+            cod_comp: 94,
+            cod_art: 3,
+            cod_cancion: 67
+        },
+        {
+            cod_comp: 95,
+            cod_art: 3,
+            cod_cancion: 68
+        },
+        {
+            cod_comp: 96,
+            cod_art: 3,
+            cod_cancion: 69
+        },
+        {
+            cod_comp: 97,
+            cod_art: 3,
+            cod_cancion: 70
+        },
+        {
+            cod_comp: 98,
+            cod_art: 48,
+            cod_cancion: 70
+        },
+        {
+            cod_comp: 99,
+            cod_art: 3,
+            cod_cancion: 71
+        },
+        {
+            cod_comp: 100,
+            cod_art: 3,
+            cod_cancion: 72
+        },
+        {
+            cod_comp: 101,
+            cod_art: 3,
+            cod_cancion: 73
+        },
+        {
+            cod_comp: 102,
+            cod_art: 3,
+            cod_cancion: 74
+        },
+        {
+            cod_comp: 103,
+            cod_art: 3,
+            cod_cancion: 75
+        },
+        {
+            cod_comp: 104,
+            cod_art: 3,
+            cod_cancion: 76
+        },
+        {
+            cod_comp: 105,
+            cod_art: 46,
+            cod_cancion: 56
+        },
+        {
+            cod_comp: 106,
+            cod_art: 7,
+            cod_cancion: 77
+        },
+        {
+            cod_comp: 107,
+            cod_art: 7,
+            cod_cancion: 78
+        },
+        {
+            cod_comp: 108,
+            cod_art: 49,
+            cod_cancion: 78
+        },
+        {
+            cod_comp: 109,
+            cod_art: 7,
+            cod_cancion: 79
+        },
+        {
+            cod_comp: 110,
+            cod_art: 7,
+            cod_cancion: 80
+        },
+        {
+            cod_comp: 111,
+            cod_art: 50,
+            cod_cancion: 80
+        },
+        {
+            cod_comp: 112,
+            cod_art: 7,
+            cod_cancion: 81
+        },
+        {
+            cod_comp: 113,
+            cod_art: 7,
+            cod_cancion: 82
+        },
+        {
+            cod_comp: 114,
+            cod_art: 7,
+            cod_cancion: 83
+        },
+        {
+            cod_comp: 115,
+            cod_art: 7,
+            cod_cancion: 84
+        },
+        {
+            cod_comp: 116,
+            cod_art: 7,
+            cod_cancion: 85
+        },
+        {
+            cod_comp: 117,
+            cod_art: 7,
+            cod_cancion: 86
+        },
+        {
+            cod_comp: 118,
+            cod_art: 4,
+            cod_cancion: 87
+        },
+        {
+            cod_comp: 119,
+            cod_art: 4,
+            cod_cancion: 88
+        },
+        {
+            cod_comp: 120,
+            cod_art: 40,
+            cod_cancion: 88
+        },
+        {
+            cod_comp: 121,
+            cod_art: 4,
+            cod_cancion: 89
+        },
+        {
+            cod_comp: 122,
+            cod_art: 4,
+            cod_cancion: 90
+        },
+        {
+            cod_comp: 123,
+            cod_art: 4,
+            cod_cancion: 91
+        },
+        {
+            cod_comp: 124,
+            cod_art: 32,
+            cod_cancion: 91
+        },
+        {
+            cod_comp: 125,
+            cod_art: 4,
+            cod_cancion: 92
+        },
+        {
+            cod_comp: 126,
+            cod_art: 51,
+            cod_cancion: 92
+        },
+        {
+            cod_comp: 127,
+            cod_art: 4,
+            cod_cancion: 93
+        },
+        {
+            cod_comp: 128,
+            cod_art: 38,
+            cod_cancion: 93
+        },
+        {
+            cod_comp: 129,
+            cod_art: 4,
+            cod_cancion: 94
+        },
+        {
+            cod_comp: 130,
+            cod_art: 4,
+            cod_cancion: 95
+        },
+        {
+            cod_comp: 131,
+            cod_art: 6,
+            cod_cancion: 95
+        },
+        {
+            cod_comp: 132,
+            cod_art: 4,
+            cod_cancion: 96
+        },
+        {
+            cod_comp: 133,
+            cod_art: 4,
+            cod_cancion: 97
+        },
+        {
+            cod_comp: 134,
+            cod_art: 31,
+            cod_cancion: 97
+        },
+        {
+            cod_comp: 135,
+            cod_art: 4,
+            cod_cancion: 98
+        },
+        {
+            cod_comp: 136,
+            cod_art: 30,
+            cod_cancion: 98
+        },
+        {
+            cod_comp: 137,
+            cod_art: 20,
+            cod_cancion: 98
+        },
+        {
+            cod_comp: 138,
+            cod_art: 4,
+            cod_cancion: 99
+        },
+        {
+            cod_comp: 139,
+            cod_art: 4,
+            cod_cancion: 100
+        },
+        {
+            cod_comp: 140,
+            cod_art: 52,
+            cod_cancion: 100
+        },
+        {
+            cod_comp: 141,
+            cod_art: 53,
+            cod_cancion: 100
+        },
+        {
+            cod_comp: 142,
+            cod_art: 4,
+            cod_cancion: 101
+        },
+        {
+            cod_comp: 143,
+            cod_art: 53,
+            cod_cancion: 101
+        },
+        {
+            cod_comp: 144,
+            cod_art: 4,
+            cod_cancion: 102
+        },
+        {
+            cod_comp: 145,
+            cod_art: 32,
+            cod_cancion: 102
+        },
+        {
+            cod_comp: 146,
+            cod_art: 38,
+            cod_cancion: 102
+        },
+        {
+            cod_comp: 147,
+            cod_art: 4,
+            cod_cancion: 103
+        },
+        {
+            cod_comp: 148,
+            cod_art: 54,
+            cod_cancion: 103
+        },
+        {
+            cod_comp: 149,
+            cod_art: 4,
+            cod_cancion: 104
+        },
+        {
+            cod_comp: 150,
+            cod_art: 12,
+            cod_cancion: 104
+        },
+        {
+            cod_comp: 151,
+            cod_art: 55,
+            cod_cancion: 104
+        },
+        {
+            cod_comp: 152,
+            cod_art: 4,
+            cod_cancion: 105
+        },
+        {
+            cod_comp: 153,
+            cod_art: 1,
+            cod_cancion: 106
+        },
+        {
+            cod_comp: 154,
+            cod_art: 26,
+            cod_cancion: 106
+        },
+        {
+            cod_comp: 155,
+            cod_art: 40,
+            cod_cancion: 106
+        },
+        {
+            cod_comp: 156,
+            cod_art: 4,
+            cod_cancion: 106
+        },
+        {
+            cod_comp: 157,
+            cod_art: 5,
+            cod_cancion: 107
+        },
+        {
+            cod_comp: 158,
+            cod_art: 5,
+            cod_cancion: 108
+        },
+        {
+            cod_comp: 159,
+            cod_art: 5,
+            cod_cancion: 109
+        },
+        {
+            cod_comp: 160,
+            cod_art: 56,
+            cod_cancion: 109
+        },
+        {
+            cod_comp: 161,
+            cod_art: 5,
+            cod_cancion: 110
+        },
+        {
+            cod_comp: 162,
+            cod_art: 5,
+            cod_cancion: 111
+        },
+        {
+            cod_comp: 163,
+            cod_art: 5,
+            cod_cancion: 112
+        },
+        {
+            cod_comp: 164,
+            cod_art: 5,
+            cod_cancion: 113
+        },
+        {
+            cod_comp: 165,
+            cod_art: 5,
+            cod_cancion: 114
+        },
+        {
+            cod_comp: 166,
+            cod_art: 5,
+            cod_cancion: 115
+        },
+        {
+            cod_comp: 167,
+            cod_art: 6,
+            cod_cancion: 116
+        },
+        {
+            cod_comp: 168,
+            cod_art: 6,
+            cod_cancion: 117
+        },
+        {
+            cod_comp: 169,
+            cod_art: 6,
+            cod_cancion: 118
+        },
+        {
+            cod_comp: 170,
+            cod_art: 31,
+            cod_cancion: 118
+        },
+        {
+            cod_comp: 171,
+            cod_art: 57,
+            cod_cancion: 118
+        },
+        {
+            cod_comp: 172,
+            cod_art: 6,
+            cod_cancion: 119
+        },
+        {
+            cod_comp: 173,
+            cod_art: 6,
+            cod_cancion: 120
+        },
+        {
+            cod_comp: 174,
+            cod_art: 6,
+            cod_cancion: 121
+        },
+        {
+            cod_comp: 175,
+            cod_art: 29,
+            cod_cancion: 121
+        },
+        {
+            cod_comp: 176,
+            cod_art: 58,
+            cod_cancion: 121
+        },
+        {
+            cod_comp: 177,
+            cod_art: 6,
+            cod_cancion: 122
+        },
+        {
+            cod_comp: 178,
+            cod_art: 6,
+            cod_cancion: 123
+        },
+        {
+            cod_comp: 179,
+            cod_art: 60,
+            cod_cancion: 123
+        },
+        {
+            cod_comp: 180,
+            cod_art: 6,
+            cod_cancion: 124
+        },
+        {
+            cod_comp: 181,
+            cod_art: 40,
+            cod_cancion: 124
+        },
+        {
+            cod_comp: 182,
+            cod_art: 6,
+            cod_cancion: 125
+        },
+        {
+            cod_comp: 183,
+            cod_art: 6,
+            cod_cancion: 126
+        },
+        {
+            cod_comp: 184,
+            cod_art: 51,
+            cod_cancion: 126
+        },
+        {
+            cod_comp: 185,
+            cod_art: 59,
+            cod_cancion: 126
+        },
+        {
+            cod_comp: 186,
+            cod_art: 30,
+            cod_cancion: 126
+        },
+        {
+            cod_comp: 187,
+            cod_art: 6,
+            cod_cancion: 127
+        },
+        {
+            cod_comp: 188,
+            cod_art: 54,
+            cod_cancion: 127
+        },
+        {
+            cod_comp: 189,
+            cod_art: 6,
+            cod_cancion: 128
+        },
+        {
+            cod_comp: 190,
+            cod_art: 6,
+            cod_cancion: 129
+        },
+        {
+            cod_comp: 191,
+            cod_art: 4,
+            cod_cancion: 130
+        },
+        {
+            cod_comp: 192,
+            cod_art: 6,
+            cod_cancion: 130
+        },
+        {
+            cod_comp: 193,
+            cod_art: 6,
+            cod_cancion: 131
+        },
+        {
+            cod_comp: 194,
+            cod_art: 61,
+            cod_cancion: 131
+        },
+        {
+            cod_comp: 195,
+            cod_art: 62,
+            cod_cancion: 131
+        },
+        {
+            cod_comp: 196,
+            cod_art: 63,
+            cod_cancion: 131
+        },
+        {
+            cod_comp: 197,
+            cod_art: 64,
+            cod_cancion: 131
+        },
+        {
+            cod_comp: 198,
+            cod_art: 6,
+            cod_cancion: 132
+        },
+        {
+            cod_comp: 199,
+            cod_art: 65,
+            cod_cancion: 132
+        },
+        {
+            cod_comp: 200,
+            cod_art: 19,
+            cod_cancion: 133
+        },
+        {
+            cod_comp: 201,
+            cod_art: 19,
+            cod_cancion: 134
+        },
+        {
+            cod_comp: 202,
+            cod_art: 69,
+            cod_cancion: 134
+        },
+        {
+            cod_comp: 203,
+            cod_art: 19,
+            cod_cancion: 135
+        },
+        {
+            cod_comp: 204,
+            cod_art: 9,
+            cod_cancion: 135
+        },
+        {
+            cod_comp: 205,
+            cod_art: 19,
+            cod_cancion: 136
+        },
+        {
+            cod_comp: 206,
+            cod_art: 19,
+            cod_cancion: 137
+        },
+        {
+            cod_comp: 207,
+            cod_art: 19,
+            cod_cancion: 138
+        },
+        {
+            cod_comp: 208,
+            cod_art: 33,
+            cod_cancion: 138
+        },
+        {
+            cod_comp: 209,
+            cod_art: 19,
+            cod_cancion: 139
+        },
+        {
+            cod_comp: 210,
+            cod_art: 19,
+            cod_cancion: 140
+        },
+        {
+            cod_comp: 211,
+            cod_art: 67,
+            cod_cancion: 140
+        },
+        {
+            cod_comp: 212,
+            cod_art: 68,
+            cod_cancion: 140
+        },
+        {
+            cod_comp: 213,
+            cod_art: 19,
+            cod_cancion: 141
+        },
+        {
+            cod_comp: 214,
+            cod_art: 19,
+            cod_cancion: 142
+        },
+        {
+            cod_comp: 215,
+            cod_art: 69,
+            cod_cancion: 142
+        },
+        {
+            cod_comp: 216,
+            cod_art: 19,
+            cod_cancion: 143
+        },
+        {
+            cod_comp: 217,
+            cod_art: 70,
+            cod_cancion: 143
+        },
+        {
+            cod_comp: 218,
+            cod_art: 71,
+            cod_cancion: 143
+        },
+        {
+            cod_comp: 219,
+            cod_art: 19,
+            cod_cancion: 144
+        },
+        {
+            cod_comp: 220,
+            cod_art: 19,
+            cod_cancion: 145
+        },
+        {
+            cod_comp: 221,
+            cod_art: 19,
+            cod_cancion: 146
+        },
+        {
+            cod_comp: 222,
+            cod_art: 72,
+            cod_cancion: 146
+        },
+        {
+            cod_comp: 223,
+            cod_art: 19,
+            cod_cancion: 147
+        },
+        {
+            cod_comp: 224,
+            cod_art: 19,
+            cod_cancion: 148
+        },
+        {
+            cod_comp: 225,
+            cod_art: 19,
+            cod_cancion: 149
+        },
+        {
+            cod_comp: 226,
+            cod_art: 73,
+            cod_cancion: 149
+        },
+        {
+            cod_comp: 227,
+            cod_art: 19,
+            cod_cancion: 150
+        },
+        {
+            cod_comp: 228,
+            cod_art: 19,
+            cod_cancion: 151
+        },
+        {
+            cod_comp: 229,
+            cod_art: 19,
+            cod_cancion: 152
+        },
+        {
+            cod_comp: 230,
+            cod_art: 19,
+            cod_cancion: 153
+        },
+        {
+            cod_comp: 231,
+            cod_art: 19,
+            cod_cancion: 154
+        },
+        {
+            cod_comp: 232,
+            cod_art: 23,
+            cod_cancion: 154
+        },
+        {
+            cod_comp: 233,
+            cod_art: 19,
+            cod_cancion: 155
+        },
+        {
+            cod_comp: 234,
+            cod_art: 74,
+            cod_cancion: 155
+        },
+        {
+            cod_comp: 235,
+            cod_art: 75,
+            cod_cancion: 155
+        },
+        {
+            cod_comp: 236,
+            cod_art: 19,
+            cod_cancion: 156
+        },
+        {
+            cod_comp: 237,
+            cod_art: 76,
+            cod_cancion: 156
+        },
+        {
+            cod_comp: 238,
+            cod_art: 19,
+            cod_cancion: 157
+        },
+        {
+            cod_comp: 239,
+            cod_art: 77,
+            cod_cancion: 157
+        },
+        {
+            cod_comp: 240,
+            cod_art: 19,
+            cod_cancion: 158
+        },
+        {
+            cod_comp: 241,
+            cod_art: 5,
+            cod_cancion: 158
+        },
+        {
+            cod_comp: 242,
+            cod_art: 19,
+            cod_cancion: 159
+        },
+        {
+            cod_comp: 243,
+            cod_art: 2,
+            cod_cancion: 160
+        },
+        {
+            cod_comp: 244,
+            cod_art: 2,
+            cod_cancion: 161
+        },
+        {
+            cod_comp: 245,
+            cod_art: 17,
+            cod_cancion: 161
+        },
+        {
+            cod_comp: 246,
+            cod_art: 2,
+            cod_cancion: 162
+        },
+        {
+            cod_comp: 247,
+            cod_art: 2,
+            cod_cancion: 163
+        },
+        {
+            cod_comp: 248,
+            cod_art: 2,
+            cod_cancion: 164
+        },
+        {
+            cod_comp: 249,
+            cod_art: 6,
+            cod_cancion: 164
+        },
+        {
+            cod_comp: 250,
+            cod_art: 2,
+            cod_cancion: 165
+        },
+        {
+            cod_comp: 251,
+            cod_art: 2,
+            cod_cancion: 166
+        },
+        {
+            cod_comp: 252,
+            cod_art: 2,
+            cod_cancion: 167
+        },
+        {
+            cod_comp: 253,
+            cod_art: 2,
+            cod_cancion: 168
+        },
+        {
+            cod_comp: 254,
+            cod_art: 2,
+            cod_cancion: 169
+        },
+        {
+            cod_comp: 255,
+            cod_art: 2,
+            cod_cancion: 170
+        }
+    ]
+    for (const comp of compone) {
+        db.insert(Compone).values(comp)
+    }
+
+    //insertar datos de la tabla produce 
+
+    const produce = [
+        {
+            cod_prod: 1,
+            cod_productor: 7,
+            cod_cancion: 1
+        },
+        {
+            cod_prod: 2,
+            cod_productor: 8,
+            cod_cancion: 2
+        },
+        {
+            cod_prod: 3,
+            cod_productor: 4,
+            cod_cancion: 3
+        },
+        {
+            cod_prod: 4,
+            cod_productor: 1,
+            cod_cancion: 4
+        },
+        {
+            cod_prod: 5,
+            cod_productor: 4,
+            cod_cancion: 5
+        },
+        {
+            cod_prod: 6,
+            cod_productor: 7,
+            cod_cancion: 6
+        },
+        {
+            cod_prod: 7,
+            cod_productor: 1,
+            cod_cancion: 7
+        },
+        {
+            cod_prod: 8,
+            cod_productor: 1,
+            cod_cancion: 8
+        },
+        {
+            cod_prod: 9,
+            cod_productor: 3,
+            cod_cancion: 9
+        },
+        {
+            cod_prod: 10,
+            cod_productor: 22,
+            cod_cancion: 9
+        },
+        {
+            cod_prod: 11,
+            cod_productor: 9,
+            cod_cancion: 10
+        },
+        {
+            cod_prod: 12,
+            cod_productor: 21,
+            cod_cancion: 11
+        },
+        {
+            cod_prod: 13,
+            cod_productor: 22,
+            cod_cancion: 12
+        },
+        {
+            cod_prod: 14,
+            cod_productor: 12,
+            cod_cancion: 13
+        },
+        {
+            cod_prod: 15,
+            cod_productor: 13,
+            cod_cancion: 14
+        },
+        {
+            cod_prod: 16,
+            cod_productor: 7,
+            cod_cancion: 15
+        },
+        {
+            cod_prod: 17,
+            cod_productor: 14,
+            cod_cancion: 16
+        },
+        {
+            cod_prod: 18,
+            cod_productor: 7,
+            cod_cancion: 17
+        },
+        {
+            cod_prod: 19,
+            cod_productor: 4,
+            cod_cancion: 18
+        },
+        {
+            cod_prod: 20,
+            cod_productor: 3,
+            cod_cancion: 19
+        },
+        {
+            cod_prod: 21,
+            cod_productor: 22,
+            cod_cancion: 19
+        },
+        {
+            cod_prod: 22,
+            cod_productor: 10,
+            cod_cancion: 20
+        },
+        {
+            cod_prod: 23,
+            cod_productor: 15,
+            cod_cancion: 21
+        },
+        {
+            cod_prod: 24,
+            cod_productor: 4,
+            cod_cancion: 22
+        },
+        {
+            cod_prod: 25,
+            cod_productor: 15,
+            cod_cancion: 23
+        },
+        {
+            cod_prod: 26,
+            cod_productor: 21,
+            cod_cancion: 23
+        },
+        {
+            cod_prod: 27,
+            cod_productor: 16,
+            cod_cancion: 24
+        },
+        {
+            cod_prod: 28,
+            cod_productor: 17,
+            cod_cancion: 25
+        },
+        {
+            cod_prod: 29,
+            cod_productor: 18,
+            cod_cancion: 26
+        },
+        {
+            cod_prod: 30,
+            cod_productor: 18,
+            cod_cancion: 27
+        },
+        {
+            cod_prod: 31,
+            cod_productor: 18,
+            cod_cancion: 28
+        },
+        {
+            cod_prod: 32,
+            cod_productor: 1,
+            cod_cancion: 29
+        },
+        {
+            cod_prod: 33,
+            cod_productor: 19,
+            cod_cancion: 30
+        },
+        {
+            cod_prod: 34,
+            cod_productor: 20,
+            cod_cancion: 31
+        },
+        {
+            cod_prod: 35,
+            cod_productor: 2,
+            cod_cancion: 32
+        },
+        {
+            cod_prod: 36,
+            cod_productor: 2,
+            cod_cancion: 33
+        },
+        {
+            cod_prod: 37,
+            cod_productor: 2,
+            cod_cancion: 34
+        },
+        {
+            cod_prod: 38,
+            cod_productor: 1,
+            cod_cancion: 35
+        },
+        {
+            cod_prod: 39,
+            cod_productor: 1,
+            cod_cancion: 36
+        },
+        {
+            cod_prod: 40,
+            cod_productor: 1,
+            cod_cancion: 37
+        },
+        {
+            cod_prod: 41,
+            cod_productor: 1,
+            cod_cancion: 38
+        },
+        {
+            cod_prod: 42,
+            cod_productor: 1,
+            cod_cancion: 39
+        },
+        {
+            cod_prod: 43,
+            cod_productor: 4,
+            cod_cancion: 40
+        },
+        {
+            cod_prod: 44,
+            cod_productor: 23,
+            cod_cancion: 41
+        },
+        {
+            cod_prod: 45,
+            cod_productor: 23,
+            cod_cancion: 42
+        },
+        {
+            cod_prod: 46,
+            cod_productor: 23,
+            cod_cancion: 43
+        },
+        {
+            cod_prod: 47,
+            cod_productor: 23,
+            cod_cancion: 44
+        },
+        {
+            cod_prod: 48,
+            cod_productor: 23,
+            cod_cancion: 45
+        },
+        {
+            cod_prod: 49,
+            cod_productor: 23,
+            cod_cancion: 46
+        },
+        {
+            cod_prod: 50,
+            cod_productor: 23,
+            cod_cancion: 47
+        },
+        {
+            cod_prod: 51,
+            cod_productor: 23,
+            cod_cancion: 48
+        },
+        {
+            cod_prod: 52,
+            cod_productor: 23,
+            cod_cancion: 49
+        },
+        {
+            cod_prod: 53,
+            cod_productor: 23,
+            cod_cancion: 50
+        },
+        {
+            cod_prod: 54,
+            cod_productor: 23,
+            cod_cancion: 51
+        },
+        {
+            cod_prod: 55,
+            cod_productor: 23,
+            cod_cancion: 52
+        },
+        {
+            cod_prod: 56,
+            cod_productor: 7,
+            cod_cancion: 53
+        },
+        {
+            cod_prod: 57,
+            cod_productor: 24,
+            cod_cancion: 53
+        },
+        {
+            cod_prod: 58,
+            cod_productor: 25,
+            cod_cancion: 54
+        },
+        {
+            cod_prod: 59,
+            cod_productor: 26,
+            cod_cancion: 54
+        },
+        {
+            cod_prod: 60,
+            cod_productor: 25,
+            cod_cancion: 55
+        },
+        {
+            cod_prod: 61,
+            cod_productor: 26,
+            cod_cancion: 55
+        },
+        {
+            cod_prod: 62,
+            cod_productor: 27,
+            cod_cancion: 55
+        },
+        {
+            cod_prod: 63,
+            cod_productor: 25,
+            cod_cancion: 56
+        },
+        {
+            cod_prod: 64,
+            cod_productor: 26,
+            cod_cancion: 56
+        },
+        {
+            cod_prod: 65,
+            cod_productor: 27,
+            cod_cancion: 56
+        },
+        {
+            cod_prod: 66,
+            cod_productor: 25,
+            cod_cancion: 57
+        },
+        {
+            cod_prod: 67,
+            cod_productor: 25,
+            cod_cancion: 58
+        },
+        {
+            cod_prod: 68,
+            cod_productor: 26,
+            cod_cancion: 58
+        },
+        {
+            cod_prod: 69,
+            cod_productor: 25,
+            cod_cancion: 59
+        },
+        {
+            cod_prod: 70,
+            cod_productor: 26,
+            cod_cancion: 59
+        },
+        {
+            cod_prod: 71,
+            cod_productor: 28,
+            cod_cancion: 59
+        },
+        {
+            cod_prod: 72,
+            cod_productor: 26,
+            cod_cancion: 60
+        },
+        {
+            cod_prod: 73,
+            cod_productor: 25,
+            cod_cancion: 61
+        },
+        {
+            cod_prod: 74,
+            cod_productor: 26,
+            cod_cancion: 62
+        },
+        {
+            cod_prod: 75,
+            cod_productor: 28,
+            cod_cancion: 62
+        },
+        {
+            cod_prod: 76,
+            cod_productor: 25,
+            cod_cancion: 63
+        },
+        {
+            cod_prod: 77,
+            cod_productor: 25,
+            cod_cancion: 64
+        },
+        {
+            cod_prod: 78,
+            cod_productor: 25,
+            cod_cancion: 65
+        },
+        {
+            cod_prod: 79,
+            cod_productor: 25,
+            cod_cancion: 66
+        },
+        {
+            cod_prod: 80,
+            cod_productor: 26,
+            cod_cancion: 66
+        },
+        {
+            cod_prod: 81,
+            cod_productor: 27,
+            cod_cancion: 66
+        },
+        {
+            cod_prod: 82,
+            cod_productor: 28,
+            cod_cancion: 66
+        },
+        {
+            cod_prod: 83,
+            cod_productor: 25,
+            cod_cancion: 67
+        },
+        {
+            cod_prod: 84,
+            cod_productor: 25,
+            cod_cancion: 68
+        },
+        {
+            cod_prod: 85,
+            cod_productor: 25,
+            cod_cancion: 69
+        },
+        {
+            cod_prod: 86,
+            cod_productor: 25,
+            cod_cancion: 70
+        },
+        {
+            cod_prod: 87,
+            cod_productor: 26,
+            cod_cancion: 70
+        },
+        {
+            cod_prod: 88,
+            cod_productor: 27,
+            cod_cancion: 70
+        },
+        {
+            cod_prod: 89,
+            cod_productor: 25,
+            cod_cancion: 71
+        },
+        {
+            cod_prod: 90,
+            cod_productor: 26,
+            cod_cancion: 72
+        },
+        {
+            cod_prod: 91,
+            cod_productor: 26,
+            cod_cancion: 73
+        },
+        {
+            cod_prod: 92,
+            cod_productor: 25,
+            cod_cancion: 74
+        },
+        {
+            cod_prod: 93,
+            cod_productor: 25,
+            cod_cancion: 75
+        },
+        {
+            cod_prod: 94,
+            cod_productor: 26,
+            cod_cancion: 76
+        },
+        {
+            cod_prod: 95,
+            cod_productor: 2,
+            cod_cancion: 77
+        },
+        {
+            cod_prod: 96,
+            cod_productor: 2,
+            cod_cancion: 78
+        },
+        {
+            cod_prod: 97,
+            cod_productor: 4,
+            cod_cancion: 78
+        },
+        {
+            cod_prod: 98,
+            cod_productor: 2,
+            cod_cancion: 79
+        },
+        {
+            cod_prod: 99,
+            cod_productor: 2,
+            cod_cancion: 80
+        },
+        {
+            cod_prod: 100,
+            cod_productor: 4,
+            cod_cancion: 81
+        },
+        {
+            cod_prod: 101,
+            cod_productor: 2,
+            cod_cancion: 82
+        },
+        {
+            cod_prod: 102,
+            cod_productor: 2,
+            cod_cancion: 83
+        },
+        {
+            cod_prod: 103,
+            cod_productor: 4,
+            cod_cancion: 84
+        },
+        {
+            cod_prod: 104,
+            cod_productor: 4,
+            cod_cancion: 85
+        },
+        {
+            cod_prod: 105,
+            cod_productor: 2,
+            cod_cancion: 86
+        },
+        {
+            cod_prod: 106,
+            cod_productor: 22,
+            cod_cancion: 87
+        },
+        {
+            cod_prod: 107,
+            cod_productor: 22,
+            cod_cancion: 88
+        },
+        {
+            cod_prod: 108,
+            cod_productor: 22,
+            cod_cancion: 89
+        },
+        {
+            cod_prod: 109,
+            cod_productor: 21,
+            cod_cancion: 90
+        },
+        {
+            cod_prod: 110,
+            cod_productor: 22,
+            cod_cancion: 91
+        },
+        {
+            cod_prod: 111,
+            cod_productor: 22,
+            cod_cancion: 92
+        },
+        {
+            cod_prod: 112,
+            cod_productor: 21,
+            cod_cancion: 92
+        },
+        {
+            cod_prod: 113,
+            cod_productor: 22,
+            cod_cancion: 93
+        },
+        {
+            cod_prod: 114,
+            cod_productor: 21,
+            cod_cancion: 94
+        },
+        {
+            cod_prod: 115,
+            cod_productor: 22,
+            cod_cancion: 95
+        },
+        {
+            cod_prod: 116,
+            cod_productor: 22,
+            cod_cancion: 96
+        },
+        {
+            cod_prod: 117,
+            cod_productor: 29,
+            cod_cancion: 96
+        },
+        {
+            cod_prod: 118,
+            cod_productor: 22,
+            cod_cancion: 97
+        },
+        {
+            cod_prod: 119,
+            cod_productor: 29,
+            cod_cancion: 97
+        },
+        {
+            cod_prod: 120,
+            cod_productor: 22,
+            cod_cancion: 98
+        },
+        {
+            cod_prod: 121,
+            cod_productor: 29,
+            cod_cancion: 98
+        },
+        {
+            cod_prod: 122,
+            cod_productor: 22,
+            cod_cancion: 99
+        },
+        {
+            cod_prod: 123,
+            cod_productor: 29,
+            cod_cancion: 99
+        },
+        {
+            cod_prod: 124,
+            cod_productor: 22,
+            cod_cancion: 100
+        },
+        {
+            cod_prod: 125,
+            cod_productor: 29,
+            cod_cancion: 100
+        },
+        {
+            cod_prod: 126,
+            cod_productor: 29,
+            cod_cancion: 101
+        },
+        {
+            cod_prod: 127,
+            cod_productor: 22,
+            cod_cancion: 102
+        },
+        {
+            cod_prod: 128,
+            cod_productor: 29,
+            cod_cancion: 102
+        },
+        {
+            cod_prod: 129,
+            cod_productor: 22,
+            cod_cancion: 103
+        },
+        {
+            cod_prod: 130,
+            cod_productor: 29,
+            cod_cancion: 103
+        },
+        {
+            cod_prod: 131,
+            cod_productor: 22,
+            cod_cancion: 104
+        },
+        {
+            cod_prod: 132,
+            cod_productor: 29,
+            cod_cancion: 104
+        },
+        {
+            cod_prod: 133,
+            cod_productor: 22,
+            cod_cancion: 105
+        },
+        {
+            cod_prod: 134,
+            cod_productor: 29,
+            cod_cancion: 105
+        },
+        {
+            cod_prod: 135,
+            cod_productor: 22,
+            cod_cancion: 106
+        },
+        {
+            cod_prod: 136,
+            cod_productor: 8,
+            cod_cancion: 107
+        },
+        {
+            cod_prod: 137,
+            cod_productor: 8,
+            cod_cancion: 108
+        },
+        {
+            cod_prod: 138,
+            cod_productor: 8,
+            cod_cancion: 109
+        },
+        {
+            cod_prod: 139,
+            cod_productor: 8,
+            cod_cancion: 110
+        },
+        {
+            cod_prod: 140,
+            cod_productor: 8,
+            cod_cancion: 111
+        },
+        {
+            cod_prod: 141,
+            cod_productor: 8,
+            cod_cancion: 112
+        },
+        {
+            cod_prod: 142,
+            cod_productor: 8,
+            cod_cancion: 113
+        },
+        {
+            cod_prod: 143,
+            cod_productor: 30,
+            cod_cancion: 114
+        },
+        {
+            cod_prod: 144,
+            cod_productor: 8,
+            cod_cancion: 115
+        },
+        {
+            cod_prod: 145,
+            cod_productor: 3,
+            cod_cancion: 116
+        },
+        {
+            cod_prod: 146,
+            cod_productor: 22,
+            cod_cancion: 116
+        },
+        {
+            cod_prod: 147,
+            cod_productor: 3,
+            cod_cancion: 117
+        },
+        {
+            cod_prod: 148,
+            cod_productor: 22,
+            cod_cancion: 117
+        },
+        {
+            cod_prod: 149,
+            cod_productor: 33,
+            cod_cancion: 118
+        },
+        {
+            cod_prod: 150,
+            cod_productor: 3,
+            cod_cancion: 118
+        },
+        {
+            cod_prod: 151,
+            cod_productor: 22,
+            cod_cancion: 118
+        },
+        {
+            cod_prod: 152,
+            cod_productor: 3,
+            cod_cancion: 119
+        },
+        {
+            cod_prod: 153,
+            cod_productor: 22,
+            cod_cancion: 119
+        },
+        {
+            cod_prod: 154,
+            cod_productor: 3,
+            cod_cancion: 120
+        },
+        {
+            cod_prod: 155,
+            cod_productor: 22,
+            cod_cancion: 120
+        },
+        {
+            cod_prod: 156,
+            cod_productor: 32,
+            cod_cancion: 120
+        },
+        {
+            cod_prod: 157,
+            cod_productor: 3,
+            cod_cancion: 121
+        },
+        {
+            cod_prod: 158,
+            cod_productor: 22,
+            cod_cancion: 121
+        },
+        {
+            cod_prod: 159,
+            cod_productor: 31,
+            cod_cancion: 121
+        },
+        {
+            cod_prod: 160,
+            cod_productor: 2,
+            cod_cancion: 122
+        },
+        {
+            cod_prod: 161,
+            cod_productor: 3,
+            cod_cancion: 122
+        },
+        {
+            cod_prod: 162,
+            cod_productor: 22,
+            cod_cancion: 122
+        },
+        {
+            cod_prod: 163,
+            cod_productor: 0,
+            cod_cancion: 123
+        },
+        {
+            cod_prod: 164,
+            cod_productor: 3,
+            cod_cancion: 123
+        },
+        {
+            cod_prod: 165,
+            cod_productor: 22,
+            cod_cancion: 123
+        },
+        {
+            cod_prod: 166,
+            cod_productor: 32,
+            cod_cancion: 123
+        },
+        {
+            cod_prod: 167,
+            cod_productor: 33,
+            cod_cancion: 123
+        },
+        {
+            cod_prod: 168,
+            cod_productor: 3,
+            cod_cancion: 124
+        },
+        {
+            cod_prod: 169,
+            cod_productor: 22,
+            cod_cancion: 124
+        },
+        {
+            cod_prod: 170,
+            cod_productor: 3,
+            cod_cancion: 125
+        },
+        {
+            cod_prod: 171,
+            cod_productor: 22,
+            cod_cancion: 125
+        },
+        {
+            cod_prod: 172,
+            cod_productor: 22,
+            cod_cancion: 126
+        },
+        {
+            cod_prod: 173,
+            cod_productor: 3,
+            cod_cancion: 126
+        },
+        {
+            cod_prod: 174,
+            cod_productor: 3,
+            cod_cancion: 127
+        },
+        {
+            cod_prod: 175,
+            cod_productor: 22,
+            cod_cancion: 127
+        },
+        {
+            cod_prod: 176,
+            cod_productor: 3,
+            cod_cancion: 128
+        },
+        {
+            cod_prod: 177,
+            cod_productor: 22,
+            cod_cancion: 128
+        },
+        {
+            cod_prod: 178,
+            cod_productor: 3,
+            cod_cancion: 129
+        },
+        {
+            cod_prod: 179,
+            cod_productor: 22,
+            cod_cancion: 129
+        },
+        {
+            cod_prod: 180,
+            cod_productor: 3,
+            cod_cancion: 130
+        },
+        {
+            cod_prod: 181,
+            cod_productor: 22,
+            cod_cancion: 130
+        },
+        {
+            cod_prod: 182,
+            cod_productor: 33,
+            cod_cancion: 130
+        },
+        {
+            cod_prod: 183,
+            cod_productor: 3,
+            cod_cancion: 131
+        },
+        {
+            cod_prod: 184,
+            cod_productor: 22,
+            cod_cancion: 131
+        },
+        {
+            cod_prod: 185,
+            cod_productor: 3,
+            cod_cancion: 132
+        },
+        {
+            cod_prod: 186,
+            cod_productor: 25,
+            cod_cancion: 133
+        },
+        {
+            cod_prod: 187,
+            cod_productor: 34,
+            cod_cancion: 133
+        },
+        {
+            cod_prod: 188,
+            cod_productor: 34,
+            cod_cancion: 134
+        },
+        {
+            cod_prod: 189,
+            cod_productor: 34,
+            cod_cancion: 135
+        },
+        {
+            cod_prod: 190,
+            cod_productor: 34,
+            cod_cancion: 136
+        },
+        {
+            cod_prod: 191,
+            cod_productor: 35,
+            cod_cancion: 137
+        },
+        {
+            cod_prod: 192,
+            cod_productor: 34,
+            cod_cancion: 138
+        },
+        {
+            cod_prod: 193,
+            cod_productor: 34,
+            cod_cancion: 139
+        },
+        {
+            cod_prod: 194,
+            cod_productor: 34,
+            cod_cancion: 140
+        },
+        {
+            cod_prod: 195,
+            cod_productor: 34,
+            cod_cancion: 141
+        },
+        {
+            cod_prod: 196,
+            cod_productor: 25,
+            cod_cancion: 142
+        },
+        {
+            cod_prod: 197,
+            cod_productor: 34,
+            cod_cancion: 143
+        },
+        {
+            cod_prod: 198,
+            cod_productor: 34,
+            cod_cancion: 144
+        },
+        {
+            cod_prod: 199,
+            cod_productor: 34,
+            cod_cancion: 145
+        },
+        {
+            cod_prod: 200,
+            cod_productor: 34,
+            cod_cancion: 146
+        },
+        {
+            cod_prod: 201,
+            cod_productor: 34,
+            cod_cancion: 147
+        },
+        {
+            cod_prod: 202,
+            cod_productor: 34,
+            cod_cancion: 148
+        },
+        {
+            cod_prod: 203,
+            cod_productor: 27,
+            cod_cancion: 149
+        },
+        {
+            cod_prod: 204,
+            cod_productor: 34,
+            cod_cancion: 150
+        },
+        {
+            cod_prod: 205,
+            cod_productor: 34,
+            cod_cancion: 151
+        },
+        {
+            cod_prod: 206,
+            cod_productor: 35,
+            cod_cancion: 152
+        },
+        {
+            cod_prod: 207,
+            cod_productor: 34,
+            cod_cancion: 153
+        },
+        {
+            cod_prod: 208,
+            cod_productor: 34,
+            cod_cancion: 154
+        },
+        {
+            cod_prod: 209,
+            cod_productor: 34,
+            cod_cancion: 155
+        },
+        {
+            cod_prod: 210,
+            cod_productor: 34,
+            cod_cancion: 156
+        },
+        {
+            cod_prod: 211,
+            cod_productor: 34,
+            cod_cancion: 157
+        },
+        {
+            cod_prod: 212,
+            cod_productor: 34,
+            cod_cancion: 158
+        },
+        {
+            cod_prod: 213,
+            cod_productor: 34,
+            cod_cancion: 159
+        },
+        {
+            cod_prod: 214,
+            cod_productor: 36,
+            cod_cancion: 159
+        },
+        {
+            cod_prod: 215,
+            cod_productor: 7,
+            cod_cancion: 160
+        },
+        {
+            cod_prod: 216,
+            cod_productor: 7,
+            cod_cancion: 161
+        },
+        {
+            cod_prod: 217,
+            cod_productor: 7,
+            cod_cancion: 162
+        },
+        {
+            cod_prod: 218,
+            cod_productor: 7,
+            cod_cancion: 163
+        },
+        {
+            cod_prod: 219,
+            cod_productor: 7,
+            cod_cancion: 164
+        },
+        {
+            cod_prod: 220,
+            cod_productor: 7,
+            cod_cancion: 165
+        },
+        {
+            cod_prod: 221,
+            cod_productor: 7,
+            cod_cancion: 166
+        },
+        {
+            cod_prod: 222,
+            cod_productor: 7,
+            cod_cancion: 167
+        },
+        {
+            cod_prod: 223,
+            cod_productor: 7,
+            cod_cancion: 168
+        },
+        {
+            cod_prod: 224,
+            cod_productor: 7,
+            cod_cancion: 169
+        },
+        {
+            cod_prod: 225,
+            cod_productor: 7,
+            cod_cancion: 170
+        }
+    ]
+    for (const prod of produce) {
+        db.insert(Produce).values(prod)
+    }
+    // Tabla productor
 
 }
 

@@ -1,0 +1,71 @@
+---
+// filepath: /c:/Users/angel/Desktop/TFG-2DAM/FlowStats/src/pages/Acceder.astro
+import Layout from "../layouts/Layout.astro";
+import { db, Usuario } from "astro:db";
+
+let error_acceder = "";
+
+if (Astro.request.method === "POST") {
+    const datosformulario = await Astro.request.formData();
+    const nombre_correo = datosformulario.get("nombre_correo_usuario");
+    const contraseña_usuario = datosformulario.get("contraseña_usuario");
+
+    if (
+        typeof nombre_correo === "string" &&
+        typeof contraseña_usuario === "string"
+    ) {
+        const usuarios = await db.select().from(Usuario);
+
+        const usuariosregistrados = usuarios.find(
+            (usuarioaacceder) =>
+                (usuarioaacceder.correo_electronico === nombre_correo ||
+                    usuarioaacceder.nombre_usuario === nombre_correo) &&
+                usuarioaacceder.contraseña === contraseña_usuario,
+        );
+
+        if (usuariosregistrados) {
+            return Astro.redirect("/");
+        } else {
+            error_acceder =
+                "Correo/Nombre de usuario o contraseña incorrectos.";
+        }
+    } else {
+        error_acceder = "Por favor, completa todos los campos.";
+    }
+}
+---
+
+<Layout title="Acceder">
+    <div class="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+        <h1 class="text-2xl font-bold mb-6 text-center">Accede a tu cuenta</h1>
+        {error_acceder && <div class="text-red-500 mb-4">{error_acceder}</div>}
+        <form method="POST" class="flex flex-col space-y-4">
+            <label class="block">
+                <span class="text-gray-700"
+                    >Correo Electronico/Nombre de usuario:</span
+                >
+                <input
+                    type="text"
+                    name="nombre_correo_usuario"
+                    required
+                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                />
+            </label>
+            <label class="block">
+                <span class="text-gray-700">Contraseña:</span>
+                <input
+                    type="password"
+                    name="contraseña_usuario"
+                    required
+                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                />
+            </label>
+            <button
+                type="submit"
+                class="w-full bg-indigo-500 text-white py-2 px-4 rounded-md shadow-sm hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+                Acceder
+            </button>
+        </form>
+    </div>
+</Layout>

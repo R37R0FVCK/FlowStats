@@ -1,21 +1,20 @@
 ---
-import { date } from "astro:schema";
+// filepath: /c:/Users/angel/Desktop/TFG-2DAM/FlowStats/src/pages/Registro.astro
 import Layout from "../layouts/Layout.astro";
 import { db, Usuario } from "astro:db";
 
 const fecha_actual = new Date();
 if (Astro.request.method === "POST") {
-    // Parse form data
-    const formData = await Astro.request.formData();
-    const nombre_usuario = formData.get("nombre_usuario");
-    const nombre = formData.get("nombre");
-    const apellidos = formData.get("apellidos");
-    const contraseña = formData.get("contraseña");
-    const correo_electronico = formData.get("correo_electronico");
-    const direccion_usu = formData.get("direccion_usu");
-    const telefono_usu = formData.get("telefono_usu");
-    const fechanacimientotexto = formData.get("fecha_nacimiento");
-    const tipousuariotexto = formData.get("tipo_usu");
+    const datosformulario = await Astro.request.formData();
+    const nombre_usuario = datosformulario.get("nombre_usuario");
+    const nombre = datosformulario.get("nombre");
+    const apellidos = datosformulario.get("apellidos");
+    const contraseña = datosformulario.get("contraseña");
+    const correo_electronico = datosformulario.get("correo_electronico");
+    const direccion_usu = datosformulario.get("direccion_usu");
+    const telefono_usu = datosformulario.get("telefono_usu");
+    const fechanacimientotexto = datosformulario.get("fecha_nacimiento");
+    const tipousuariotexto = datosformulario.get("tipo_usu");
 
     if (
         typeof nombre_usuario === "string" &&
@@ -30,6 +29,24 @@ if (Astro.request.method === "POST") {
     ) {
         // conversiones de texto a sus tipos adecuados
         const fecha_nacimiento = new Date(fechanacimientotexto);
+
+        // Calcular la edad
+        const edadnuevousu =
+            new Date().getFullYear() - fecha_nacimiento.getFullYear();
+        const mesnuevousu = new Date().getMonth() + 1;
+        const dianuevousu = new Date().getDate();
+
+        const respuestaerror =
+            " Lo siento pero no tienes la edad suficiente como para registrarte";
+        if (
+            edadnuevousu < 16 ||
+            (edadnuevousu === 16 &&
+                (fecha_nacimiento.getMonth() + 1 > mesnuevousu ||
+                    (fecha_nacimiento.getMonth() + 1 === mesnuevousu &&
+                        fecha_nacimiento.getDate() > dianuevousu)))
+        ) {
+            return new Response(respuestaerror, { status: 400 });
+        }
 
         const tipo_usu = tipousuariotexto === "true";
         const fecha_registro = fecha_actual;
@@ -49,14 +66,23 @@ if (Astro.request.method === "POST") {
     }
 }
 
-// Render the new list of usuarios on each request
 const usuarios = await db.select().from(Usuario);
 ---
 
 <Layout title="Registro">
     <div class="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
         <h2 class="text-2xl font-bold mb-6 text-center">Registro de Usuario</h2>
-        <form method="POST" class="flex flex-col space-y-4">
+        <!-- Mensaje de error si la edad no es suficiente -->
+        <div id="errormenor16" class="text-red-500 mb-4 hidden">
+            Lo siento, no tienes la edad suficiente para registrarte.
+        </div>
+
+        <form
+            method="POST"
+            class="flex flex-col space-y-4"
+            id="registro-form"
+            onsubmit="return mayorde16()"
+        >
             <label class="block">
                 <span class="text-gray-700">Nombre de Usuario:</span>
                 <input
@@ -150,6 +176,12 @@ const usuarios = await db.select().from(Usuario);
                 </select>
             </label>
 
+            <div
+                id="errormenor16"
+                class="hidden bg-red-100 text-red-700 p-2 rounded-md"
+            >
+            </div>
+
             <button
                 type="submit"
                 class="w-full bg-indigo-500 text-white py-2 px-4 rounded-md shadow-sm hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -210,3 +242,46 @@ const usuarios = await db.select().from(Usuario);
         </div>
     </div>
 </Layout>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function mayorde16() {
+            const fechaintroducidausu =
+                document.getElementById("fecha_nacimiento");
+            if (
+                !fechaintroducidausu ||
+                !(fechaintroducidausu instanceof HTMLInputElement)
+            ) {
+                return false;
+            }
+            const errormenor16 = document.getElementById("errormenor16");
+            if (!errormenor16) {
+                return false;
+            }
+            const fechaLimite = new Date();
+            fechaLimite.setFullYear(fechaLimite.getFullYear() - 16);
+
+            if (
+                fechaintroducidausu.valueAsDate &&
+                fechaintroducidausu.valueAsDate > fechaLimite
+            ) {
+                errormenor16.textContent =
+                    "Debes tener 16 años o mas para poder registrarte.";
+                errormenor16.classList.remove("hidden");
+                return false;
+            }
+
+            errormenor16.classList.add("hidden");
+            return true;
+        }
+        const registroenproceso = document.getElementById("registro-form");
+        if (registroenproceso) {
+            registroenproceso.onsubmit = mayorde16;
+        }
+
+        const errormenor16 = document.getElementById("errormenor16");
+        if (errormenor16 && window.location.search.includes("error=edad")) {
+            errormenor16.classList.remove("hidden");
+        }
+    });
+</script>

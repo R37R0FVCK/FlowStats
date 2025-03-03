@@ -1,5 +1,8 @@
 ---
 // filepath: /c:/Users/angel/Desktop/TFG-2DAM/FlowStats/src/components/Cabecera.astro
+import { parse } from "cookie";
+const cookies = parse(Astro.request.headers.get("cookie") || "");
+const haentradoencuenta = cookies.auth === "true";
 ---
 
 <header class="flex items-center justify-between w-full p-4 bg-orange-400">
@@ -14,8 +17,22 @@
         <h1 class="text-white fuente_zen_dots text-4xl ml-2">Stats</h1>
     </div>
     <div>
-        <a href="/Acceder" class="text-black font-bold ml-auto">Acceder</a>
-        <a href="/Registro" class="text-black font-bold ml-auto">Registro</a>
+        {
+            haentradoencuenta ? (
+                <a href="/MiCuenta" class="text-black font-bold ml-15">
+                    Mi Cuenta
+                </a>
+            ) : (
+                <>
+                    <a href="/Acceder" class="text-black font-bold ml-auto">
+                        Acceder
+                    </a>
+                    <a href="/Registro" class="text-black font-bold ml-auto">
+                        Registro
+                    </a>
+                </>
+            )
+        }
     </div>
 </header>
 <span class="block w-full bg-black h-2"></span>

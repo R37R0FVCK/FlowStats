@@ -40,3 +40,7 @@ canciones.json
 albumes.json
 produce.json
 compone.json
+productores.json
+
+#archivo de datos para la base de datos
+src/scripts/añadirbbdd

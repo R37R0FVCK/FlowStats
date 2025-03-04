@@ -16,21 +16,37 @@ if (Astro.request.method === "POST") {
     ) {
         const usuarios = await db.select().from(Usuario);
 
-        const usuariosregistrados = usuarios.find(
-            (usuarioaacceder) =>
-                (usuarioaacceder.correo_electronico === nombre_correo ||
-                    usuarioaacceder.nombre_usuario === nombre_correo) &&
-                usuarioaacceder.contraseña === contraseña_usuario,
+        const usuario_buscar = usuarios.find(
+            (usuarioaregistrarse) =>
+                usuarioaregistrarse.correo_electronico === nombre_correo ||
+                usuarioaregistrarse.nombre_usuario === nombre_correo,
         );
 
-        if (usuariosregistrados) {
-            return Astro.redirect("/");
+        if (usuario_buscar) {
+            if (usuario_buscar.contraseña === contraseña_usuario) {
+                const mensajeacceso =
+                    " Se ha accedido correctamente a su cuenta.";
+                const cookie_acceder = new Headers();
+                cookie_acceder.append(
+                    "Set-Cookie",
+                    `auth=true; Path=/; HttpOnly`,
+                );
+
+                return new Response(mensajeacceso, {
+                    status: 302,
+                    headers: {
+                        Location: "/",
+                        "Set-Cookie": "auth=true; Path=/; HttpOnly",
+                    },
+                });
+            } else {
+                error_acceder = "Contraseña incorrecta.";
+            }
         } else {
-            error_acceder =
-                "Correo/Nombre de usuario o contraseña incorrectos.";
+            error_acceder = "Correo/Nombre de usuario incorrecto.";
         }
     } else {
-        error_acceder = "Por favor, completa todos los campos.";
+        error_acceder = "Por favor,completa todos los campos.";
     }
 }
 ---

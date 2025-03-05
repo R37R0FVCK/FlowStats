@@ -1,12 +1,13 @@
 ---
-// filepath: /c:/Users/angel/Desktop/TFG-2DAM/FlowStats/src/components/Cabecera.astro
 import { parse } from "cookie";
+import MenuDesplegable from "./NavegacionInicio.jsx";
+
 const cookies = parse(Astro.request.headers.get("cookie") || "");
 const haentradoencuenta = cookies.auth === "true";
 ---
 
 <header class="flex items-center justify-between w-full p-4 bg-orange-400">
-    <div class="flex items-center"></div>
+    <MenuDesplegable client:load />
     <div class="flex items-center ml-42">
         <h1 class="text-white text-4xl fuente_zen_dots mr-2">Flow</h1>
         <img
@@ -37,32 +38,26 @@ const haentradoencuenta = cookies.auth === "true";
 </header>
 <span class="block w-full bg-black h-2"></span>
 {/* Barra de navegacion para enrutamiento entre paginas */}
-<nav class="flex justify-between h-12 w-full mt-0">
+<nav class="hidden md:flex justify-between h-12 w-full mt-0">
     <button
         class="boton-oscuro text-white px-4 py-2 flex-1 h-full"
         onclick="window.location.href='/'">Inicio</button
     >
-
     <button
         class="boton-oscuro text-white px-4 py-2 flex-1 h-full"
-        onclick="window.location.href='/Noticias'
-        ">Noticias</button
+        onclick="window.location.href='/Noticias'">Noticias</button
     >
     <button
         class="boton-oscuro text-white px-4 py-2 flex-1 h-full"
-        onclick="window.location.href='/Estadisticas'
-        "
-        >Estadisticas</button
+        onclick="window.location.href='/Estadisticas'">Estadisticas</button
     >
     <button
         class="boton-oscuro text-white px-4 py-2 flex-1 h-full"
-        onclick="window.location.href='/Explorar'
-        ">Explorar</button
+        onclick="window.location.href='/Explorar'">Explorar</button
     >
     <button
         class="boton-oscuro text-white px-4 py-2 flex-1 h-full"
-        onclick="window.location.href='/Contacto'
-        ">Contacto</button
+        onclick="window.location.href='/Contacto'">Contacto</button
     >
 </nav>
 

@@ -1,9 +1,11 @@
 ---
+// filepath: c:\Users\angel\Desktop\TFG-2DAM\FlowStats\src\components\Cabecera.astro
 import { parse } from "cookie";
 import MenuDesplegable from "./NavegacionInicio.jsx";
 
 const cookies = parse(Astro.request.headers.get("cookie") || "");
 const haentradoencuenta = cookies.auth === "true";
+const nombreUsuario = cookies.username || "Usuario"; // Asegúrate de que el nombre del usuario esté en las cookies
 ---
 
 <header
@@ -24,8 +26,8 @@ const haentradoencuenta = cookies.auth === "true";
     <div class="hidden md:flex mt-4 md:mt-0">
         {
             haentradoencuenta ? (
-                <a href="/MiCuenta" class="text-black font-bold ml-4">
-                    Mi Cuenta
+                <a href="/Micuenta" class="text-black font-bold ml-4">
+                    Hola, {nombreUsuario}
                 </a>
             ) : (
                 <>

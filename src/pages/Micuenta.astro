@@ -1,0 +1,51 @@
+---
+// filepath: c:\Users\angel\Desktop\TFG-2DAM\FlowStats\src\pages\Micuenta.astro
+import Layout from "../layouts/Layout.astro";
+import { parse } from "cookie";
+import { db, Usuario } from "astro:db";
+
+const cookies = parse(Astro.request.headers.get("cookie") || "");
+const nombreUsuario = cookies.username || "Usuario";
+const haentradoencuenta = cookies.auth === "true";
+
+let usuario = null;
+
+if (haentradoencuenta) {
+    // Simulación de obtención de datos del usuario desde la base de datos
+    const usuarios = await db.select().from(Usuario);
+    usuario = usuarios.find((u) => u.nombre_usuario === nombreUsuario);
+}
+---
+
+<Layout title="Mi Cuenta">
+    <div class="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
+        <h1 class="text-2xl font-bold mb-6 text-center">Mi Cuenta</h1>
+        {
+            haentradoencuenta ? (
+                usuario ? (
+                    <div>
+                        <p>
+                            <strong>Nombre de usuario:</strong>{" "}
+                            {usuario.nombre_usuario}
+                        </p>
+                        <p>
+                            <strong>Correo electrónico:</strong>{" "}
+                            {usuario.correo_electronico}
+                        </p>
+                        <p>
+                            <strong>Fecha de registro:</strong>{" "}
+                            {usuario.fecha_registro}
+                        </p>
+                    </div>
+                ) : (
+                    <p>No se encontraron datos del usuario.</p>
+                )
+            ) : (
+                <p>
+                    No has iniciado sesión.{" "}
+                    <a href="/Acceder">Accede a tu cuenta</a>
+                </p>
+            )
+        }
+    </div>
+</Layout>

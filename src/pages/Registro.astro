@@ -36,6 +36,9 @@ if (Astro.request.method === "POST") {
         const mesnuevousu = new Date().getMonth() + 1;
         const dianuevousu = new Date().getDate();
 
+        const img_usu =
+            "https://imagedelivery.net/DX6aCRCKOB_y-l4MZVDT9w/67b1b1e8-6955-4edb-5238-7578e8090f00/public";
+
         const respuestaerror =
             " Lo siento pero no tienes la edad suficiente como para registrarte";
         if (
@@ -59,8 +62,9 @@ if (Astro.request.method === "POST") {
             correo_electronico,
             direccion_usu,
             telefono_usu,
-            fecha_nacimiento,
             tipo_usu,
+            img_usu,
+            fecha_nacimiento,
             fecha_registro,
         });
     }

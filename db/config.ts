@@ -12,6 +12,7 @@ const Usuario = {
     direccion_usu: column.text(),
     telefono_usu: column.text(),
     tipo_usu: column.boolean(),
+    img_usu: column.text(),
     fecha_nacimiento: column.date(),
     fecha_registro: column.date(),
   }

@@ -6635,7 +6635,7 @@ export default async function seed() {
             oyentes_prod: 1000000,
             nacionalidad_prod: "Mexicana",
             anio_comienzo_prod: 2014,
-            img_prod: "https://imagedelivery.net/DX6aCRCKOB_y-l4MZVDT9w/53e78ff4-d956-4b5d-72c7-908076bbe000/public",
+            img_prod: "https://imagedelivery.net/DX6aCRCKOB_y-l4MZVDT9w/67b1b1e8-6955-4edb-5238-7578e8090f00/public",
             cod_manager: 5,
             cod_sello: 13
         }
@@ -6656,8 +6656,8 @@ export default async function seed() {
             telefono_usu: "555-1234",
             tipo_usu: true,
             img_usu: "https://example.com/image.jpg",
-            fecha_nacimiento: "1999-03-01",
-            fecha_registro: "2022-03-01",
+            fecha_nacimiento: new Date("1999-03-01"),
+            fecha_registro: new Date("2022-03-01"),
         }
     ];
 

@@ -202,6 +202,10 @@ const usuarios = await db.select().from(Usuario);
                         {usuarios.map((usuario) => (
                             <li class="p-4 bg-gray-100 rounded-md shadow-sm">
                                 <p>
+                                    <strong>Codigo de Usuario:</strong>{" "}
+                                    {usuario.cod_usuario}
+                                </p>
+                                <p>
                                     <strong>Nombre de Usuario:</strong>{" "}
                                     {usuario.nombre_usuario}
                                 </p>

@@ -13,8 +13,8 @@ const Usuario = {
     telefono_usu: column.text(),
     tipo_usu: column.boolean(),
     img_usu: column.text(),
-    fecha_nacimiento: column.date(),
-    fecha_registro: column.date(),
+    fecha_nacimiento: column.text(),
+    fecha_registro: column.text(),
   }
 };
 const Manager = {

@@ -1,4 +1,4 @@
-import { db, Artista, Manager, Sello_Discografico, Cancion, Album, Compone, Produce, Productor } from 'astro:db';
+import { db, Artista, Manager, Sello_Discografico, Cancion, Album, Compone, Produce, Productor, Usuario } from 'astro:db';
 
 // https://astro.build/db/seed
 export default async function seed() {
@@ -6643,6 +6643,26 @@ export default async function seed() {
     for (const productores of productor) {
 
         db.insert(Productor).values(productores)
+    }
+
+    const usuarios = [
+        {
+            nombre_usuario: "Angel",
+            nombre: "Angel",
+            apellidos: "Doe",
+            contraseña: "1",
+            correo_electronico: "angelpradakuai@gmail.com",
+            direccion_usu: "123 Main St",
+            telefono_usu: "555-1234",
+            tipo_usu: true,
+            img_usu: "https://example.com/image.jpg",
+            fecha_nacimiento: "1999-03-01",
+            fecha_registro: "2022-03-01",
+        }
+    ];
+
+    for (const user of usuarios) {
+        await db.insert(Usuario).values(user);
     }
 }
 

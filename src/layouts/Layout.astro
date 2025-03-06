@@ -1,6 +1,8 @@
 ---
+// filepath: c:\Users\angel\Desktop\TFG-2DAM\FlowStats\src\layouts\Layout.astro
 import Cabecera from "../components/Cabecera.astro";
-const { title } = Astro.props;
+import Navcuenta from "../components/NavCuenta.astro";
+const { title, mostrarNavcuenta } = Astro.props;
 ---
 
 <!doctype html>
@@ -20,9 +22,14 @@ const { title } = Astro.props;
 			rel="stylesheet"
 		/>
 	</head>
-	<body>
+	<body class="h-screen flex flex-col">
 		<Cabecera />
-		<main>
+		<main class="flex-grow flex">
+			{
+				mostrarNavcuenta && (
+					<Navcuenta client:load class="flex-shrink-0 h-full" />
+				)
+			}
 			<slot />
 		</main>
 	</body>
@@ -36,6 +43,6 @@ const { title } = Astro.props;
 		height: 100%;
 	}
 	main {
-		padding: 1rem;
+		padding: 0; /* Eliminar el padding para que no deje espacio alrededor */
 	}
 </style>

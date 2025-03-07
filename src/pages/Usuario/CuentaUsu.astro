@@ -1,0 +1,46 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { parse } from "cookie";
+import { db, Usuario } from "astro:db";
+
+const cookie_usu_activo = parse(Astro.request.headers.get("cookie") || "");
+const cod_usu = cookie_usu_activo.codigo_usu;
+const haentradoencuenta = cookie_usu_activo.auth === "true";
+
+let usuario_accedido = null;
+
+// Verificar si el usuario ha iniciado sesión
+if (!haentradoencuenta) {
+    return Astro.redirect("/login");
+}
+ const codigo_usu_buscar = parseInt(cod_usu);
+// Obtener datos del usuario desde la base de datos
+const usuarios_registrados = await db.select().from(Usuario);
+usuario_accedido = usuarios_registrados.find(
+    (usuarioactivo) => usuarioactivo.cod_usuario === codigo_usu_buscar,
+);
+
+// Verificar si el usuario es un usuario normal
+if (!usuario_accedido || usuario_accedido.tipo_usu) {
+    return Astro.redirect("/login");
+}
+---
+
+<Layout title="Mi Cuenta (Usuario)" mostrarNavcuenta={true}>
+    <div class="flex h-full">
+        <div
+            class="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-6 ml-52 p-4 w-full"
+        >
+            {
+                usuario_accedido ? (
+                    <div>
+                        <h1>Bienvenido, Usuario {usuario_accedido.nombre_usuario}</h1>
+                        <!-- Aquí puedes añadir más contenido específico para usuarios -->
+                    </div>
+                ) : (
+                    <p>No se encontraron datos del usuario.</p>
+                )
+            }
+        </div>
+    </div>
+</Layout>

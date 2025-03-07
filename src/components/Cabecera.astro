@@ -1,5 +1,4 @@
 ---
-// filepath: c:\Users\angel\Desktop\TFG-2DAM\FlowStats\src\components\Cabecera.astro
 import { parse } from "cookie";
 import MenuDesplegable from "./NavegacionInicio.jsx";
 
@@ -30,9 +29,16 @@ const nombreUsuario = cookies.username || "Usuario";
     <div class="hidden md:flex mt-4 md:mt-0">
         {
             haentradoencuenta ? (
-                <a href="/Micuenta" class="text-black font-bold ml-4">
-                    Hola, {nombreUsuario}
-                </a>
+                <>
+                    <a href="/Micuenta" class="text-black font-bold ml-4">
+                        Hola, {nombreUsuario}
+                    </a>
+                    <form action="/CerrarSesion" method="post" class="ml-4">
+                        <button type="submit" class="text-black font-bold">
+                            Cerrar Sesión
+                        </button>
+                    </form>
+                </>
             ) : (
                 <>
                     <a href="/Acceder" class="text-black font-bold ml-4">

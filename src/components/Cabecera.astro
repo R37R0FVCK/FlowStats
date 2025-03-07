@@ -5,7 +5,7 @@ import { db, Usuario } from "astro:db";
 
 const cookie_usu = parse(Astro.request.headers.get("cookie") || "");
 const haentradoencuenta = cookie_usu.auth === "true";
-const cod_usuario = cookie_usu.userId;
+const cod_usuario = cookie_usu.codigo_usu;
 
 let nombre_usu = "Usuario";
 

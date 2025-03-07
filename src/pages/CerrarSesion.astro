@@ -1,0 +1,11 @@
+---
+Astro.response.headers.set("Set-Cookie", "auth=; Path=/; HttpOnly; Max-Age=0");
+Astro.response.headers.append(
+    "Set-Cookie",
+    "username=; Path=/; HttpOnly; Max-Age=0",
+);
+---
+
+<script>
+    window.location.href = "/";
+</script>

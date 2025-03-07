@@ -1,7 +1,7 @@
 ---
 // filepath: c:\Users\angel\Desktop\TFG-2DAM\FlowStats\src\layouts\Layout.astro
 import Cabecera from "../components/Cabecera.astro";
-import Navcuenta from "../components/NavCuenta.astro";
+import NavCuenta from "../components/NavCuenta.astro"; // Cambiado a JSX
 const { title, mostrarNavcuenta } = Astro.props;
 ---
 
@@ -25,11 +25,7 @@ const { title, mostrarNavcuenta } = Astro.props;
 	<body class="h-screen flex flex-col">
 		<Cabecera />
 		<main class="flex-grow flex">
-			{
-				mostrarNavcuenta && (
-					<Navcuenta client:load class="flex-shrink-0 h-full" />
-				)
-			}
+			{mostrarNavcuenta && <NavCuenta />}
 			<slot />
 		</main>
 	</body>
@@ -43,6 +39,6 @@ const { title, mostrarNavcuenta } = Astro.props;
 		height: 100%;
 	}
 	main {
-		padding: 0; /* Eliminar el padding para que no deje espacio alrededor */
+		padding: 0;
 	}
 </style>

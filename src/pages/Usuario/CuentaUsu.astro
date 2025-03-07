@@ -22,7 +22,7 @@ usuario_accedido = usuarios_registrados.find(
 
 // Verificar si el usuario es un usuario normal
 if (!usuario_accedido || usuario_accedido.tipo_usu) {
-    return Astro.redirect("/login");
+    return Astro.redirect("/Acceder");
 }
 ---
 

@@ -9,7 +9,7 @@ const haentradoencuenta = cookie_acceso.auth === "true";
 let usuarioaccedido = null;
 
 if (!haentradoencuenta) {
-    return Astro.redirect("/login");
+    return Astro.redirect("/Acceder");
 }
 const codigo_usu_buscar = parseInt(cod_usu);
 
@@ -25,6 +25,6 @@ if (usuarioaccedido) {
         return Astro.redirect("/usuario/CuentaUsu");
     }
 } else {
-    return Astro.redirect("/login");
+    return Astro.redirect("/Acceder");
 }
 ---

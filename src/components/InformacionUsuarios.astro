@@ -1,0 +1,58 @@
+---
+export interface Usuario {
+    cod_usuario: number;
+    nombre_usuario: string;
+    nombre: string;
+    apellidos: string;
+    contraseña: string;
+    correo_electronico: string;
+    direccion_usu: string;
+    telefono_usu: string;
+    tipo_usu: boolean;
+    img_usu: string;
+    fecha_nacimiento: Date;
+    fecha_registro: Date;
+}
+
+interface Props {
+    usuario_accedido_info: Usuario;
+}
+
+const { usuario_accedido_info } = Astro.props as Props;
+---
+
+<div class="p-4 border border-gray-300 rounded-lg bg-gray-100">
+    <h1 class="text-2xl font-bold mb-2">
+        Bienvenido, {usuario_accedido_info.nombre_usuario}
+    </h1>
+    <img
+        src={usuario_accedido_info.img_usu}
+        alt="Imagen de perfil"
+        class="w-24 h-24 rounded-full mb-4"
+    />
+    <p class="mb-1">
+        Nombre: {usuario_accedido_info.nombre}
+    </p>
+    <p class="mb-1">
+        Apellidos: {usuario_accedido_info.apellidos}
+    </p>
+    <p class="mb-1">
+        Teléfono: {usuario_accedido_info.telefono_usu}
+    </p>
+    <p class="mb-1">
+        Dirección: {usuario_accedido_info.direccion_usu}
+    </p>
+    <p class="mb-1">
+        Correo electrónico: {usuario_accedido_info.correo_electronico}
+    </p>
+    <p class="mb-1">
+        Fecha de nacimiento: {
+            usuario_accedido_info.fecha_nacimiento.toDateString()
+        }
+    </p>
+    <p class="mb-1">
+        Tipo de usuario: {
+            usuario_accedido_info.tipo_usu ? "Administrador" : "Usuario"
+        }
+    </p>
+</div>

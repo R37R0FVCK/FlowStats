@@ -3,15 +3,15 @@ import Layout from "../../layouts/Layout.astro";
 import { parse } from "cookie";
 import { db, Usuario } from "astro:db";
 
-const cookies = parse(Astro.request.headers.get("cookie") || "");
-const codigo_usu = cookies.codigo_usu;
-const haentradoencuenta = cookies.auth === "true";
+const cookie_usuario_activo = parse(Astro.request.headers.get("cookie") || "");
+const codigo_usu = cookie_usuario_activo.codigo_usu;
+const haentradoencuenta = cookie_usuario_activo.auth === "true";
 
 let usuario_accedido = null;
 
 // Verificar si el usuario ha iniciado sesión
 if (!haentradoencuenta) {
-    return Astro.redirect("/login");
+    return Astro.redirect("/Acceder");
 }
 
 const codigo_buscar = parseInt(codigo_usu);
@@ -23,11 +23,11 @@ usuario_accedido = usuarios_registrados.find(
 
 // Verificar si el usuario es administrador
 if (!usuario_accedido || !usuario_accedido.tipo_usu) {
-    return Astro.redirect("/login");
+    return Astro.redirect("/Acceder");
 }
 ---
 
-<Layout title="Mi Cuenta (Admin)" mostrarNavcuenta={true}>
+<Layout title="Admin" mostrarNavcuenta={true}>
     <div class="flex h-full">
         <div
             class="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-6 ml-52 p-4 w-full"

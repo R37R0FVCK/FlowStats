@@ -1,10 +1,25 @@
 ---
 import { parse } from "cookie";
 import MenuDesplegable from "./NavegacionInicio.jsx";
+import { db, Usuario } from "astro:db";
 
-const cookies = parse(Astro.request.headers.get("cookie") || "");
-const haentradoencuenta = cookies.auth === "true";
-const nombreUsuario = cookies.username || "Usuario";
+const cookie_usu = parse(Astro.request.headers.get("cookie") || "");
+const haentradoencuenta = cookie_usu.auth === "true";
+const cod_usuario = cookie_usu.userId;
+
+let nombre_usu = "Usuario";
+
+if (haentradoencuenta && cod_usuario) {
+    const cod_usu = parseInt(cod_usuario);
+    const usuarios = await db.select().from(Usuario);
+    const usuarioactivo = usuarios.find(
+        (usuarioabuscar) => usuarioabuscar.cod_usuario === cod_usu,
+    );
+
+    if (usuarioactivo) {
+        nombre_usu = usuarioactivo.nombre_usuario;
+    }
+}
 ---
 
 <header
@@ -13,7 +28,7 @@ const nombreUsuario = cookies.username || "Usuario";
     <div class="flex items-center justify-between w-full">
         <MenuDesplegable
             accedioacuenta={haentradoencuenta}
-            nombreusuarioactivo={nombreUsuario}
+            nombreusuarioactivo={nombre_usu}
             client:load
         />
         <div class="flex items-center justify-center mx-auto md:ml-142">
@@ -31,7 +46,7 @@ const nombreUsuario = cookies.username || "Usuario";
             haentradoencuenta ? (
                 <>
                     <a href="/Micuenta" class="text-black font-bold ml-4">
-                        Hola, {nombreUsuario}
+                        Hola,{nombre_usu}
                     </a>
                     <form action="/CerrarSesion" method="post" class="ml-4">
                         <button type="submit" class="text-black font-bold">

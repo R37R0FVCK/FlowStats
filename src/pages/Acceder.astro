@@ -31,7 +31,7 @@ if (Astro.request.method === "POST") {
                 );
                 cookie_acceder.append(
                     "Set-Cookie",
-                    `userId=${usuario_buscar.cod_usuario}; Path=/; HttpOnly`,
+                    `codigo_usu=${usuario_buscar.cod_usuario}; Path=/; HttpOnly`,
                 );
 
                 // Establecer las cookies
@@ -41,7 +41,7 @@ if (Astro.request.method === "POST") {
                 );
                 Astro.response.headers.append(
                     "Set-Cookie",
-                    `userId=${usuario_buscar.cod_usuario}; Path=/; HttpOnly`,
+                    `codigo_usu=${usuario_buscar.cod_usuario}; Path=/; HttpOnly`,
                 );
 
                 // Marcar para redirigir en el cliente

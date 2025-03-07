@@ -1,22 +1,44 @@
 ---
-// filepath: c:\Users\angel\Desktop\TFG-2DAM\FlowStats\src\components\NavCuenta.astro
+
 ---
 
-<nav class="bg-orange-500 border-r-4 border-black p-4 space-y-4 h-full w-60">
+<nav
+    class="bg-orange-400 border-r-4 border-black p-0 h-full w-full sm:w-40 flex flex-col"
+>
     <button
-        class="bg-blue-500 text-white py-2 px-4 rounded w-full"
-        onclick="window.location.href='/pagina1'">Página 1</button
+        class="text-black py-2 w-full text-left fondoboton"
+        onclick="window.location.href = '/Micuenta'"
     >
+        Informacion general
+    </button>
     <button
-        class="bg-blue-500 text-white py-2 px-4 rounded w-full"
-        onclick="window.location.href='/pagina2'">Página 2</button
+        class="text-black py-2 w-full text-left fondoboton"
+        onclick="window.location.href = '/Pagina2'"
     >
+        Página 2
+    </button>
     <button
-        class="bg-blue-500 text-white py-2 px-4 rounded w-full"
-        onclick="window.location.href='/pagina3'">Página 3</button
+        class="text-black py-2 w-full text-left fondoboton"
+        onclick="window.location.href = '/Pagina3'"
     >
-    <button
-        class="bg-blue-500 text-white py-2 px-4 rounded w-full"
-        onclick="window.location.href='/pagina4'">Página 4</button
-    >
+        Modificar Datos
+    </button>
+    <form action="/CerrarSesion" method="post" class="w-full">
+        <button
+            type="submit"
+            class="text-black py-2 w-full text-left fondoboton"
+        >
+            Cerrar Sesión
+        </button>
+    </form>
 </nav>
+
+<style>
+    .fondoboton {
+        transition: background-color 0.5s ease;
+    }
+
+    .fondoboton:hover {
+        background-color: rgba(106, 98, 98, 0.3);
+    }
+</style>

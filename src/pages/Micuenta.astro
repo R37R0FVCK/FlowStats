@@ -1,79 +1,30 @@
 ---
-// filepath: c:\Users\angel\Desktop\TFG-2DAM\FlowStats\src\pages\Micuenta.astro
-import Layout from "../layouts/Layout.astro";
 import { parse } from "cookie";
 import { db, Usuario } from "astro:db";
 
-const cookies = parse(Astro.request.headers.get("cookie") || "");
-const nombreUsuario = cookies.username || "Usuario";
+const cookie_acceso = parse(Astro.request.headers.get("cookie") || "");
+const cod_usu = cookie_acceso.codigo_usu;
+const haentradoencuenta = cookie_acceso.auth === "true";
 
-let usuarioactivo = null;
+let usuarioaccedido = null;
 
-// Obtener datos del usuario desde la base de datos
-const usuarios = await db.select().from(Usuario);
-usuarioactivo = usuarios.find(
-    (usuarioconifo) => usuarioconifo.nombre_usuario === nombreUsuario,
+if (!haentradoencuenta) {
+    return Astro.redirect("/login");
+}
+const codigo_usu_buscar = parseInt(cod_usu);
+
+const usuariosregistrados = await db.select().from(Usuario);
+usuarioaccedido = usuariosregistrados.find(
+    (usuarioaccedido) => usuarioaccedido.cod_usuario === codigo_usu_buscar,
 );
----
 
-<Layout title="Mi Cuenta" mostrarNavcuenta={true}>
-    <div class="flex h-full">
-        <div
-            class="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-6 ml-52 p-4 w-full"
-        >
-            {
-                usuarioactivo ? (
-                    <>
-                        <div class="flex-shrink-0">
-                            <img
-                                src={usuarioactivo.img_usu}
-                                alt="Imagen de usuario"
-                                class="w-48 h-48 rounded-full"
-                            />
-                        </div>
-                        <div class="flex flex-col space-y-2">
-                            <h1 class="text-2xl font-bold mt-4 md:mt-0">
-                                {usuarioactivo.nombre_usuario}
-                            </h1>
-                            <h3 class="text-lg font-bold">
-                                {usuarioactivo.nombre} {usuarioactivo.apellidos}
-                            </h3>
-                            <p>
-                                <strong>Correo electrónico:</strong>{" "}
-                                {usuarioactivo.correo_electronico}
-                            </p>
-                            <p>
-                                <strong>Fecha de registro:</strong>{" "}
-                                {new Date(
-                                    usuarioactivo.fecha_registro,
-                                ).toLocaleDateString()}
-                            </p>
-                            <p>
-                                <strong>Fecha de nacimiento:</strong>{" "}
-                                {new Date(
-                                    usuarioactivo.fecha_nacimiento,
-                                ).toLocaleDateString()}
-                            </p>
-                            <p>
-                                <strong>Dirección:</strong>{" "}
-                                {usuarioactivo.direccion_usu}
-                            </p>
-                            <p>
-                                <strong>Teléfono:</strong>{" "}
-                                {usuarioactivo.telefono_usu}
-                            </p>
-                            <p>
-                                <strong>Tipo de usuario:</strong>{" "}
-                                {usuarioactivo.tipo_usu
-                                    ? "Administrador"
-                                    : "Usuario"}
-                            </p>
-                        </div>
-                    </>
-                ) : (
-                    <p>No se encontraron datos del usuario.</p>
-                )
-            }
-        </div>
-    </div>
-</Layout>
+if (usuarioaccedido) {
+    if (usuarioaccedido.tipo_usu == true) {
+        return Astro.redirect("/admin/CuentaAdmin");
+    } else {
+        return Astro.redirect("/usuario/CuentaUsu");
+    }
+} else {
+    return Astro.redirect("/login");
+}
+---

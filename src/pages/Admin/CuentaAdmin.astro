@@ -1,0 +1,47 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { parse } from "cookie";
+import { db, Usuario } from "astro:db";
+
+const cookies = parse(Astro.request.headers.get("cookie") || "");
+const codigo_usu = cookies.codigo_usu;
+const haentradoencuenta = cookies.auth === "true";
+
+let usuario_accedido = null;
+
+// Verificar si el usuario ha iniciado sesión
+if (!haentradoencuenta) {
+    return Astro.redirect("/login");
+}
+
+const codigo_buscar = parseInt(codigo_usu);
+// Obtener datos del usuario desde la base de datos
+const usuarios_registrados = await db.select().from(Usuario);
+usuario_accedido = usuarios_registrados.find(
+    (usuarioconifo) => usuarioconifo.cod_usuario === codigo_buscar,
+);
+
+// Verificar si el usuario es administrador
+if (!usuario_accedido || !usuario_accedido.tipo_usu) {
+    return Astro.redirect("/login");
+}
+---
+
+<Layout title="Mi Cuenta (Admin)" mostrarNavcuenta={true}>
+    <div class="flex h-full">
+        <div
+            class="flex flex-col md:flex-row items-start space-y-4 md:space-y-0 md:space-x-6 ml-52 p-4 w-full"
+        >
+            {
+                usuario_accedido ? (
+                    <div>
+                        <h1>Bienvenido, Administrador {usuario_accedido.nombre_usuario}</h1>
+                        <!-- Aquí puedes añadir más contenido específico para administradores -->
+                    </div>
+                ) : (
+                    <p>No se encontraron datos del usuario.</p>
+                )
+            }
+        </div>
+    </div>
+</Layout>

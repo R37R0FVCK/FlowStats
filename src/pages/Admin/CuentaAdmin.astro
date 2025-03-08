@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import { parse } from "cookie";
 import { db, Usuario } from "astro:db";
+import Info_Usu from "../../components/InformacionUsuarios.astro";
 
 const cookie_usuario_activo = parse(Astro.request.headers.get("cookie") || "");
 const codigo_usu = cookie_usuario_activo.codigo_usu;
@@ -31,10 +32,7 @@ if (!usuario_accedido || !usuario_accedido.tipo_usu) {
         >
             {
                 usuario_accedido ? (
-                    <div>
-                        <h1>Bienvenido, Administrador {usuario_accedido.nombre_usuario}</h1>
-                        <!-- Aquí puedes añadir más contenido específico para administradores -->
-                    </div>
+                    <Info_Usu usuario_accedido_info={usuario_accedido} />
                 ) : (
                     <p>No se encontraron datos del usuario.</p>
                 )

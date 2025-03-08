@@ -20,9 +20,9 @@ usuarioaccedido = usuariosregistrados.find(
 
 if (usuarioaccedido) {
     if (usuarioaccedido.tipo_usu == true) {
-        return Astro.redirect("/admin/CuentaAdmin");
+        return Astro.redirect("/Admin/CuentaAdmin");
     } else {
-        return Astro.redirect("/usuario/CuentaUsu");
+        return Astro.redirect("/Usuario/CuentaUsu");
     }
 } else {
     return Astro.redirect("/Acceder");

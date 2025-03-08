@@ -1,4 +1,3 @@
-import React from 'react';
 import '../styles/global.css';
 
 //Componente proporcionado por: https://uiverse.io/javierBarroso

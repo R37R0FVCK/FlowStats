@@ -6,7 +6,7 @@ const BotonCerrarAnimado = ({ accion }) => {
         <button className="button" onClick={accion}>
             <span className="X" />
             <span className="Y" />
-            <div className="close">Close</div>
+            <div className="close">Cerrar</div>
         </button>
     );
 }

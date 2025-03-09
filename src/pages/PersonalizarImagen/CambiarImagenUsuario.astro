@@ -1,0 +1,57 @@
+---
+// Importa tus componentes y funciones necesarias
+import ImgUsu from "../../components/ImgUsu.jsx";
+import { db, Usuario } from "astro:db";
+import { parse } from "cookie";
+
+const cookie_usu = parse(Astro.request.headers.get("cookie") || "");
+const cod_usu = cookie_usu.codigo_usu;
+const haentradoencuenta = cookie_usu.auth === "true";
+let usuario_accedido = null;
+
+if (!haentradoencuenta) {
+    return Astro.redirect("/Acceder");
+}
+
+const codigo_usu_buscar = parseInt(cod_usu);
+const usuarios_registrados = await db.select().from(Usuario);
+usuario_accedido = usuarios_registrados.find(
+    (usuarioactivo) => usuarioactivo.cod_usuario === codigo_usu_buscar,
+);
+
+if (!usuario_accedido) {
+    return Astro.redirect("/Acceder");
+}
+---
+
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Cambiar Imagen de Usuario</title>
+        <link rel="stylesheet" href="/src/styles/global.css" />
+    </head>
+    <body
+        class="flex items-center justify-center min-h-screen bg-black text-white"
+    >
+        <div class="text-center">
+            <h1 class="text-3xl font-bold mb-4">Cambiar Imagen de Usuario</h1>
+            <ImgUsu ruta={usuario_accedido.img_usu} alt="Imagen de perfil" />
+            <div class="mt-4 flex justify-center space-x-4">
+                <button
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    onclick="window.location.href = '/PersonalizarImagen/ImgPredefinidas'"
+                >
+                    Imagenes predefinidas
+                </button>
+                <button
+                    onclick="window.location.href = 'PersonalizarImagen/ImgPersonalizadas'"
+                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                >
+                    Imagenes personalizadas
+                </button>
+            </div>
+        </div>
+    </body>
+</html>

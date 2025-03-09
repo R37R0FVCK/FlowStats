@@ -23,11 +23,11 @@ if (!usuario_accedido) {
 }
 
 const parametro_busqueda = new URLSearchParams(Astro.url.search);
-const selectedImage = parametro_busqueda.get("img");
+const img_seleccionada = parametro_busqueda.get("img");
 
 if (Astro.request.method === "POST") {
-    const formData = await Astro.request.formData();
-    const imagen_act = formData.get("imagen_actualizar");
+    const dato_form = await Astro.request.formData();
+    const imagen_act = dato_form.get("imagen_actualizar");
 
     if (imagen_act) {
         await db.update(Usuario).set({
@@ -52,7 +52,7 @@ if (Astro.request.method === "POST") {
         <div class="text-center">
             <h1 class="text-3xl font-bold mb-4">Previsualización de Imagen</h1>
             <img
-                src={selectedImage}
+                src={img_seleccionada}
                 alt="Imagen seleccionada"
                 class="w-48 h-48 object-cover rounded-full mx-auto"
             />
@@ -60,7 +60,7 @@ if (Astro.request.method === "POST") {
                 <input
                     type="hidden"
                     name="imagen_actualizar"
-                    value={selectedImage}
+                    value={img_seleccionada}
                 />
                 <button
                     type="submit"

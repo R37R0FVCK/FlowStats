@@ -1,0 +1,74 @@
+---
+// filepath: c:\Users\angel\Desktop\TFG-2DAM\FlowStats\src\pages\PersonalizarImagen\ImagenSeleccionada.astro
+import { db, Usuario } from "astro:db";
+import { parse } from "cookie";
+
+const cookie_usu_act = parse(Astro.request.headers.get("cookie") || "");
+const cod_usu = cookie_usu_act.codigo_usu;
+const haentradoencuenta = cookie_usu_act.auth === "true";
+
+if (!haentradoencuenta) {
+    return Astro.redirect("/Acceder");
+}
+
+const codigo_usu_buscar = parseInt(cod_usu);
+
+const usuarios_registrados = await db.select().from(Usuario);
+const usuario_accedido = usuarios_registrados.find(
+    (usuarioactivo) => usuarioactivo.cod_usuario === codigo_usu_buscar,
+);
+
+if (!usuario_accedido) {
+    return Astro.redirect("/Acceder");
+}
+
+const parametro_busqueda = new URLSearchParams(Astro.url.search);
+const selectedImage = parametro_busqueda.get("img");
+
+if (Astro.request.method === "POST") {
+    const formData = await Astro.request.formData();
+    const imagen_act = formData.get("imagen_actualizar");
+
+    if (imagen_act) {
+        await db.update(Usuario).set({
+            img_usu: imagen_act.toString(),
+        });
+    }
+    return Astro.redirect("/Micuenta");
+}
+---
+
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Imagen Seleccionada</title>
+        <link rel="stylesheet" href="/src/styles/global.css" />
+    </head>
+    <body
+        class="flex items-center justify-center min-h-screen bg-black text-white"
+    >
+        <div class="text-center">
+            <h1 class="text-3xl font-bold mb-4">Previsualización de Imagen</h1>
+            <img
+                src={selectedImage}
+                alt="Imagen seleccionada"
+                class="w-48 h-48 object-cover rounded-full mx-auto"
+            />
+            <form method="post">
+                <input
+                    type="hidden"
+                    name="imagen_actualizar"
+                    value={selectedImage}
+                />
+                <button
+                    type="submit"
+                    class="mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                >
+                    Aceptar
+                </button>
+            </form>
+        </div>
+    </body>
+</html>

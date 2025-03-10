@@ -1,0 +1,101 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { db, Usuario } from "astro:db";
+import { parse } from "cookie";
+
+const cookie_acceso_usu = parse(Astro.request.headers.get("cookie") || "");
+
+const cod_usu = cookie_acceso_usu.codigo_usu;
+const haentradoencuenta = cookie_acceso_usu.auth === "true";
+
+let usuarioaccedido = null;
+let campo_modificar = null;
+
+if (!haentradoencuenta) {
+    return Astro.redirect("/Acceder");
+}
+const codigo_usu_buscar = parseInt(cod_usu);
+
+const usuariosregistrados = await db.select().from(Usuario);
+usuarioaccedido = usuariosregistrados.find(
+    (usuarioaccedido) => usuarioaccedido.cod_usuario === codigo_usu_buscar,
+);
+
+if (!usuarioaccedido) {
+    return Astro.redirect("/Acceder");
+}
+
+if (Astro.request.method === "POST") {
+    const datos_formulario = await Astro.request.formData();
+    const campo_cambiar = datos_formulario.get("campo_cambiar");
+    const nuevodato = datos_formulario.get("nuevodato");
+
+    if (campo_cambiar === "nombre_usuario") {
+        campo_modificar = "nombre_usuario";
+    } else if (campo_cambiar === "correo_electronico") {
+        campo_modificar = "correo_electronico";
+    } else if (campo_cambiar === "telefono_usu") {
+        campo_modificar = "telefono_usu";
+    } else if (campo_cambiar === "direccion_usu") {
+        campo_modificar = "direccion_usu";
+    }
+
+    if (usuarioaccedido && campo_modificar) {
+        await db.update(Usuario).set({
+            [campo_modificar]: nuevodato,
+        });
+    }
+    return Astro.redirect("/Micuenta");
+}
+---
+
+<Layout title="Modificar Datos" mostrarNavcuenta={true}>
+    <div class="flex flex-col items-center h-screen p-8 mx-auto mt-16">
+        <h1 class="text-center w-full mb-8 text-3xl font-bold text-gray-800">
+            Modificar Datos del Usuario
+        </h1>
+        <form
+            method="post"
+            class="flex flex-col items-center gap-6 bg-white p-8 rounded-lg shadow-lg max-w-md w-full"
+        >
+            <div class="w-full flex flex-col gap-2">
+                <label
+                    for="campo_cambiar"
+                    class="text-lg font-semibold text-gray-700"
+                    >Seleccione el campo a modificar:</label
+                >
+                <select
+                    id="campo_cambiar"
+                    name="campo_cambiar"
+                    class="p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                    <option value="nombre_usuario">Nombre de usuario</option>
+                    <option value="correo_electronico"
+                        >Correo Electronico</option
+                    >
+                    <option value="telefono_usu">Telefono</option>
+                    <option value="direccion_usu">Direccion</option>
+                </select>
+            </div>
+            <div class="w-full flex flex-col gap-2">
+                <label
+                    for="nuevodato"
+                    class="text-lg font-semibold text-gray-700"
+                    >Nuevo valor:</label
+                >
+                <input
+                    type="text"
+                    id="nuevodato"
+                    name="nuevodato"
+                    class="p-2 border border-gray-300 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                />
+            </div>
+            <button
+                type="submit"
+                class="py-3 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 font-semibold"
+                >Modificar</button
+            >
+        </form>
+    </div>
+</Layout>

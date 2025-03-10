@@ -1,5 +1,4 @@
 ---
-// Importa tus componentes y funciones necesarias
 import ImgUsu from "../../components/ImgUsu.jsx";
 import { db, Usuario } from "astro:db";
 import { parse } from "cookie";
@@ -33,23 +32,23 @@ if (!usuario_accedido) {
         <link rel="stylesheet" href="/src/styles/global.css" />
     </head>
     <body
-        class="flex items-center justify-center min-h-screen bg-black text-white"
+        class="flex items-center justify-center min-h-screen text-white bg-gradient-to-br from-gray-800 to-black"
     >
-        <div class="text-center">
-            <h1 class="text-3xl font-bold mb-4">Cambiar Imagen de Usuario</h1>
-            <ImgUsu ruta={usuario_accedido.img_usu} alt="Imagen de perfil" />
-            <div class="mt-4 flex justify-center space-x-4">
+        <div
+            class="bg-gray-900 text-black rounded-lg shadow-lg p-8 max-w-md w-full bg-opacity-80"
+        >
+            <div class="flex justify-center mb-4">
+                <ImgUsu
+                    ruta={usuario_accedido.img_usu}
+                    alt="Imagen de perfil"
+                />
+            </div>
+            <div class="flex justify-center">
                 <button
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    class="bg-white hover:bg-gray-900 hover:cursor-pointer hover:text-white text-black font-bold py-2 px-4 rounded"
                     onclick="window.location.href = '/PersonalizarImagen/ImgPredefinidas'"
                 >
-                    Imagenes predefinidas
-                </button>
-                <button
-                    onclick="window.location.href = 'PersonalizarImagen/ImgPersonalizadas'"
-                    class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                >
-                    Imagenes personalizadas
+                    Imágenes predefinidas
                 </button>
             </div>
         </div>

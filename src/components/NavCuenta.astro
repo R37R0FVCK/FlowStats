@@ -1,5 +1,23 @@
 ---
+import { db, Usuario } from "astro:db";
+import { parse } from "cookie";
 
+const cookie_usu = parse(Astro.request.headers.get("cookie") || "");
+const haentradoencuenta = cookie_usu.auth === "true";
+const cod_usuario = cookie_usu.codigo_usu;
+
+let usuario_accedido = null;
+let tipo_usuario = null;
+
+const cod_usu = parseInt(cod_usuario);
+const usuarios_registrados = await db.select().from(Usuario);
+
+usuario_accedido = usuarios_registrados.find(
+    (usuario_buscar) => usuario_buscar.cod_usuario === cod_usu,
+);
+if (usuario_accedido) {
+    tipo_usuario = usuario_accedido.tipo_usu;
+}
 ---
 
 <nav
@@ -11,12 +29,16 @@
     >
         Informacion general
     </button>
-    <button
-        class="text-black py-2 w-full text-left fondoboton"
-        onclick="window.location.href = '/Pagina2'"
-    >
-        Página 2
-    </button>
+    {
+        tipo_usuario && (
+            <button
+                class="text-black py-2 w-full text-left fondoboton"
+                onclick="window.location.href = '/AccionesAdmin'"
+            >
+                Acciones de Administrador
+            </button>
+        )
+    }
     <button
         class="text-black py-2 w-full text-left fondoboton"
         onclick="window.location.href = '/PersonalizarDatosUsuario/ModificacionDatos'"

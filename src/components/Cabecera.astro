@@ -44,31 +44,32 @@ if (haentradoencuenta && cod_usuario) {
     <div class="hidden md:flex mt-4 md:mt-0">
         {
             haentradoencuenta ? (
-                <>
+                <div class="flex items-center">
                     <a href="/Micuenta" class="text-black font-bold ml-4">
-                        Hola,{nombre_usu}
+                        Hola, {nombre_usu}
                     </a>
                     <form action="/CerrarSesion" method="post" class="ml-4">
                         <button type="submit" class="text-black font-bold">
                             Cerrar Sesión
                         </button>
                     </form>
-                </>
+                </div>
             ) : (
-                <>
+                <div class="flex items-center">
                     <a href="/Acceder" class="text-black font-bold ml-4">
                         Acceder
                     </a>
                     <a href="/Registro" class="text-black font-bold ml-4">
                         Registro
                     </a>
-                </>
+                </div>
             )
         }
     </div>
 </header>
-<span class="block w-full bg-black h-2"></span>
-<nav class="hidden md:flex justify-between h-12 w-full mt-0">
+<nav
+    class="hidden md:flex justify-between h-12 w-full mt-0 border-t-7 border-black"
+>
     <button
         class="boton-oscuro text-white px-4 py-2 flex-1 h-full"
         onclick="window.location.href='/'">Inicio</button

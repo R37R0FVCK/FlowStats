@@ -1,10 +1,111 @@
 ---
-import Welcome from "../components/Welcome.astro";
-import Layout from "../layouts/Layout.astro";
-import Cabecera from "../components/Cabecera.astro";
+import Layout2 from "../layouts/Layout2.astro";
+import { Noticia1, Noticia2, Noticia3 } from "../api/ExtraerDatosBillboard.js";
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const noticias1 = await Noticia1();
+const noticias2 = await Noticia2();
+const noticias3 = await Noticia3();
 ---
 
-<Layout title="FlowStats" />
+<Layout2 title="FlowStats">
+    <div class="text-center mt-4 mb-4">
+        <h1 class="text-4xl font-bold text-gray-800">Noticias Principales</h1>
+    </div>
+    <div class="flex justify-center space-x-4">
+        {
+            noticias1 && (
+                <div class="flex max-w-2xl bg-white shadow-lg rounded-lg overflow-hidden mt-4 mb-4 h-40 w-1/2">
+                    <img
+                        class="w-1/3 h-full object-cover"
+                        src={noticias1.url_imagen}
+                        alt={noticias1.titulo_noticia}
+                    />
+                    <div class="w-2/3 p-4">
+                        <a
+                            href={noticias1.link}
+                            class="text-lg font-bold mb-1 text-gray-800 hover:underline block"
+                        >
+                            {noticias1.titulo_noticia}
+                        </a>
+                        <p class="text-sm text-gray-600 mb-1">
+                            <span class="font-semibold text-gray-800">
+                                Escrito por:
+                            </span>{" "}
+                            {noticias1.autor}
+                        </p>
+                        <p class="text-sm text-gray-600 mb-1">
+                            <span class="font-semibold text-gray-800">
+                                Publicado:
+                            </span>{" "}
+                            {noticias1.fecha_puli}
+                        </p>
+                    </div>
+                </div>
+            )
+        }
+        {
+            noticias2 && (
+                <div class="flex max-w-2xl bg-white shadow-lg rounded-lg overflow-hidden mt-4 mb-4 h-40 w-1/2">
+                    <img
+                        class="w-1/3 h-full object-cover"
+                        src={noticias2.url_imagen}
+                        alt={noticias2.titulo_noticia}
+                    />
+                    <div class="w-2/3 p-4">
+                        <a
+                            href={noticias2.link}
+                            class="text-lg font-bold mb-1 text-gray-800 hover:underline block"
+                        >
+                            {noticias2.titulo_noticia}
+                        </a>
+                        <p class="text-sm text-gray-600 mb-1">
+                            <span class="font-semibold text-gray-800">
+                                Escrito por:
+                            </span>{" "}
+                            {noticias2.autor}
+                        </p>
+                        <p class="text-sm text-gray-600 mb-1">
+                            <span class="font-semibold text-gray-800">
+                                Publicado:
+                            </span>{" "}
+                            {noticias2.fecha_puli}
+                        </p>
+                    </div>
+                </div>
+            )
+        }
+    </div>
+    <div class="flex justify-center space-x-4">
+        {
+            noticias3 && (
+                <div class="flex max-w-2xl bg-white shadow-lg rounded-lg overflow-hidden mt-4 mb-4 h-40 w-1/2">
+                    <img
+                        class="w-1/3 h-full object-cover"
+                        src={noticias3.url_imagen}
+                        alt={noticias3.titulo_noticia}
+                    />
+                    <div class="w-2/3 p-4">
+                        <a
+                            href={noticias3.link}
+                            class="text-lg font-bold mb-1 text-gray-800 hover:underline block"
+                        >
+                            {noticias3.titulo_noticia}
+                        </a>
+                        <p class="text-sm text-gray-600 mb-1">
+                            <span class="font-semibold text-gray-800">
+                                Escrito por:
+                            </span>{" "}
+                            {noticias3.autor}
+                        </p>
+                        <p class="text-sm text-gray-600 mb-1">
+                            <span class="font-semibold text-gray-800">
+                                Publicado:
+                            </span>{" "}
+                            {noticias3.fecha_puli}
+                        </p>
+                    </div>
+                </div>
+            )
+        }
+    </div>
+</Layout2>

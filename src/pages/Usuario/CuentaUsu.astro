@@ -10,18 +10,16 @@ const haentradoencuenta = cookie_usu_activo.auth === "true";
 
 let usuario_accedido = null;
 
-// Verificar si el usuario ha iniciado sesión
 if (!haentradoencuenta) {
     return Astro.redirect("/Acceder");
 }
 const codigo_usu_buscar = parseInt(cod_usu);
-// Obtener datos del usuario desde la base de datos
+
 const usuarios_registrados = await db.select().from(Usuario);
 usuario_accedido = usuarios_registrados.find(
     (usuarioactivo) => usuarioactivo.cod_usuario === codigo_usu_buscar,
 );
 
-// Verificar si el usuario es un usuario normal
 if (!usuario_accedido || usuario_accedido.tipo_usu) {
     return Astro.redirect("/Acceder");
 }

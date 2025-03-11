@@ -1,7 +1,7 @@
 ---
-// filepath: c:\Users\angel\Desktop\TFG-2DAM\FlowStats\src\layouts\Layout.astro
 import Cabecera from "../components/Cabecera.astro";
-import NavCuenta from "../components/NavCuenta.astro"; // Cambiado a JSX
+import NavCuenta from "../components/NavCuenta.astro";
+import Footer from "../components/Footer.astro"; // Importar el componente Footer
 const { title, mostrarNavcuenta } = Astro.props;
 ---
 
@@ -28,6 +28,8 @@ const { title, mostrarNavcuenta } = Astro.props;
 			{mostrarNavcuenta && <NavCuenta />}
 			<slot />
 		</main>
+		<Footer />
+		<!-- Añadir el componente Footer -->
 	</body>
 </html>
 

@@ -1,0 +1,41 @@
+---
+// filepath: c:\Users\angel\Desktop\TFG-2DAM\FlowStats\src\layouts\Layout.astro
+import Cabecera from "../components/Cabecera.astro";
+const { title, mostrarNavcuenta } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="generator" content={Astro.generator} />
+        <title>{title}</title>
+        <link rel="stylesheet" href="/src/styles/global.css" />
+        <!--Fuentes de API google -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Zen+Dots&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <Cabecera />
+        <main>
+            <slot />
+        </main>
+    </body>
+</html>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    main {
+        margin: 0;
+        padding: 0;
+    }
+</style>

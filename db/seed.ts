@@ -6655,7 +6655,7 @@ export default async function seed() {
             direccion_usu: "Calle el Pumedo Nº 19 , Toral de los vados",
             telefono_usu: "123456789",
             tipo_usu: true,
-            img_usu: "https://example.com/image.jpg",
+            img_usu: "https://imagedelivery.net/DX6aCRCKOB_y-l4MZVDT9w/67b1b1e8-6955-4edb-5238-7578e8090f00/public",
             fecha_nacimiento: new Date("2004-03-12"),
             fecha_registro: new Date("2022-03-01"),
         },
@@ -6669,7 +6669,7 @@ export default async function seed() {
             direccion_usu: "Calle el Pumedo Nº 19 , Toral de los vados",
             telefono_usu: "123456789",
             tipo_usu: false,
-            img_usu: "https://example.com/image.jpg",
+            img_usu: "https://imagedelivery.net/DX6aCRCKOB_y-l4MZVDT9w/67b1b1e8-6955-4edb-5238-7578e8090f00/public",
             fecha_nacimiento: new Date("2004-03-12"),
             fecha_registro: new Date("2022-03-01"),
         }

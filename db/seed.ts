@@ -6647,19 +6647,35 @@ export default async function seed() {
 
     const usuarios = [
         {
-            nombre_usuario: "Angel",
+            nombre_usuario: "angel.prada-admin",
             nombre: "Angel",
-            apellidos: "Doe",
+            apellidos: "Prada",
             contraseña: "1",
             correo_electronico: "angelpradakuai@gmail.com",
-            direccion_usu: "123 Main St",
-            telefono_usu: "555-1234",
+            direccion_usu: "Calle el Pumedo Nº 19 , Toral de los vados",
+            telefono_usu: "123456789",
             tipo_usu: true,
             img_usu: "https://example.com/image.jpg",
-            fecha_nacimiento: new Date("1999-03-01"),
+            fecha_nacimiento: new Date("2004-03-12"),
+            fecha_registro: new Date("2022-03-01"),
+        },
+
+        {
+            nombre_usuario: "angel.prada-user",
+            nombre: "Angel",
+            apellidos: "Prada",
+            contraseña: "1",
+            correo_electronico: "angelpradakuai@gmail.com",
+            direccion_usu: "Calle el Pumedo Nº 19 , Toral de los vados",
+            telefono_usu: "123456789",
+            tipo_usu: false,
+            img_usu: "https://example.com/image.jpg",
+            fecha_nacimiento: new Date("2004-03-12"),
             fecha_registro: new Date("2022-03-01"),
         }
+
     ];
+
 
     for (const user of usuarios) {
         await db.insert(Usuario).values(user);

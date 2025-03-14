@@ -30,11 +30,13 @@ const canciones = await db
         id: Cancion.cod_cancion,
         nom_cancion: Cancion.titulo,
         reproducciones: Cancion.num_reproducciones,
+        nom_album: Album.nom_album,
+        nom_art: Artista.nom_art,
+        img_album: Album.img_album,
     })
     .from(Cancion)
     .innerJoin(Album, eq(Cancion.cod_album, Album.cod_album))
-    .innerJoin(Compone, eq(Cancion.cod_cancion, Compone.cod_cancion))
-    .innerJoin(Artista, eq(Compone.cod_art, Artista.cod_art))
+    .innerJoin(Artista, eq(Album.cod_art, Artista.cod_art))
     .orderBy(desc(Cancion.num_reproducciones))
     .limit(5);
 
@@ -148,7 +150,7 @@ const noticias3 = await Noticia3();
     </div>
     <div class="text-center mt-4 mb-4">
         <h1 class="text-4xl font-bold text-gray-800 underline">
-            Artistas más escuchados
+            Estadisticas Principales
         </h1>
     </div>
     <EstadisticasMusica

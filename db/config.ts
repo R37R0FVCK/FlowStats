@@ -115,8 +115,8 @@ const Produce = {
 const Compone = {
   columns: {
     cod_comp: column.number({ primaryKey: true, autoIncrement: true }),
-    cod_art: column.number(),
-    cod_cancion: column.number(),
+    cod_art: column.number({ references: () => Artista.columns.cod_art }),
+    cod_cancion: column.number({ references: () => Cancion.columns.cod_cancion }),
   }
 };
 const Asiste = {

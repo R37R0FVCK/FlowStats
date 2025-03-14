@@ -108,8 +108,8 @@ const Concierto = {
 const Produce = {
   columns: {
     cod_prod: column.number({ primaryKey: true, autoIncrement: true }),
-    cod_productor: column.number(),
-    cod_cancion: column.number(),
+    cod_productor: column.number({ references: () => Productor.columns.cod_productor }),
+    cod_cancion: column.number({ references: () => Cancion.columns.cod_cancion }),
   }
 };
 const Compone = {

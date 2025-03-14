@@ -653,7 +653,7 @@ export default async function seed() {
         }
     ]
     for (const sellos of sellos_discograficos) {
-        db.insert(Sello_Discografico).values(sellos);
+        await db.insert(Sello_Discografico).values(sellos);
     }
     //insertar datos de la tabla artista 
     const artistas =
@@ -5047,7 +5047,7 @@ export default async function seed() {
         }
     ]
     for (const comp of compone) {
-        db.insert(Compone).values(comp)
+        await db.insert(Compone).values(comp)
     }
 
     //insertar datos de la tabla produce 
@@ -6180,8 +6180,11 @@ export default async function seed() {
         }
     ]
     for (const prod of produce) {
-        db.insert(Produce).values(prod)
+        await db.insert(Produce).values(prod)
+
     }
+
+
     // Tabla productor
     const productor = [
         {
@@ -6642,7 +6645,7 @@ export default async function seed() {
     ]
     for (const productores of productor) {
 
-        db.insert(Productor).values(productores)
+        await db.insert(Productor).values(productores)
     }
 
     const usuarios = [

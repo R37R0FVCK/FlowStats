@@ -1,4 +1,7 @@
 ---
+//Pgina que permite a los usuarios acceder a su cuenta
+//Analiza el usuario y lo redirige a la cuenta de informacion de admins on de usuarios normales
+// dependiendo de el tipo de usuario
 import Layout from "../layouts/Layout.astro";
 import { db, Usuario } from "astro:db";
 
@@ -34,7 +37,6 @@ if (Astro.request.method === "POST") {
                     `codigo_usu=${usuario_buscar.cod_usuario}; Path=/; HttpOnly`,
                 );
 
-                // Establecer las cookies
                 Astro.response.headers.set(
                     "Set-Cookie",
                     "auth=true; Path=/; HttpOnly",
@@ -44,10 +46,9 @@ if (Astro.request.method === "POST") {
                     `codigo_usu=${usuario_buscar.cod_usuario}; Path=/; HttpOnly`,
                 );
 
-                // Marcar para redirigir en el cliente
                 permiso_redirigir = true;
             } else {
-                error_acceder = "Contraseña incorrecta.";
+                error_acceder = "Contraseña incorrecta, intentalo de nuevo.";
             }
         } else {
             error_acceder = "Correo/Nombre de usuario incorrecto.";

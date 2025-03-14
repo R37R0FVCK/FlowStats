@@ -1,7 +1,7 @@
-import { column, defineDb } from 'astro:db';
+import { column, defineDb, defineTable } from 'astro:db';
 
 
-const Usuario = {
+const Usuario = defineTable({
   columns: {
     cod_usuario: column.number({ primaryKey: true, autoIncrement: true }),
     nombre_usuario: column.text(),
@@ -16,8 +16,8 @@ const Usuario = {
     fecha_nacimiento: column.date(),
     fecha_registro: column.date(),
   }
-};
-const Manager = {
+});
+const Manager = defineTable({
   columns: {
     cod_manager: column.number({ primaryKey: true, autoIncrement: true }),
     nom_manager: column.text(),
@@ -25,8 +25,8 @@ const Manager = {
     nacionalidad_manager: column.text(),
   }
 
-};
-const Sello_Discografico = {
+})
+const Sello_Discografico = defineTable({
   columns: {
     cod_sello: column.number({ primaryKey: true, autoIncrement: true }),
     nom_sello: column.text(),
@@ -35,8 +35,8 @@ const Sello_Discografico = {
     anio_fundacion: column.number(),//revisar si el campo esta bien en phpmyadmin
     pais: column.text()
   }
-};
-const Artista = {
+});
+const Artista = defineTable({
   columns: {
     cod_art: column.number({ primaryKey: true }),
     nom_art: column.text(),
@@ -50,8 +50,8 @@ const Artista = {
     cod_manager: column.number(),
     cod_sello: column.number(),
   }
-};
-const Productor = {
+});
+const Productor = defineTable({
   columns: {
     cod_productor: column.number({ primaryKey: true, autoIncrement: true }),
     nom_prod: column.text(),
@@ -67,8 +67,8 @@ const Productor = {
 
   }
 
-};
-const Album = {
+});
+const Album = defineTable({
   columns: {
     cod_album: column.number({ primaryKey: true, autoIncrement: true }),
     nom_album: column.text(),
@@ -78,8 +78,8 @@ const Album = {
     img_album: column.text(),
     cod_art: column.number(),
   }
-};
-const Cancion = {
+});
+const Cancion = defineTable({
   columns: {
     cod_cancion: column.number({ primaryKey: true, autoIncrement: true }),
     fecha_lanzamiento: column.text(),
@@ -91,8 +91,8 @@ const Cancion = {
     tipo_discografia: column.text(),
     cod_album: column.number(),
   }
-};
-const Concierto = {
+});
+const Concierto = defineTable({
 
   columns: {
     cod_concierto: column.number({ primaryKey: true, autoIncrement: true }),
@@ -102,53 +102,53 @@ const Concierto = {
     ubicacion_con: column.text(),
     cod_art: column.number(),
   }
-};
+});
 
 
-const Produce = {
+const Produce = defineTable({
   columns: {
     cod_prod: column.number({ primaryKey: true, autoIncrement: true }),
-    cod_productor: column.number({ references: () => Productor.columns.cod_productor }),
-    cod_cancion: column.number({ references: () => Cancion.columns.cod_cancion }),
+    cod_productor: column.number(),
+    cod_cancion: column.number(),
   }
-};
-const Compone = {
+});
+const Compone = defineTable({
   columns: {
     cod_comp: column.number({ primaryKey: true, autoIncrement: true }),
-    cod_art: column.number({ references: () => Artista.columns.cod_art }),
-    cod_cancion: column.number({ references: () => Cancion.columns.cod_cancion }),
+    cod_art: column.number(),
+    cod_cancion: column.number(),
   }
-};
-const Asiste = {
+});
+const Asiste = defineTable({
   columns: {
     cod_as: column.number({ primaryKey: true, autoIncrement: true }),
     cod_concierto: column.number(),
     cod_usuario: column.number(),
 
   }
-};
-const Gusta = {
+});
+const Gusta = defineTable({
   columns: {
     cod_gusta: column.number({ primaryKey: true, autoIncrement: true }),
     cod_usuario: column.number(),
     cod_art: column.number(),
 
   }
-};
-const Escucha = {
+});
+const Escucha = defineTable({
   columns: {
     cod_escucha: column.number({ primaryKey: true, autoIncrement: true }),
     cod_usuario: column.number(),
     cod_cancion: column.number(),
   }
-}
-const Ve = {
+});
+const Ve = defineTable({
   columns: {
     cod_ve: column.number({ primaryKey: true, autoIncrement: true }),
     cod_usuario: column.number(),
     cod_album: column.number(),
   }
-};
+});
 
 
 

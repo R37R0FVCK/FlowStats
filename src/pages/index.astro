@@ -1,7 +1,16 @@
 ---
 import Layout2 from "../layouts/Layout2.astro";
 import { Noticia1, Noticia2, Noticia3 } from "../api/ExtraerDatosBillboard.js";
-import { db, Artista, Album, Cancion, Compone } from "astro:db";
+import {
+    db,
+    Artista,
+    Album,
+    Cancion,
+    Productor,
+    Compone,
+    Produce,
+    Manager,
+} from "astro:db";
 import { desc, eq } from "astro:db";
 import EstadisticasMusica from "../components/Estadisticasmusica";
 import type { loadRenderers } from "astro:container";
@@ -37,6 +46,8 @@ const canciones = await db
     .from(Cancion)
     .innerJoin(Album, eq(Cancion.cod_album, Album.cod_album))
     .innerJoin(Artista, eq(Album.cod_art, Artista.cod_art))
+    .innerJoin(Produce, eq(Cancion.cod_cancion, Produce.cod_cancion))
+    .innerJoin(Productor, eq(Produce.cod_productor, Productor.cod_productor))
     .orderBy(desc(Cancion.num_reproducciones))
     .limit(5);
 

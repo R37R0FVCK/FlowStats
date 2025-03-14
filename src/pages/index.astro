@@ -9,11 +9,14 @@ import {
     Productor,
     Compone,
     Produce,
-    Manager,
 } from "astro:db";
 import { desc, eq } from "astro:db";
 import EstadisticasMusica from "../components/Estadisticasmusica";
-import type { loadRenderers } from "astro:container";
+import { parse } from "cookie";
+
+const cookie_acceso = parse(Astro.request.headers.get("cookie") || "");
+const cod_usu = cookie_acceso.codigo_usu;
+const haentradoencuenta = cookie_acceso.auth === "true";
 
 const artistas_registrados = await db
     .select()
@@ -40,16 +43,31 @@ const canciones = await db
         nom_cancion: Cancion.titulo,
         reproducciones: Cancion.num_reproducciones,
         nom_album: Album.nom_album,
-        nom_art: Artista.nom_art,
         img_album: Album.img_album,
+        nom_productor: Productor.nom_prod,
     })
     .from(Cancion)
     .innerJoin(Album, eq(Cancion.cod_album, Album.cod_album))
-    .innerJoin(Artista, eq(Album.cod_art, Artista.cod_art))
     .innerJoin(Produce, eq(Cancion.cod_cancion, Produce.cod_cancion))
     .innerJoin(Productor, eq(Produce.cod_productor, Productor.cod_productor))
     .orderBy(desc(Cancion.num_reproducciones))
     .limit(5);
+
+const ElegirArtistas = await Promise.all(
+    canciones.map(async (cancion) => {
+        const artistas = await db
+            .select({
+                nom_art: Artista.nom_art,
+            })
+            .from(Compone)
+            .innerJoin(Artista, eq(Compone.cod_art, Artista.cod_art))
+            .where(eq(Compone.cod_cancion, cancion.id));
+        return {
+            ...cancion,
+            artistas: artistas.map((artista) => artista.nom_art),
+        };
+    }),
+);
 
 const noticias1 = await Noticia1();
 const noticias2 = await Noticia2();
@@ -168,6 +186,7 @@ const noticias3 = await Noticia3();
         client:load
         artistas={artistas_registrados}
         albumes={albumes}
-        canciones={canciones}
+        canciones={ElegirArtistas}
+        accedido={haentradoencuenta}
     />
 </Layout2>

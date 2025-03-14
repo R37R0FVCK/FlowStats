@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import BotonLike from './BotonLike.jsx';
 
-const EstadisticasMusica = ({ artistas, albumes, canciones }) => {
+const EstadisticasMusica = ({ artistas, albumes, canciones, accedido }) => {
     const [tipo_dato, ponerdato] = useState('albumes');
 
     return (
@@ -39,16 +40,19 @@ const EstadisticasMusica = ({ artistas, albumes, canciones }) => {
                                     alt={`foto de ${artista.nom_art}`}
                                 />
                             </div>
-                            <div className="w-2/3 p-4">
-                                <h2 className="text-2xl font-bold mb-1 text-gray-800">
-                                    {artista.nom_art}
-                                </h2>
-                                <p className="text-lg text-gray-600 mb-1">
-                                    Oyentes: {artista.oyentes_art.toLocaleString()}
-                                </p>
-                                <p className="text-lg text-gray-600 mb-1">
-                                    Nacionalidad: {artista.nacionalidad_art}
-                                </p>
+                            <div className="w-2/3 p-4 flex justify-between items-center">
+                                <div>
+                                    <h2 className="text-2xl font-bold mb-1 text-gray-800">
+                                        {artista.nom_art}
+                                    </h2>
+                                    <p className="text-lg text-gray-600 mb-1">
+                                        Oyentes: {artista.oyentes_art.toLocaleString()}
+                                    </p>
+                                    <p className="text-lg text-gray-600 mb-1">
+                                        Nacionalidad: {artista.nacionalidad_art}
+                                    </p>
+                                </div>
+                                {accedido && <BotonLike />}
                             </div>
                         </div>
                     ))}
@@ -64,16 +68,19 @@ const EstadisticasMusica = ({ artistas, albumes, canciones }) => {
                                 src={album.imagen}
                                 alt={album.nom_album}
                             />
-                            <div className="w-2/3 p-4">
-                                <h2 className="text-lg font-bold mb-1 text-gray-800">
-                                    {album.nom_album}
-                                </h2>
-                                <p className="text-sm text-gray-600 mb-1">
-                                    Artista: {album.nom_art}
-                                </p>
-                                <p className="text-sm text-gray-600 mb-1">
-                                    Fecha de publicación: {album.fecha_publicacion}
-                                </p>
+                            <div className="w-2/3 p-4 flex justify-between items-center">
+                                <div>
+                                    <h2 className="text-lg font-bold mb-1 text-gray-800">
+                                        {album.nom_album}
+                                    </h2>
+                                    <p className="text-sm text-gray-600 mb-1">
+                                        Artista: {album.nom_art}
+                                    </p>
+                                    <p className="text-sm text-gray-600 mb-1">
+                                        Fecha de publicación: {album.fecha_publicacion}
+                                    </p>
+                                </div>
+                                {accedido && <BotonLike />}
                             </div>
                         </div>
                     ))}
@@ -84,24 +91,32 @@ const EstadisticasMusica = ({ artistas, albumes, canciones }) => {
                 <div className="flex flex-col items-center space-y-4">
                     {canciones.map((cancion) => (
                         <div key={cancion.id} className="flex max-w-2xl bg-white shadow-lg rounded-lg overflow-hidden w-full">
-                            <img
-                                className="w-1/3 h-full object-cover"
-                                src={cancion.img_album}
-                                alt={cancion.nom_album}
-                            />
-                            <div className="w-2/3 p-4">
-                                <h2 className="text-lg font-bold mb-1 text-gray-800">
-                                    {cancion.nom_cancion}
-                                </h2>
-                                <p className="text-sm text-gray-600 mb-1">
-                                    Reproducciones: {cancion.reproducciones.toLocaleString()}
-                                </p>
-                                <p className="text-sm text-gray-600 mb-1">
-                                    Álbum: {cancion.nom_album}
-                                </p>
-                                <p className="text-sm text-gray-600 mb-1">
-                                    Artista: {cancion.nom_art}
-                                </p>
+                            <div className="w-1/3 p-4">
+                                <img
+                                    className="w-full h-full object-cover"
+                                    src={cancion.img_album}
+                                    alt={cancion.nom_album}
+                                />
+                            </div>
+                            <div className="w-2/3 p-4 flex justify-between items-center">
+                                <div>
+                                    <h2 className="text-lg font-bold mb-1 text-gray-800">
+                                        {cancion.nom_cancion}
+                                    </h2>
+                                    <p className="text-sm text-gray-600 mb-1">
+                                        Reproducciones: {cancion.reproducciones.toLocaleString()}
+                                    </p>
+                                    <p className="text-sm text-gray-600 mb-1">
+                                        Álbum: {cancion.nom_album}
+                                    </p>
+                                    <p className="text-sm text-gray-600 mb-1">
+                                        Artistas: {cancion.artistas.join(', ')}
+                                    </p>
+                                    <p className="text-sm text-gray-600 mb-1">
+                                        Productor: {cancion.nom_productor}
+                                    </p>
+                                </div>
+                                {accedido && <BotonLike />}
                             </div>
                         </div>
                     ))}

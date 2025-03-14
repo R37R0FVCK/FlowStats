@@ -42,19 +42,25 @@ const { usuario_accedido_info } = Astro.props as Props;
     </div>
     <div class="grid grid-cols-2 gap-6 w-full">
         <div>
-            <span class="font-semibold">Correo electrónico:</span>
+            <p class="font-semibold">Correo electrónico:</p>
             <p>{usuario_accedido_info.correo_electronico}</p>
         </div>
         <div>
-            <span class="font-semibold">Fecha de nacimiento:</span>
-            <p>{usuario_accedido_info.fecha_nacimiento.toDateString()}</p>
+            <p class="font-semibold">Fecha de nacimiento:</p>
+            <p>
+                {
+                    usuario_accedido_info.fecha_nacimiento.toLocaleDateString(
+                        "es-ES",
+                    )
+                }
+            </p>
         </div>
         <div>
-            <span class="font-semibold">Dirección:</span>
+            <p class="font-semibold">Dirección:</p>
             <p>{usuario_accedido_info.direccion_usu}</p>
         </div>
         <div>
-            <span class="font-semibold">Teléfono:</span>
+            <p class="font-semibold">Teléfono:</p>
             <p>{usuario_accedido_info.telefono_usu}</p>
         </div>
     </div>

@@ -1,6 +1,7 @@
 ---
 import Layout2 from "../layouts/Layout2.astro";
 import { Noticia1, Noticia2, Noticia3 } from "../api/ExtraerDatosBillboard.js";
+import BotonEstadisticasPrincipales from "../components/BotonEstadisticasPrincipales.jsx";
 import {
     db,
     Artista,
@@ -9,14 +10,76 @@ import {
     Productor,
     Compone,
     Produce,
+    Escucha,
+    Gusta,
+    Ve, // Importa la tabla Ve
 } from "astro:db";
-import { desc, eq } from "astro:db";
-import EstadisticasMusica from "../components/Estadisticasmusica";
+import { desc, eq  , and} from "astro:db";
 import { parse } from "cookie";
 
 const cookie_acceso = parse(Astro.request.headers.get("cookie") || "");
 const haentradoencuenta = cookie_acceso.auth === "true";
 const cod_usu = parseInt(cookie_acceso.codigo_usu);
+
+if (Astro.request.method === "POST") {
+    const { cancionId, artistaId, usuarioId, albumId } = await Astro.request.json();
+
+    if (haentradoencuenta && usuarioId === cod_usu) {
+        if (cancionId) {
+            await db.insert(Escucha).values({
+                cod_cancion: cancionId,
+                cod_usuario: usuarioId,
+            });
+        } else if (artistaId) {
+            const existingLike = await db
+                .select()
+                .from(Gusta)
+                .where(and(eq(Gusta.cod_art, artistaId), eq(Gusta.cod_usuario, usuarioId)))
+                .get();
+
+            if (existingLike) {
+                await db.delete(Gusta).where(and(eq(Gusta.cod_art, artistaId), eq(Gusta.cod_usuario, usuarioId)));
+            } else {
+                await db.insert(Gusta).values({
+                    cod_art: artistaId,
+                    cod_usuario: usuarioId,
+                });
+            }
+        } else if (albumId) {
+            const existingLike = await db
+                .select()
+                .from(Ve)
+                .where(and(eq(Ve.cod_album, albumId), eq(Ve.cod_usuario, usuarioId)))
+                .get();
+
+            if (existingLike) {
+                await db.delete(Ve).where(and(eq(Ve.cod_album, albumId), eq(Ve.cod_usuario, usuarioId)));
+            } else {
+                await db.insert(Ve).values({
+                    cod_album: albumId,
+                    cod_usuario: usuarioId,
+                });
+            }
+        }
+
+        return new Response(JSON.stringify({ success: true }), {
+            status: 200,
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+    } else {
+        return new Response(
+            JSON.stringify({ success: false, message: "No autorizado" }),
+            {
+                status: 403,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+    }
+}
 
 const artistas_registrados = await db
     .select()
@@ -68,6 +131,24 @@ const ElegirArtistas = await Promise.all(
         };
     }),
 );
+
+const cancionesLiked = haentradoencuenta
+    ? await db
+          .select({
+              cod_cancion: Escucha.cod_cancion,
+          })
+          .from(Escucha)
+          .where(eq(Escucha.cod_usuario, cod_usu))
+    : [];
+
+const artistasLiked = haentradoencuenta
+    ? await db
+          .select({
+              cod_art: Gusta.cod_art,
+          })
+          .from(Gusta)
+          .where(eq(Gusta.cod_usuario, cod_usu))
+    : [];
 
 const noticias1 = await Noticia1();
 const noticias2 = await Noticia2();
@@ -130,13 +211,13 @@ const noticias3 = await Noticia3();
                         <p class="text-sm text-gray-300 mb-1">
                             <span class="font-semibold text-white">
                                 Escrito por:
-                            </span>{" "}
+                            </span{" "}
                             {noticias2.autor}
                         </p>
                         <p class="text-sm text-gray-300 mb-1">
                             <span class="font-semibold text-white">
                                 Publicado:
-                            </span>{" "}
+                            </span{" "}
                             {noticias2.fecha_puli}
                         </p>
                     </div>
@@ -163,13 +244,13 @@ const noticias3 = await Noticia3();
                         <p class="text-sm text-gray-300 mb-1">
                             <span class="font-semibold text-white">
                                 Escrito por:
-                            </span>{" "}
+                            </span{" "}
                             {noticias3.autor}
                         </p>
                         <p class="text-sm text-gray-300 mb-1">
                             <span class="font-semibold text-white">
                                 Publicado:
-                            </span>{" "}
+                            </span{" "}
                             {noticias3.fecha_puli}
                         </p>
                     </div>
@@ -182,12 +263,14 @@ const noticias3 = await Noticia3();
             Estadisticas Principales
         </h1>
     </div>
-    <EstadisticasMusica
-        client:load
-        artistas={artistas_registrados}
+    <BotonEstadisticasPrincipales
+        artistas_registrados={artistas_registrados}
         albumes={albumes}
-        canciones={ElegirArtistas}
-        accedido={haentradoencuenta}
-        cod_usu={cod_usu}
+        ElegirArtistas={ElegirArtistas}
+        haentradoencuenta={haentradoencuenta}
+        usuarioId={cod_usu}
+        cancionesLiked={cancionesLiked}
+        artistasLiked={artistasLiked}
+        client:load
     />
 </Layout2>

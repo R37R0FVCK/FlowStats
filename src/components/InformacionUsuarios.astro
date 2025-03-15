@@ -1,5 +1,22 @@
 ---
 import ImgUsu from "./ImgUsu.jsx";
+import {
+    db,
+    Gusta,
+    Escucha,
+    Cancion,
+    Album,
+    Artista,
+    Produce,
+    Compone,
+    Productor,
+} from "astro:db";
+import { eq } from "astro:db";
+import { parse } from "cookie";
+
+const cookie_acceso = parse(Astro.request.headers.get("cookie") || "");
+const cod_usu = parseInt(cookie_acceso.codigo_usu);
+const haentradoencuenta = cookie_acceso.auth === "true";
 
 export interface Usuario {
     cod_usuario: number;
@@ -19,6 +36,16 @@ export interface Usuario {
 interface Props {
     usuario_accedido_info: Usuario;
 }
+
+const canciones_gustadas = await db
+    .select({
+        id: Cancion.cod_cancion,
+        titulo: Cancion.titulo,
+        reproducciones: Cancion.num_reproducciones,
+    })
+    .from(Cancion)
+    .innerJoin(Escucha, eq(Cancion.cod_cancion, Escucha.cod_cancion))
+    .where(eq(Escucha.cod_usuario, cod_usu));
 
 const { usuario_accedido_info } = Astro.props as Props;
 ---
@@ -63,5 +90,27 @@ const { usuario_accedido_info } = Astro.props as Props;
             <p class="font-semibold">Teléfono:</p>
             <p>{usuario_accedido_info.telefono_usu}</p>
         </div>
+    </div>
+</div>
+
+<div class="flex flex-row items-start mb-6 space-x-6">
+    <div>
+        <h2 class="text-xl font-bold mb-2">Canciones favoritas</h2>
+        <ul>
+            {
+                canciones_gustadas.map((cancion) => (
+                    <li class="mb-1">
+                        {cancion.titulo} -{" "}
+                        {cancion.reproducciones.toLocaleString()} reproducciones
+                    </li>
+                ))
+            }
+        </ul>
+    </div>
+    <div>
+        <h2 class="text-xl font-bold mb-2">Artistas favoritos</h2>
+    </div>
+    <div>
+        <h2 class="text-xl font-bold mb-2">Álbumes favoritos</h2>
     </div>
 </div>

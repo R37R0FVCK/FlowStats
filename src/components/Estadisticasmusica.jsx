@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import BotonLike from './BotonLike.jsx';
+import BotonLike from './BotonLike';
 
-const EstadisticasMusica = ({ artistas, albumes, canciones, accedido }) => {
+const EstadisticasMusica = ({ artistas, albumes, canciones, accedido, cod_usu }) => {
     const [tipo_dato, ponerdato] = useState('albumes');
 
     return (
@@ -52,7 +52,7 @@ const EstadisticasMusica = ({ artistas, albumes, canciones, accedido }) => {
                                         Nacionalidad: {artista.nacionalidad_art}
                                     </p>
                                 </div>
-                                {accedido && <BotonLike />}
+                                {accedido && <BotonLike id={artista.id} tipo="artista" initialLiked={false} cod_usu={cod_usu} />}
                             </div>
                         </div>
                     ))}
@@ -80,7 +80,7 @@ const EstadisticasMusica = ({ artistas, albumes, canciones, accedido }) => {
                                         Fecha de publicación: {album.fecha_publicacion}
                                     </p>
                                 </div>
-                                {accedido && <BotonLike />}
+                                {accedido && <BotonLike id={album.id} tipo="album" initialLiked={false} cod_usu={cod_usu} />}
                             </div>
                         </div>
                     ))}
@@ -106,17 +106,8 @@ const EstadisticasMusica = ({ artistas, albumes, canciones, accedido }) => {
                                     <p className="text-sm text-gray-600 mb-1">
                                         Reproducciones: {cancion.reproducciones.toLocaleString()}
                                     </p>
-                                    <p className="text-sm text-gray-600 mb-1">
-                                        Álbum: {cancion.nom_album}
-                                    </p>
-                                    <p className="text-sm text-gray-600 mb-1">
-                                        Artistas: {cancion.artistas.join(', ')}
-                                    </p>
-                                    <p className="text-sm text-gray-600 mb-1">
-                                        Productor: {cancion.nom_productor}
-                                    </p>
                                 </div>
-                                {accedido && <BotonLike />}
+                                {accedido && <BotonLike id={cancion.id} tipo="cancion" initialLiked={false} cod_usu={cod_usu} />}
                             </div>
                         </div>
                     ))}

@@ -1,4 +1,4 @@
-import { db, Artista, Manager, Sello_Discografico, Cancion, Album, Compone, Produce, Productor, Usuario } from 'astro:db';
+import { db, Artista, Manager, Sello_Discografico, Gusta, Cancion, Album, Compone, Produce, Productor, Usuario, Escucha } from 'astro:db';
 
 // https://astro.build/db/seed
 export default async function seed() {
@@ -6682,6 +6682,19 @@ export default async function seed() {
 
     for (const user of usuarios) {
         await db.insert(Usuario).values(user);
+    }
+
+    const escucha = [{
+        cod_ve: 1,
+        cod_usuario: 1,
+        cod_cancion: 138
+
+
+
+    }];
+
+    for (const gus of escucha) {
+        //  await db.insert(Escucha).values(gus);
     }
 }
 

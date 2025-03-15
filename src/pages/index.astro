@@ -15,8 +15,8 @@ import EstadisticasMusica from "../components/Estadisticasmusica";
 import { parse } from "cookie";
 
 const cookie_acceso = parse(Astro.request.headers.get("cookie") || "");
-const cod_usu = cookie_acceso.codigo_usu;
 const haentradoencuenta = cookie_acceso.auth === "true";
+const cod_usu = parseInt(cookie_acceso.codigo_usu);
 
 const artistas_registrados = await db
     .select()
@@ -188,5 +188,6 @@ const noticias3 = await Noticia3();
         albumes={albumes}
         canciones={ElegirArtistas}
         accedido={haentradoencuenta}
+        cod_usu={cod_usu}
     />
 </Layout2>

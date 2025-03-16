@@ -6684,18 +6684,9 @@ export default async function seed() {
         await db.insert(Usuario).values(user);
     }
 
-    const escucha = [{
-        cod_ve: 1,
-        cod_usuario: 1,
-        cod_cancion: 138
 
 
 
-    }];
-
-    for (const gus of escucha) {
-        //  await db.insert(Escucha).values(gus);
-    }
 }
 
 

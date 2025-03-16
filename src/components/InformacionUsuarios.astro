@@ -1,53 +1,44 @@
 ---
 import ImgUsu from "./ImgUsu.jsx";
-import {
-    db,
-    Gusta,
-    Escucha,
-    Cancion,
-    Album,
-    Artista,
-    Produce,
-    Compone,
-    Productor,
-} from "astro:db";
+import { db, Escucha, Cancion, Artista, Gusta, Album, Ve } from "astro:db";
 import { eq } from "astro:db";
 import { parse } from "cookie";
 
 const cookie_acceso = parse(Astro.request.headers.get("cookie") || "");
 const cod_usu = parseInt(cookie_acceso.codigo_usu);
-const haentradoencuenta = cookie_acceso.auth === "true";
-
-export interface Usuario {
-    cod_usuario: number;
-    nombre_usuario: string;
-    nombre: string;
-    apellidos: string;
-    contraseña: string;
-    correo_electronico: string;
-    direccion_usu: string;
-    telefono_usu: string;
-    tipo_usu: boolean;
-    img_usu: string;
-    fecha_nacimiento: Date;
-    fecha_registro: Date;
-}
-
-interface Props {
-    usuario_accedido_info: Usuario;
-}
 
 const canciones_gustadas = await db
     .select({
-        id: Cancion.cod_cancion,
-        titulo: Cancion.titulo,
-        reproducciones: Cancion.num_reproducciones,
+        id_cancion: Cancion.cod_cancion,
+        titulo_cancion: Cancion.titulo,
+        imagen_cancion: Album.img_album,
     })
     .from(Cancion)
     .innerJoin(Escucha, eq(Cancion.cod_cancion, Escucha.cod_cancion))
+    .innerJoin(Album, eq(Cancion.cod_album, Album.cod_album))
     .where(eq(Escucha.cod_usuario, cod_usu));
 
-const { usuario_accedido_info } = Astro.props as Props;
+const artistas_gustados = await db
+    .select({
+        id_artista: Artista.cod_art,
+        nombre_artista: Artista.nom_art,
+        imagen_artista: Artista.img_art,
+    })
+    .from(Artista)
+    .innerJoin(Gusta, eq(Artista.cod_art, Gusta.cod_art))
+    .where(eq(Gusta.cod_usuario, cod_usu));
+
+const albumes_gustados = await db
+    .select({
+        id_album: Album.cod_album,
+        nombre_album: Album.nom_album,
+        imagen_album: Album.img_album,
+    })
+    .from(Album)
+    .innerJoin(Ve, eq(Album.cod_album, Ve.cod_album))
+    .where(eq(Ve.cod_usuario, cod_usu));
+
+const { usuario_accedido_info } = Astro.props;
 ---
 
 <div class="flex flex-col items-start mb-6">
@@ -76,9 +67,9 @@ const { usuario_accedido_info } = Astro.props as Props;
             <p class="font-semibold">Fecha de nacimiento:</p>
             <p>
                 {
-                    usuario_accedido_info.fecha_nacimiento.toLocaleDateString(
-                        "es-ES",
-                    )
+                    new Date(
+                        usuario_accedido_info.fecha_nacimiento,
+                    ).toLocaleDateString("es-ES")
                 }
             </p>
         </div>
@@ -95,22 +86,71 @@ const { usuario_accedido_info } = Astro.props as Props;
 
 <div class="flex flex-row items-start mb-6 space-x-6">
     <div>
-        <h2 class="text-xl font-bold mb-2">Canciones favoritas</h2>
-        <ul>
+        <h2 class="text-xl font-bold mb-2 text-center">Canciones favoritas</h2>
+        <ul class="flex flex-col items-center">
             {
                 canciones_gustadas.map((cancion) => (
-                    <li class="mb-1">
-                        {cancion.titulo} -{" "}
-                        {cancion.reproducciones.toLocaleString()} reproducciones
+                    <li class="mb-1 flex items-center space-x-2 group">
+                        <div class="relative flex-shrink-0">
+                            <img
+                                src={cancion.imagen_cancion}
+                                alt={cancion.titulo_cancion}
+                                class="h-25 w-25 object-cover rounded-lg"
+                            />
+                            <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 rounded-lg" />
+                            <span class="absolute inset-0 flex items-center justify-center text-white font-bold opacity-0 group-hover:opacity-100">
+                                {cancion.titulo_cancion}
+                            </span>
+                        </div>
                     </li>
                 ))
             }
         </ul>
     </div>
     <div>
-        <h2 class="text-xl font-bold mb-2">Artistas favoritos</h2>
+        <h2 class="text-xl font-bold mb-2 text-center">Artistas favoritos</h2>
+        <div class="flex justify-center">
+            <ul class="flex flex-col items-center">
+                {
+                    artistas_gustados.map((artista) => (
+                        <li class="mb-1 flex items-center space-x-2 group">
+                            <div class="relative flex-shrink-0">
+                                <img
+                                    src={artista.imagen_artista}
+                                    alt={artista.nombre_artista}
+                                    class="h-25 w-25 object-cover rounded-full"
+                                />
+                                <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 rounded-full" />
+                                <span class="absolute inset-0 flex items-center justify-center text-white font-bold opacity-0 group-hover:opacity-100">
+                                    {artista.nombre_artista}
+                                </span>
+                            </div>
+                        </li>
+                    ))
+                }
+            </ul>
+        </div>
     </div>
     <div>
-        <h2 class="text-xl font-bold mb-2">Álbumes favoritos</h2>
+        <h2 class="text-xl font-bold mb-2 text-center">Álbumes favoritos</h2>
+        <ul class="flex flex-col items-center">
+            {
+                albumes_gustados.map((album) => (
+                    <li class="mb-1 flex items-center space-x-2 group">
+                        <div class="relative flex-shrink-0">
+                            <img
+                                src={album.imagen_album}
+                                alt={album.nombre_album}
+                                class="h-25 w-25 object-cover rounded-lg"
+                            />
+                            <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 rounded-lg" />
+                            <span class="absolute inset-0 flex items-center justify-center text-white font-bold opacity-0 group-hover:opacity-100">
+                                {album.nombre_album}
+                            </span>
+                        </div>
+                    </li>
+                ))
+            }
+        </ul>
     </div>
 </div>

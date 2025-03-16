@@ -21,7 +21,7 @@ const BotonLikeCanciones = ({ cod_cancion, cod_usu, estado_megusta }) => {
                 throw new Error('Error al enviar la solicitud');
             }
 
-            const data = await respuesta_envio.json();
+            const datos = await respuesta_envio.json();
             asignar_megusta(!megusta);
         } catch (error) {
             console.error('Error:', error);

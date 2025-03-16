@@ -1,39 +1,40 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-const BotonLikeAlbum = ({ albumId, usuarioId }) => {
-    const [liked, setLiked] = useState(false);
+const BotonLikeAlbum = ({ cod_album, cod_usu, estado_megusta }) => {
+    const [megusta, asignar_megusta] = useState(() => estado_megusta(cod_album));
+
+    useEffect(() => {
+        asignar_megusta(estado_megusta(cod_album));
+    }, [cod_album, estado_megusta]);
 
     const albumes_gustados = async () => {
         try {
-            const response = await fetch('http://localhost:4321', {
+            const respuesta_envio = await fetch('http://localhost:4321', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ albumId, usuarioId }),
+                body: JSON.stringify({ cod_album, cod_usu }),
             });
 
-            if (!response.ok) {
-                throw new Error('Error al enviar la solicitud');
+            if (!respuesta_envio.ok) {
+                throw new Error('Error al enviar la los datos');
             }
 
-            const data = await response.json();
-            console.log('Respuesta del servidor:', data);
-            setLiked(!liked); // Cambia el estado después de una respuesta exitosa
+            const datos = await respuesta_envio.json();
+            asignar_megusta(!megusta);
         } catch (error) {
             console.error('Error:', error);
         }
     };
 
-    const handleLike = () => {
-        if (albumId) {
-            albumes_gustados();
-        }
+    const cambio_estado = () => {
+        albumes_gustados();
     };
 
     return (
-        <div title="Like" className="heart-container" onClick={handleLike}>
-            <input id="Give-It-An-Id" className="checkbox" type="checkbox" checked={liked} readOnly />
+        <div title="Like" className="heart-container" onClick={cambio_estado}>
+            <input id="Give-It-An-Id" className="checkbox" type="checkbox" checked={megusta} readOnly />
             <div className="svg-container">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"

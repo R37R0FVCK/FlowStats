@@ -1,6 +1,6 @@
 ---
 import { parse } from "cookie";
-import MenuDesplegable from "../NavegacionInicio.jsx";
+import MenuDesplegable from "./NavegacionInicio.jsx";
 import { db, Usuario } from "astro:db";
 
 const cookie_usu = parse(Astro.request.headers.get("cookie") || "");

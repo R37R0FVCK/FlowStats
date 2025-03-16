@@ -76,7 +76,7 @@ const BotonEstadisticasPrincipales = ({ artistas_registrados, albumes, ElegirArt
                                     <p className="text-lg text-gray-600 mb-1">Oyentes: {artista.oyentes_art.toLocaleString()}</p>
                                     <p className="text-lg text-gray-600 mb-1">Nacionalidad: {artista.nacionalidad_art}</p>
                                 </div>
-                                {haentradoencuenta && <BotonLikeArtistas artistaId={artista.cod_art} usuarioId={usuarioId} isLiked={asignar_like_art} />}
+                                {haentradoencuenta && <BotonLikeArtistas cod_art={artista.cod_art} cod_usu={usuarioId} estado_megusta={asignar_like_art} />}
                             </div>
                         </div>
                     ))}
@@ -94,7 +94,7 @@ const BotonEstadisticasPrincipales = ({ artistas_registrados, albumes, ElegirArt
                                     <p className="text-sm text-gray-600 mb-1">Artista: {album.nom_art}</p>
                                     <p className="text-sm text-gray-600 mb-1">Fecha de publicación: {album.fecha_publicacion}</p>
                                 </div>
-                                {haentradoencuenta && <BotonLikeAlbumes albumId={album.id} usuarioId={usuarioId} isLiked={asignar_like_album} />}
+                                {haentradoencuenta && <BotonLikeAlbumes cod_album={album.id} cod_usu={usuarioId} estado_megusta={asignar_like_album} />}
                             </div>
                         </div>
                     ))}
@@ -113,7 +113,7 @@ const BotonEstadisticasPrincipales = ({ artistas_registrados, albumes, ElegirArt
                                     <h2 className="text-lg font-bold mb-1 text-gray-800">{cancion.nom_cancion}</h2>
                                     <p className="text-sm text-gray-600 mb-1">Reproducciones: {cancion.reproducciones.toLocaleString()}</p>
                                 </div>
-                                {haentradoencuenta && <BotonLikeCanciones cancionId={cancion.id} usuarioId={usuarioId} isLiked={asignar_like_cancion} />}
+                                {haentradoencuenta && <BotonLikeCanciones cod_cancion={cancion.id} cod_usu={usuarioId} estado_megusta={asignar_like_cancion} />}
                             </div>
                         </div>
                     ))}

@@ -1,5 +1,8 @@
 ---
+// filepath: c:\Users\angel\Desktop\TFG-2DAM\FlowStats\src\components\ComponentesPerfilUsu\InformacionUsuarios.astro
 import ImgUsu from "./ImagenesPerfil/ImgUsu.jsx";
+import DatosCanciones from "./InfoDatos/Cancion/DatosCanciones.jsx";
+import { Compone } from "astro:db";
 import { db, Escucha, Cancion, Artista, Gusta, Album, Ve } from "astro:db";
 import { eq } from "astro:db";
 import { parse } from "cookie";
@@ -12,11 +15,18 @@ const canciones_gustadas = await db
         id_cancion: Cancion.cod_cancion,
         titulo_cancion: Cancion.titulo,
         imagen_cancion: Album.img_album,
+        nombre_album: Album.nom_album,
+        nombre_artista: Artista.nom_art,
+        genero_cancion: Cancion.genero_cancion,
+        fecha_lanzamiento: Cancion.fecha_lanzamiento,
     })
     .from(Cancion)
     .innerJoin(Escucha, eq(Cancion.cod_cancion, Escucha.cod_cancion))
     .innerJoin(Album, eq(Cancion.cod_album, Album.cod_album))
-    .where(eq(Escucha.cod_usuario, cod_usu));
+    .innerJoin(Compone, eq(Cancion.cod_cancion, Compone.cod_cancion))
+    .innerJoin(Artista, eq(Compone.cod_art, Artista.cod_art))
+    .where(eq(Escucha.cod_usuario, cod_usu))
+    .groupBy(Cancion.cod_cancion);
 
 const artistas_gustados = await db
     .select({
@@ -87,25 +97,7 @@ const { usuario_accedido_info } = Astro.props;
 <div class="flex flex-row items-start mb-6 space-x-6">
     <div>
         <h2 class="text-xl font-bold mb-2 text-center">Canciones favoritas</h2>
-        <ul class="flex flex-col items-center">
-            {
-                canciones_gustadas.map((cancion) => (
-                    <li class="mb-1 flex items-center space-x-2 group">
-                        <div class="relative flex-shrink-0">
-                            <img
-                                src={cancion.imagen_cancion}
-                                alt={cancion.titulo_cancion}
-                                class="h-25 w-25 object-cover rounded-lg"
-                            />
-                            <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 rounded-lg" />
-                            <span class="absolute inset-0 flex items-center justify-center text-white font-bold opacity-0 group-hover:opacity-100">
-                                {cancion.titulo_cancion}
-                            </span>
-                        </div>
-                    </li>
-                ))
-            }
-        </ul>
+        <DatosCanciones canciones_gustadas={canciones_gustadas} client:load />
     </div>
     <div>
         <h2 class="text-xl font-bold mb-2 text-center">Artistas favoritos</h2>

@@ -1,5 +1,4 @@
 ---
-// filepath: c:\Users\angel\Desktop\TFG-2DAM\FlowStats\src\components\ComponentesPerfilUsu\InformacionUsuarios.astro
 import ImgUsu from "./ImagenesPerfil/ImgUsu.jsx";
 import DatosCanciones from "./InfoDatos/Cancion/DatosCanciones.jsx";
 import { Compone } from "astro:db";
@@ -16,17 +15,30 @@ const canciones_gustadas = await db
         titulo_cancion: Cancion.titulo,
         imagen_cancion: Album.img_album,
         nombre_album: Album.nom_album,
-        nombre_artista: Artista.nom_art,
         genero_cancion: Cancion.genero_cancion,
         fecha_lanzamiento: Cancion.fecha_lanzamiento,
+        numero_reproducciones: Cancion.num_reproducciones,
     })
     .from(Cancion)
     .innerJoin(Escucha, eq(Cancion.cod_cancion, Escucha.cod_cancion))
     .innerJoin(Album, eq(Cancion.cod_album, Album.cod_album))
-    .innerJoin(Compone, eq(Cancion.cod_cancion, Compone.cod_cancion))
-    .innerJoin(Artista, eq(Compone.cod_art, Artista.cod_art))
-    .where(eq(Escucha.cod_usuario, cod_usu))
-    .groupBy(Cancion.cod_cancion);
+    .where(eq(Escucha.cod_usuario, cod_usu));
+
+const artistas_por_cancion = await db
+    .select({
+        id_cancion: Compone.cod_cancion,
+        nombre_artista: Artista.nom_art,
+    })
+    .from(Compone)
+    .innerJoin(Artista, eq(Compone.cod_art, Artista.cod_art));
+
+const canciones_gustadas_con_artistas = canciones_gustadas.map((cancion) => {
+    const artistas = artistas_por_cancion
+        .filter((artista) => artista.id_cancion === cancion.id_cancion)
+        .map((artista) => artista.nombre_artista)
+        .join(", ");
+    return { ...cancion, artistas };
+});
 
 const artistas_gustados = await db
     .select({
@@ -97,7 +109,10 @@ const { usuario_accedido_info } = Astro.props;
 <div class="flex flex-row items-start mb-6 space-x-6">
     <div>
         <h2 class="text-xl font-bold mb-2 text-center">Canciones favoritas</h2>
-        <DatosCanciones canciones_gustadas={canciones_gustadas} client:load />
+        <DatosCanciones
+            canciones_gustadas={canciones_gustadas_con_artistas}
+            client:load
+        />
     </div>
     <div>
         <h2 class="text-xl font-bold mb-2 text-center">Artistas favoritos</h2>

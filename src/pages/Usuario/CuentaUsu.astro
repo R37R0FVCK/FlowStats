@@ -3,7 +3,7 @@
 import Layout from "../../layouts/Layout.astro";
 import { parse } from "cookie";
 import { db, Usuario } from "astro:db";
-import Info_Usu from "../../components/InformacionUsuarios.astro";
+import Info_Usu from "../../components/ComponentesPerfilUsu/InformacionUsuarios.astro";
 
 const cookie_usu_activo = parse(Astro.request.headers.get("cookie") || "");
 const cod_usu = cookie_usu_activo.codigo_usu;

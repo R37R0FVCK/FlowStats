@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import TarjetaArtista from './TarjetaInfoArtista.jsx';
+import TarjetaInfoArtista from './TarjetaInfoArtista.jsx';
 
 const DatosArtistas = ({ artistas_gustados }) => {
     const [artistaSeleccionado, setArtistaSeleccionado] = useState(null);
 
-    const abrirTarjetaArtista = (artista) => {
+    const abrirModalArtista = (artista) => {
         setArtistaSeleccionado(artista);
     };
 
-    const cerrarTarjetaArtista = () => {
+    const cerrarModalArtista = () => {
         setArtistaSeleccionado(null);
     };
 
@@ -19,7 +19,7 @@ const DatosArtistas = ({ artistas_gustados }) => {
                     <li
                         key={artista.id_artista}
                         className="mb-1 flex items-center space-x-2 group"
-                        onClick={() => abrirTarjetaArtista(artista)}
+                        onClick={() => abrirModalArtista(artista)}
                     >
                         <div className="relative flex-shrink-0">
                             <img
@@ -37,9 +37,9 @@ const DatosArtistas = ({ artistas_gustados }) => {
             </ul>
 
             {artistaSeleccionado && (
-                <TarjetaArtista
+                <TarjetaInfoArtista
                     artista={artistaSeleccionado}
-                    onClose={cerrarTarjetaArtista}
+                    onClose={cerrarModalArtista}
                 />
             )}
         </div>

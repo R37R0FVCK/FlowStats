@@ -1,45 +1,45 @@
 import React, { useState, useEffect } from 'react';
+import '../../styles/corazonmegusta.css'; // Asegúrate de importar el archivo CSS
 
-const BotonLikeArtistas = ({ artistaId, usuarioId, isLiked }) => {
-    const [liked, setLiked] = useState(false);
+const BotonLikeArtistas = ({ cod_art, cod_usu, estado_megusta }) => {
+    const [me_gusta, poner_megusta] = useState(() => estado_megusta(cod_art));
 
     useEffect(() => {
-        setLiked(isLiked(artistaId));
-    }, [artistaId, isLiked]);
+        poner_megusta(estado_megusta(cod_art));
+    }, [cod_art, estado_megusta]);
 
     const artistas_gustados = async () => {
         try {
-            const response = await fetch('http://localhost:4321', {
+            const respuesta_envio = await fetch('http://localhost:4321', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ artistaId, usuarioId }),
+                body: JSON.stringify({ cod_art, cod_usu }),
             });
 
-            if (!response.ok) {
+            if (!respuesta_envio.ok) {
                 throw new Error('Error al enviar la solicitud');
             }
 
-            const data = await response.json();
-            console.log('Respuesta del servidor:', data);
-            setLiked(!liked); // Cambia el estado después de una respuesta exitosa
+            const datos = await respuesta_envio.json();
+            poner_megusta(!me_gusta);
         } catch (error) {
             console.error('Error:', error);
         }
     };
 
-    const handleLike = () => {
+    const asignar_me_gusta = () => {
         artistas_gustados();
     };
 
     return (
-        <div title="Like" className="heart-container" onClick={handleLike}>
-            <input id="Give-It-An-Id" className="checkbox" type="checkbox" checked={liked} readOnly />
-            <div className="svg-container">
+        <div title="Like" className="heart-container" onClick={asignar_me_gusta}>
+            <input id="Give-It-An-Id" className="checkbox" type="checkbox" checked={me_gusta} readOnly />
+            <div className={`svg-container ${me_gusta ? 'liked' : 'unliked'}`}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className={`svg-outline ${liked ? 'svg-liked' : ''}`}
+                    className={`svg-outline ${me_gusta ? 'svg-liked' : ''}`}
                     viewBox="0 0 24 24"
                 >
                     <path
@@ -49,7 +49,7 @@ const BotonLikeArtistas = ({ artistaId, usuarioId, isLiked }) => {
                 </svg>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className={`svg-filled ${liked ? 'svg-liked' : ''}`}
+                    className={`svg-filled ${me_gusta ? 'svg-liked' : ''}`}
                     viewBox="0 0 24 24"
                 >
                     <path

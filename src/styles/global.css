@@ -160,3 +160,10 @@
         display: none;
     }
 }
+
+/* Añadir estilos para mantener el corazón rojo cuando liked es true */
+.heart-container .svg-outline.liked path,
+.heart-container .svg-filled.liked path {
+    fill: red;
+    stroke: red;
+}

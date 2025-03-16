@@ -1,39 +1,40 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-const BotonLike = ({ cancionId, usuarioId }) => {
-    const [liked, setLiked] = useState(false);
+const BotonLikeCanciones = ({ cod_cancion, cod_usu, estado_megusta }) => {
+    const [megusta, asignar_megusta] = useState(() => estado_megusta(cod_cancion));
+
+    useEffect(() => {
+        asignar_megusta(estado_megusta(cod_cancion));
+    }, [cod_cancion, estado_megusta]);
 
     const canciones_gustadas = async () => {
         try {
-            const response = await fetch('http://localhost:4321', {
+            const respuesta_envio = await fetch('http://localhost:4321', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ cancionId, usuarioId }),
+                body: JSON.stringify({ cod_cancion, cod_usu }),
             });
 
-            if (!response.ok) {
+            if (!respuesta_envio.ok) {
                 throw new Error('Error al enviar la solicitud');
             }
 
-            const data = await response.json();
-            console.log('Respuesta del servidor:', data);
-            setLiked(!liked); // Cambia el estado después de una respuesta exitosa
+            const data = await respuesta_envio.json();
+            asignar_megusta(!megusta);
         } catch (error) {
             console.error('Error:', error);
         }
     };
 
-    const handleLike = () => {
-        if (cancionId) {
-            canciones_gustadas();
-        }
+    const cambio_estado = () => {
+        canciones_gustadas();
     };
 
     return (
-        <div title="Like" className="heart-container" onClick={handleLike}>
-            <input id="Give-It-An-Id" className="checkbox" type="checkbox" checked={liked} readOnly />
+        <div title="Like" className="heart-container" onClick={cambio_estado}>
+            <input id="Give-It-An-Id" className="checkbox" type="checkbox" checked={megusta} readOnly />
             <div className="svg-container">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -73,4 +74,4 @@ const BotonLike = ({ cancionId, usuarioId }) => {
     );
 };
 
-export default BotonLike;
+export default BotonLikeCanciones;

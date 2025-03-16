@@ -1,0 +1,106 @@
+---
+import { parse } from "cookie";
+import MenuDesplegable from "../NavegacionInicio.jsx";
+import { db, Usuario } from "astro:db";
+
+const cookie_usu = parse(Astro.request.headers.get("cookie") || "");
+const haentradoencuenta = cookie_usu.auth === "true";
+const cod_usuario = cookie_usu.codigo_usu;
+
+let nombre_usu = "Usuario";
+
+if (haentradoencuenta && cod_usuario) {
+    const cod_usu = parseInt(cod_usuario);
+    const usuarios = await db.select().from(Usuario);
+    const usuarioactivo = usuarios.find(
+        (usuarioabuscar) => usuarioabuscar.cod_usuario === cod_usu,
+    );
+
+    if (usuarioactivo) {
+        nombre_usu = usuarioactivo.nombre_usuario;
+    }
+}
+---
+
+<header
+    class="flex flex-col md:flex-row items-center justify-between w-full p-4 bg-orange-400"
+>
+    <div class="flex items-center justify-between w-full">
+        <MenuDesplegable
+            accedioacuenta={haentradoencuenta}
+            nombreusuarioactivo={nombre_usu}
+            client:load
+        />
+        <div class="flex items-center justify-center mx-auto md:ml-142">
+            <h1 class="text-white text-4xl fuente_zen_dots mr-2">Flow</h1>
+            <img
+                src="https://imagedelivery.net/DX6aCRCKOB_y-l4MZVDT9w/90b3847e-cb56-4b3d-9b1d-838b48f72100/public"
+                alt="logo FlowStats"
+                class="h-16 w-16 mx-0"
+            />
+            <h1 class="text-white fuente_zen_dots text-4xl ml-2">Stats</h1>
+        </div>
+    </div>
+    <div class="hidden md:flex mt-4 md:mt-0">
+        {
+            haentradoencuenta ? (
+                <div class="flex items-center">
+                    <a href="/Micuenta" class="text-black font-bold ml-4">
+                        Hola, {nombre_usu}
+                    </a>
+                    <form action="/CerrarSesion" method="post" class="ml-4">
+                        <button type="submit" class="text-black font-bold">
+                            Cerrar Sesión
+                        </button>
+                    </form>
+                </div>
+            ) : (
+                <div class="flex items-center">
+                    <a href="/Acceder" class="text-black font-bold ml-4">
+                        Acceder
+                    </a>
+                    <a href="/Registro" class="text-black font-bold ml-4">
+                        Registro
+                    </a>
+                </div>
+            )
+        }
+    </div>
+</header>
+<nav
+    class="hidden md:flex justify-between h-12 w-full mt-0 border-t-7 border-black"
+>
+    <button
+        class="boton-oscuro text-white px-4 py-2 flex-1 h-full"
+        onclick="window.location.href='/'">Inicio</button
+    >
+    <button
+        class="boton-oscuro text-white px-4 py-2 flex-1 h-full"
+        onclick="window.location.href='/Noticias'">Noticias</button
+    >
+    <button
+        class="boton-oscuro text-white px-4 py-2 flex-1 h-full"
+        onclick="window.location.href='/Estadisticas'">Estadisticas</button
+    >
+    <button
+        class="boton-oscuro text-white px-4 py-2 flex-1 h-full"
+        onclick="window.location.href='/Explorar'">Explorar</button
+    >
+    <button
+        class="boton-oscuro text-white px-4 py-2 flex-1 h-full"
+        onclick="window.location.href='/Contacto'">Contacto</button
+    >
+</nav>
+
+<style>
+    .fuente_zen_dots {
+        font-family: "Zen Dots";
+    }
+    .boton-oscuro {
+        background-color: rgb(55, 47, 58);
+        transition: background-color 0.5s ease;
+    }
+    .boton-oscuro:hover {
+        background-color: rgb(106, 98, 98);
+    }
+</style>

@@ -12,7 +12,7 @@ import {
     Produce,
     Escucha,
     Gusta,
-    Ve, // Importa la tabla Ve
+    Ve,
 } from "astro:db";
 import { desc, eq, and } from "astro:db";
 import { parse } from "cookie";
@@ -22,10 +22,9 @@ const haentradoencuenta = cookie_acceso.auth === "true";
 const cod_usu = parseInt(cookie_acceso.codigo_usu);
 
 if (Astro.request.method === "POST") {
-    const { cod_cancion, cod_artista, cod_usu, cod_album } =
-        await Astro.request.json();
+    const { cod_cancion, cod_art, cod_album } = await Astro.request.json();
 
-    if (haentradoencuenta && cod_usu === cod_usu) {
+    if (haentradoencuenta && cod_usu) {
         if (cod_cancion) {
             const esta_likeado = await db
                 .select()
@@ -52,13 +51,13 @@ if (Astro.request.method === "POST") {
                     .insert(Escucha)
                     .values({ cod_cancion: cod_cancion, cod_usuario: cod_usu });
             }
-        } else if (cod_artista) {
+        } else if (cod_art) {
             const esta_likeado = await db
                 .select()
                 .from(Gusta)
                 .where(
                     and(
-                        eq(Gusta.cod_art, cod_artista),
+                        eq(Gusta.cod_art, cod_art),
                         eq(Gusta.cod_usuario, cod_usu),
                     ),
                 )
@@ -69,14 +68,14 @@ if (Astro.request.method === "POST") {
                     .delete(Gusta)
                     .where(
                         and(
-                            eq(Gusta.cod_art, cod_artista),
+                            eq(Gusta.cod_art, cod_art),
                             eq(Gusta.cod_usuario, cod_usu),
                         ),
                     );
             } else {
                 await db
                     .insert(Gusta)
-                    .values({ cod_art: cod_artista, cod_usuario: cod_usu });
+                    .values({ cod_art: cod_art, cod_usuario: cod_usu });
             }
         } else if (cod_album) {
             const esta_likeado = await db

@@ -14,7 +14,7 @@ import {
     Gusta,
     Ve, // Importa la tabla Ve
 } from "astro:db";
-import { desc, eq  , and} from "astro:db";
+import { desc, eq, and } from "astro:db";
 import { parse } from "cookie";
 
 const cookie_acceso = parse(Astro.request.headers.get("cookie") || "");
@@ -22,62 +22,99 @@ const haentradoencuenta = cookie_acceso.auth === "true";
 const cod_usu = parseInt(cookie_acceso.codigo_usu);
 
 if (Astro.request.method === "POST") {
-    const { cancionId, artistaId, usuarioId, albumId } = await Astro.request.json();
+    const { cod_cancion, cod_artista, cod_usu, cod_album } =
+        await Astro.request.json();
 
-    if (haentradoencuenta && usuarioId === cod_usu) {
-        if (cancionId) {
-            await db.insert(Escucha).values({
-                cod_cancion: cancionId,
-                cod_usuario: usuarioId,
-            });
-        } else if (artistaId) {
-            const existingLike = await db
+    if (haentradoencuenta && cod_usu === cod_usu) {
+        if (cod_cancion) {
+            const esta_likeado = await db
+                .select()
+                .from(Escucha)
+                .where(
+                    and(
+                        eq(Escucha.cod_cancion, cod_cancion),
+                        eq(Escucha.cod_usuario, cod_usu),
+                    ),
+                )
+                .get();
+
+            if (esta_likeado) {
+                await db
+                    .delete(Escucha)
+                    .where(
+                        and(
+                            eq(Escucha.cod_cancion, cod_cancion),
+                            eq(Escucha.cod_usuario, cod_usu),
+                        ),
+                    );
+            } else {
+                await db
+                    .insert(Escucha)
+                    .values({ cod_cancion: cod_cancion, cod_usuario: cod_usu });
+            }
+        } else if (cod_artista) {
+            const esta_likeado = await db
                 .select()
                 .from(Gusta)
-                .where(and(eq(Gusta.cod_art, artistaId), eq(Gusta.cod_usuario, usuarioId)))
+                .where(
+                    and(
+                        eq(Gusta.cod_art, cod_artista),
+                        eq(Gusta.cod_usuario, cod_usu),
+                    ),
+                )
                 .get();
 
-            if (existingLike) {
-                await db.delete(Gusta).where(and(eq(Gusta.cod_art, artistaId), eq(Gusta.cod_usuario, usuarioId)));
+            if (esta_likeado) {
+                await db
+                    .delete(Gusta)
+                    .where(
+                        and(
+                            eq(Gusta.cod_art, cod_artista),
+                            eq(Gusta.cod_usuario, cod_usu),
+                        ),
+                    );
             } else {
-                await db.insert(Gusta).values({
-                    cod_art: artistaId,
-                    cod_usuario: usuarioId,
-                });
+                await db
+                    .insert(Gusta)
+                    .values({ cod_art: cod_artista, cod_usuario: cod_usu });
             }
-        } else if (albumId) {
-            const existingLike = await db
+        } else if (cod_album) {
+            const esta_likeado = await db
                 .select()
                 .from(Ve)
-                .where(and(eq(Ve.cod_album, albumId), eq(Ve.cod_usuario, usuarioId)))
+                .where(
+                    and(
+                        eq(Ve.cod_album, cod_album),
+                        eq(Ve.cod_usuario, cod_usu),
+                    ),
+                )
                 .get();
 
-            if (existingLike) {
-                await db.delete(Ve).where(and(eq(Ve.cod_album, albumId), eq(Ve.cod_usuario, usuarioId)));
+            if (esta_likeado) {
+                await db
+                    .delete(Ve)
+                    .where(
+                        and(
+                            eq(Ve.cod_album, cod_album),
+                            eq(Ve.cod_usuario, cod_usu),
+                        ),
+                    );
             } else {
-                await db.insert(Ve).values({
-                    cod_album: albumId,
-                    cod_usuario: usuarioId,
-                });
+                await db
+                    .insert(Ve)
+                    .values({ cod_album: cod_album, cod_usuario: cod_usu });
             }
         }
 
-        return new Response(JSON.stringify({ success: true }), {
+        return new respuesta_peticion(JSON.stringify({ success: true }), {
             status: 200,
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
         });
     } else {
-        return new Response(
-            JSON.stringify({ success: false, message: "No autorizado" }),
-            {
-                status: 403,
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            },
-        );
+        return new respuesta_peticion(JSON.stringify({ success: false }), {
+            status: 403,
+            headers: { "Content-Type": "application/json" },
+        });
     }
 }
 
@@ -132,22 +169,40 @@ const ElegirArtistas = await Promise.all(
     }),
 );
 
-const cancionesLiked = haentradoencuenta
+const canciones_gustadas = haentradoencuenta
     ? await db
           .select({
-              cod_cancion: Escucha.cod_cancion,
+              id: Cancion.cod_cancion,
+              titulo: Cancion.titulo,
+              imagen: Album.img_album,
           })
           .from(Escucha)
+          .innerJoin(Cancion, eq(Escucha.cod_cancion, Cancion.cod_cancion))
+          .innerJoin(Album, eq(Cancion.cod_album, Album.cod_album))
           .where(eq(Escucha.cod_usuario, cod_usu))
     : [];
 
-const artistasLiked = haentradoencuenta
+const artistas_gustados = haentradoencuenta
     ? await db
           .select({
-              cod_art: Gusta.cod_art,
+              id: Artista.cod_art,
+              id_usuario: Gusta.cod_usuario,
           })
           .from(Gusta)
+          .innerJoin(Artista, eq(Gusta.cod_art, Artista.cod_art))
           .where(eq(Gusta.cod_usuario, cod_usu))
+    : [];
+
+const albumes_gustados = haentradoencuenta
+    ? await db
+          .select({
+              id: Album.cod_album,
+              nombre: Album.nom_album,
+              imagen: Album.img_album,
+          })
+          .from(Ve)
+          .innerJoin(Album, eq(Ve.cod_album, Album.cod_album))
+          .where(eq(Ve.cod_usuario, cod_usu))
     : [];
 
 const noticias1 = await Noticia1();
@@ -211,13 +266,13 @@ const noticias3 = await Noticia3();
                         <p class="text-sm text-gray-300 mb-1">
                             <span class="font-semibold text-white">
                                 Escrito por:
-                            </span{" "}
+                            </span>
                             {noticias2.autor}
                         </p>
                         <p class="text-sm text-gray-300 mb-1">
                             <span class="font-semibold text-white">
                                 Publicado:
-                            </span{" "}
+                            </span>
                             {noticias2.fecha_puli}
                         </p>
                     </div>
@@ -244,13 +299,13 @@ const noticias3 = await Noticia3();
                         <p class="text-sm text-gray-300 mb-1">
                             <span class="font-semibold text-white">
                                 Escrito por:
-                            </span{" "}
+                            </span>
                             {noticias3.autor}
                         </p>
                         <p class="text-sm text-gray-300 mb-1">
                             <span class="font-semibold text-white">
                                 Publicado:
-                            </span{" "}
+                            </span>
                             {noticias3.fecha_puli}
                         </p>
                     </div>
@@ -269,8 +324,9 @@ const noticias3 = await Noticia3();
         ElegirArtistas={ElegirArtistas}
         haentradoencuenta={haentradoencuenta}
         usuarioId={cod_usu}
-        cancionesLiked={cancionesLiked}
-        artistasLiked={artistasLiked}
+        cancionesLiked={canciones_gustadas}
+        artistasLiked={artistas_gustados}
+        albumesLiked={albumes_gustados}
         client:load
     />
 </Layout2>

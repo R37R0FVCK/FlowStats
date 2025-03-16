@@ -22,8 +22,12 @@ const TarjetaInfoArtista = ({ artista, onClose }) => {
                     </button>
                     <div className="bg-black/50 p-4 rounded-lg">
                         <h2 className="text-4xl text-center font-bold text-white mb-4">{artista.nombre_artista}</h2>
+                        <p className="text-xl text-white"><strong>Nombre:</strong> {artista.nombre_real} {artista.apellido_real}</p>
+                        <p className="text-xl text-white"><strong>Edad:</strong> {artista.edad}</p>
+                        <p className="text-xl text-white"><strong>Año de comienzo:</strong> {artista.año_comienzo}</p>
                         <p className="text-xl text-white"><strong>Nacionalidad:</strong> {artista.nacionalidad}</p>
                         <p className="text-xl text-white"><strong>Oyentes:</strong> {artista.oyentes.toLocaleString("es-ES")}</p>
+
                     </div>
                 </div>
             </div>

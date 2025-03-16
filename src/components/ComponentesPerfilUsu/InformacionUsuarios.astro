@@ -2,6 +2,7 @@
 import ImgUsu from "./ImagenesPerfil/ImgUsu.jsx";
 import DatosCanciones from "./InfoDatos/Cancion/DatosCanciones.jsx";
 import DatosArtistas from "./InfoDatos/Cantantes/DatosArtistas.jsx";
+import DatosAlbumes from "./InfoDatos/Albumes/DatosAlbumes.jsx";
 import { Compone } from "astro:db";
 import { db, Escucha, Cancion, Artista, Gusta, Album, Ve } from "astro:db";
 import { eq } from "astro:db";
@@ -62,9 +63,14 @@ const albumes_gustados = await db
         id_album: Album.cod_album,
         nombre_album: Album.nom_album,
         imagen_album: Album.img_album,
+        nombre_artista: Artista.nom_art,
+        fecha_lanzamiento: Album.fecha_lanzamiento_album,
+        numero_canciones: Album.num_canciones,
+        duracion: Album.duracion,
     })
     .from(Album)
     .innerJoin(Ve, eq(Album.cod_album, Ve.cod_album))
+    .innerJoin(Artista, eq(Album.cod_art, Artista.cod_art))
     .where(eq(Ve.cod_usuario, cod_usu));
 
 const { usuario_accedido_info } = Astro.props;
@@ -127,24 +133,6 @@ const { usuario_accedido_info } = Astro.props;
     </div>
     <div>
         <h2 class="text-xl font-bold mb-2 text-center">Álbumes favoritos</h2>
-        <ul class="flex flex-col items-center">
-            {
-                albumes_gustados.map((album) => (
-                    <li class="mb-1 flex items-center space-x-2 group">
-                        <div class="relative flex-shrink-0">
-                            <img
-                                src={album.imagen_album}
-                                alt={album.nombre_album}
-                                class="h-25 w-25 object-cover rounded-lg"
-                            />
-                            <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 rounded-lg" />
-                            <span class="absolute inset-0 flex items-center justify-center text-white font-bold opacity-0 group-hover:opacity-100">
-                                {album.nombre_album}
-                            </span>
-                        </div>
-                    </li>
-                ))
-            }
-        </ul>
+        <DatosAlbumes albumes_gustados={albumes_gustados} client:load />
     </div>
 </div>

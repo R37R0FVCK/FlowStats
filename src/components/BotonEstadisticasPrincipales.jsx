@@ -1,21 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import BotonLikeCanciones from './LikesPrincipal/BotonLikeCanciones';
 import BotonLikeArtistas from './LikesPrincipal/BotonLikeArtistas';
 import BotonLikeAlbumes from './LikesPrincipal/BotonLikesAlbumes';
 
-const BotonEstadisticasPrincipales = ({ artistas_registrados, albumes, ElegirArtistas, haentradoencuenta, usuarioId, cancionesLiked, artistasLiked }) => {
+const BotonEstadisticasPrincipales = ({ artistas_registrados, albumes, ElegirArtistas, haentradoencuenta, usuarioId, canciones_gustadas, artistas_gustados, albumes_gustados }) => {
     const [tipoDato, setTipoDato] = useState('albumes');
+    const [artistas_con_like, setArtistasConLike] = useState(artistas_gustados);
+    const [albumes_con_like, setAlbumesConLike] = useState(albumes_gustados);
+    const [canciones_con_like, setCancionesConLike] = useState(canciones_gustadas);
 
-    const cambiarTipoDato = (nuevoTipo) => {
-        setTipoDato(nuevoTipo);
+    useEffect(() => {
+        setArtistasConLike(artistas_gustados);
+    }, [artistas_gustados]);
+
+    useEffect(() => {
+        setAlbumesConLike(albumes_gustados);
+    }, [albumes_gustados]);
+
+    useEffect(() => {
+        setCancionesConLike(canciones_gustadas);
+    }, [canciones_gustadas]);
+
+    const cambiarTipoDato = (tipo_dato) => {
+        setTipoDato(tipo_dato);
     };
 
-    const isLiked = (id) => {
-        return cancionesLiked.some(cancion => cancion.cod_cancion === id);
+    const asignar_like_cancion = (id_cancion) => {
+        const buscar_cancion = canciones_con_like.some(cancion => cancion.cod_cancion === id_cancion);
+        return buscar_cancion;
     };
 
-    const isArtistLiked = (id) => {
-        return artistasLiked.some(artista => artista.cod_art === id);
+    const asignar_like_art = (id_artista) => {
+        const encontrar_artista = artistas_con_like.some(artista => artista.id === id_artista);
+        return encontrar_artista;
+    };
+
+    const asignar_like_album = (id_album) => {
+        const encontrar_album = albumes_con_like.some(album => album.id === id_album);
+        return encontrar_album;
     };
 
     return (
@@ -54,7 +76,7 @@ const BotonEstadisticasPrincipales = ({ artistas_registrados, albumes, ElegirArt
                                     <p className="text-lg text-gray-600 mb-1">Oyentes: {artista.oyentes_art.toLocaleString()}</p>
                                     <p className="text-lg text-gray-600 mb-1">Nacionalidad: {artista.nacionalidad_art}</p>
                                 </div>
-                                {haentradoencuenta && <BotonLikeArtistas artistaId={artista.cod_art} usuarioId={usuarioId} isLiked={isArtistLiked} />}
+                                {haentradoencuenta && <BotonLikeArtistas artistaId={artista.cod_art} usuarioId={usuarioId} isLiked={asignar_like_art} />}
                             </div>
                         </div>
                     ))}
@@ -72,7 +94,7 @@ const BotonEstadisticasPrincipales = ({ artistas_registrados, albumes, ElegirArt
                                     <p className="text-sm text-gray-600 mb-1">Artista: {album.nom_art}</p>
                                     <p className="text-sm text-gray-600 mb-1">Fecha de publicación: {album.fecha_publicacion}</p>
                                 </div>
-                                {haentradoencuenta && <BotonLikeAlbumes albumId={album.id} usuarioId={usuarioId} isLiked={isLiked} />}
+                                {haentradoencuenta && <BotonLikeAlbumes albumId={album.id} usuarioId={usuarioId} isLiked={asignar_like_album} />}
                             </div>
                         </div>
                     ))}
@@ -91,7 +113,7 @@ const BotonEstadisticasPrincipales = ({ artistas_registrados, albumes, ElegirArt
                                     <h2 className="text-lg font-bold mb-1 text-gray-800">{cancion.nom_cancion}</h2>
                                     <p className="text-sm text-gray-600 mb-1">Reproducciones: {cancion.reproducciones.toLocaleString()}</p>
                                 </div>
-                                {haentradoencuenta && <BotonLikeCanciones cancionId={cancion.id} usuarioId={usuarioId} isLiked={isLiked} />}
+                                {haentradoencuenta && <BotonLikeCanciones cancionId={cancion.id} usuarioId={usuarioId} isLiked={asignar_like_cancion} />}
                             </div>
                         </div>
                     ))}

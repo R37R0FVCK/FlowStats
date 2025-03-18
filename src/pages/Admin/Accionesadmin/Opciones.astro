@@ -1,0 +1,30 @@
+---
+// filepath: c:\Users\angel\Desktop\TFG-2DAM\FlowStats\src\pages\Admin\Accionesadmin\Opciones.astro
+import Layout from "../../../layouts/Layout.astro";
+import { parse } from "cookie";
+import { db, Usuario } from "astro:db";
+import React from "react";
+import BotonesAdmin from "../../../components/ComponentesAccionesAdmin/BotonesAdmin.jsx";
+
+const cookie_acceso = parse(Astro.request.headers.get("cookie") || "");
+const cod_usu = parseInt(cookie_acceso.codigo_usu);
+const haentradoencuenta = cookie_acceso.auth === "true";
+
+let usuario_accedido;
+if (!haentradoencuenta) {
+    return { redirect: "/Acceder" };
+}
+
+const usuariosregistrados = await db.select().from(Usuario);
+usuario_accedido = usuariosregistrados.find(
+    (usuario_accedido) => usuario_accedido.cod_usuario === cod_usu,
+);
+
+if (usuario_accedido?.tipo_usu !== true) {
+    return { redirect: "/Usuario/CuentaUsu" };
+}
+---
+
+<Layout mostrarNavcuenta={true} title="Opciones">
+    <BotonesAdmin client:load />
+</Layout>

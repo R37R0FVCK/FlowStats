@@ -21,7 +21,7 @@ const DatosCanciones = ({ canciones_gustadas }) => {
                         className="mb-1 flex items-center space-x-2 group"
                         onClick={() => abrirModalCancion(cancion)}
                     >
-                        <div className="relative flex-shrink-0">
+                        <div className="relative cursor cursor-pointer flex-shrink-0">
                             <img
                                 src={cancion.imagen_cancion}
                                 alt={cancion.titulo_cancion}

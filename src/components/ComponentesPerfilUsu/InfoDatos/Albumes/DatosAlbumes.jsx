@@ -21,7 +21,7 @@ const DatosAlbumes = ({ albumes_gustados }) => {
                         className="mb-1 flex items-center space-x-2 group"
                         onClick={() => abrirTarjetaAlbum(album)}
                     >
-                        <div className="relative flex-shrink-0">
+                        <div className="relative cursor-pointer flex-shrink-0">
                             <img
                                 src={album.imagen_album}
                                 alt={album.nombre_album}

@@ -6,12 +6,12 @@ const DatosAlbumes = ({ albumes_gustados }) => {
     const [Ver_info_Album, asignarAlbum] = useState(null);
 
     // Función para abrir la tarjeta con la información del álbum seleccionado
-    const abrirTarjetaAlbum = (album) => {
+    const abrirtarjeta = (album) => {
         asignarAlbum(album);
     };
 
     // Función para cerrar la tarjeta de información del álbum
-    const cerrarTarjetaAlbum = () => {
+    const cerrartarjeta = () => {
         asignarAlbum(null);
     };
 
@@ -23,7 +23,7 @@ const DatosAlbumes = ({ albumes_gustados }) => {
                     <li
                         key={album.id_album}
                         className="mb-1 flex items-center space-x-2 group"
-                        onClick={() => abrirTarjetaAlbum(album)}
+                        onClick={() => abrirtarjeta(album)}
                     >
                         <div className="relative cursor-pointer flex-shrink-0">
                             <img
@@ -45,7 +45,7 @@ const DatosAlbumes = ({ albumes_gustados }) => {
             {Ver_info_Album && (
                 <TarjetaInfoAlbum
                     album={Ver_info_Album} // Pasar el álbum seleccionado como prop
-                    onClose={cerrarTarjetaAlbum} // Función para cerrar la tarjeta
+                    onClose={cerrartarjeta} // Función para cerrar la tarjeta
                 />
             )}
         </div>

@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
-import TarjetaInfoAlbum from './TarjetaInfoAlbum.jsx';
+import TarjetaInfoAlbum from './TarjetaInfoAlbum.jsx'; // Componente para mostrar la información detallada de un álbum
 
 const DatosAlbumes = ({ albumes_gustados }) => {
+    // Estado para almacenar el álbum seleccionado
     const [Ver_info_Album, asignarAlbum] = useState(null);
 
+    // Función para abrir la tarjeta con la información del álbum seleccionado
     const abrirTarjetaAlbum = (album) => {
         asignarAlbum(album);
     };
 
+    // Función para cerrar la tarjeta de información del álbum
     const cerrarTarjetaAlbum = () => {
         asignarAlbum(null);
     };
 
     return (
         <div>
+            {/* Lista de álbumes gustados */}
             <ul className="flex flex-col items-center">
                 {albumes_gustados.map((album) => (
                     <li
@@ -28,6 +32,7 @@ const DatosAlbumes = ({ albumes_gustados }) => {
                                 className="h-25 w-25 object-cover rounded-lg"
                             />
                             <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 rounded-lg" />
+
                             <span className="absolute inset-0 flex items-center justify-center text-white font-bold opacity-0 group-hover:opacity-100">
                                 {album.nombre_album}
                             </span>
@@ -36,10 +41,11 @@ const DatosAlbumes = ({ albumes_gustados }) => {
                 ))}
             </ul>
 
+            {/* Mostrar la tarjeta de información del álbum seleccionado */}
             {Ver_info_Album && (
                 <TarjetaInfoAlbum
-                    album={Ver_info_Album}
-                    onClose={cerrarTarjetaAlbum}
+                    album={Ver_info_Album} // Pasar el álbum seleccionado como prop
+                    onClose={cerrarTarjetaAlbum} // Función para cerrar la tarjeta
                 />
             )}
         </div>

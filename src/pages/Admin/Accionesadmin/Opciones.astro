@@ -1,30 +1,38 @@
 ---
-// filepath: c:\Users\angel\Desktop\TFG-2DAM\FlowStats\src\pages\Admin\Accionesadmin\Opciones.astro
 import Layout from "../../../layouts/Layout.astro";
 import { parse } from "cookie";
 import { db, Usuario } from "astro:db";
-import React from "react";
-import BotonesAdmin from "../../../components/ComponentesAccionesAdmin/BotonesAdmin.jsx";
+import BotonesAdmin from "../../../components/ComponentesAccionesAdmin/BotonesAdmin.jsx"; // Componente de botones de administrador
 
+// Recuperar las cookies del usuario
 const cookie_acceso = parse(Astro.request.headers.get("cookie") || "");
 const cod_usu = parseInt(cookie_acceso.codigo_usu);
 const haentradoencuenta = cookie_acceso.auth === "true";
 
+// Variable para almacenar la información del usuario accedido
 let usuario_accedido;
+
+// Redirigir al usuario a la página de acceso si no ha iniciado sesión
 if (!haentradoencuenta) {
     return { redirect: "/Acceder" };
 }
 
+// Consultar la base de datos para obtener los usuarios registrados
 const usuariosregistrados = await db.select().from(Usuario);
+
+// Buscar al usuario actual en la lista de usuarios registrados
 usuario_accedido = usuariosregistrados.find(
     (usuario_accedido) => usuario_accedido.cod_usuario === cod_usu,
 );
 
+// Si el usuario no es administrador, redirigir a la página de cuenta de usuario
 if (usuario_accedido?.tipo_usu !== true) {
     return { redirect: "/Usuario/CuentaUsu" };
 }
 ---
 
+<!-- Layout principal de la página con el componente de botones de administrador -->
 <Layout mostrarNavcuenta={true} title="Opciones">
+    <!-- Cargar el componente de botones de administrador -->
     <BotonesAdmin client:load />
 </Layout>

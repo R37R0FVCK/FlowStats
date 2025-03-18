@@ -1,26 +1,31 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import TarjetaInfoArtista from './TarjetaInfoArtista.jsx';
 
 const DatosArtistas = ({ artistas_gustados }) => {
+    // Estado para almacenar el artista seleccionado
     const [artistaSeleccionado, setArtistaSeleccionado] = useState(null);
 
+    // Función para abrir el modal con la información del artista seleccionado
     const abrirModalArtista = (artista) => {
         setArtistaSeleccionado(artista);
     };
 
+    // Función para cerrar el modal
     const cerrarModalArtista = () => {
         setArtistaSeleccionado(null);
     };
 
     return (
         <div>
+            {/* Lista de artistas gustados */}
             <ul className="flex flex-col items-center">
                 {artistas_gustados.map((artista) => (
                     <li
                         key={artista.id_artista}
-                        className="mb-1 flex items-center space-x-2 group"
-                        onClick={() => abrirModalArtista(artista)}
+                        className="mb-1 flex cursor-pointer items-center space-x-2 group"
+                        onClick={() => abrirModalArtista(artista)} // Abre el modal al hacer clic
                     >
+
                         <div className="relative flex-shrink-0">
                             <img
                                 src={artista.imagen_artista}
@@ -36,10 +41,11 @@ const DatosArtistas = ({ artistas_gustados }) => {
                 ))}
             </ul>
 
+            {/* Modal con información del artista seleccionado */}
             {artistaSeleccionado && (
                 <TarjetaInfoArtista
-                    artista={artistaSeleccionado}
-                    onClose={cerrarModalArtista}
+                    artista={artistaSeleccionado} // Pasa el artista seleccionado como prop
+                    onClose={cerrarModalArtista} // Función para cerrar el modal
                 />
             )}
         </div>

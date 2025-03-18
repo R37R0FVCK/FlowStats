@@ -1,0 +1,113 @@
+---
+// filepath: c:\Users\angel\Desktop\TFG-2DAM\FlowStats\src\pages\Admin\Accionesadmin\ConsultarDatosInternos.astro
+import Layout2 from "../../../layouts/Layout2.astro";
+import { db, Usuario } from "astro:db";
+import { parse } from "cookie";
+
+/*
+recuperamos la cookies de acceso para obtener el id del usuario actual
+y comprobamos si ha entrado en cuenta
+*/
+const cookie_acceso = parse(Astro.request.headers.get("cookie") || "");
+const cod_usu = parseInt(cookie_acceso.codigo_usu);
+const haentradoencuenta = cookie_acceso.auth === "true";
+
+let usuario_accedido = null;
+
+/*
+si no ha entrado en cuenta, redirigimos a la página de acceso
+*/
+if (!haentradoencuenta) {
+    return { redirect: "/Acceder" };
+}
+
+/*
+obtenemos los usuarios registrados y buscamos el usuario actual
+*/
+const usuario_actual = await db.select().from(Usuario);
+usuario_accedido = usuario_actual.find(
+    (usuario) => usuario.cod_usuario === cod_usu,
+);
+/*
+si el usuario no es administrador, redirigimos a la página de cuenta de usuario
+*/
+if (usuario_accedido?.tipo_usu !== true) {
+    return { redirect: "/Usuario/CuentaUsu" };
+}
+---
+
+<Layout2 title="Consultar Datos Internos">
+    <!--importaciones de jquery y CDN datatables  -->
+    <script
+        src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous"></script>;
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css"
+    />
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#datosInternos").DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/2.2.2/i18n/es-ES.json",
+                },
+            });
+        });
+    </script>
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css"
+    />
+
+    <div class="p-6 bg-gray-100 min-h-screen">
+        <div class="flex items-center justify-between mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">
+                Consultar Datos Internos
+            </h1>
+        </div>
+        <p class="mb-6 text-center text-gray-600">
+            Aquí puedes consultar los datos internos del sistema.
+        </p>
+
+        <div class="overflow-x-auto">
+            <table
+                id="datosInternos"
+                class="display w-full bg-white border border-gray-300 rounded-lg shadow-md"
+            >
+                <thead class="bg-gray-200 text-gray-700 uppercase text-sm">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>Teléfono</th>
+                        <th>Correo Electrónico</th>
+                        <th>Tipo de Usuario</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        usuario_actual.map((usuario) => (
+                            <tr>
+                                <td>{usuario.cod_usuario}</td>
+                                <td>{usuario.nombre_usuario}</td>
+                                <td>{usuario.apellidos}</td>
+                                <td>{usuario.telefono_usu}</td>
+                                <td>{usuario.correo_electronico}</td>
+                                <td>
+                                    {usuario.tipo_usu
+                                        ? "Administrador"
+                                        : "Usuario"}
+                                </td>
+                            </tr>
+                        ))
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</Layout2>

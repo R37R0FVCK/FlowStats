@@ -1,4 +1,3 @@
-import React from 'react';
 import BotonCerrarAnimado from "../../../BotonCerrarAnimado.jsx";
 
 const TarjetaInfoCancion = ({ cancion, onClose }) => {
@@ -18,7 +17,7 @@ const TarjetaInfoCancion = ({ cancion, onClose }) => {
                         className="absolute top-2 right-2 rounded-full p-2"
                         onClick={onClose}
                     >
-                        <BotonCerrarAnimado />
+                        <BotonCerrarAnimado /> {/*Botón para cerrar el modal*/}
                     </button>
                     <div className="bg-black/50 p-4 rounded-lg">
                         <h2 className="text-4xl text-center font-bold text-white mb-4">{cancion.titulo_cancion}</h2>

@@ -1,33 +1,38 @@
 import { useEffect, useState } from 'react';
 
 const BotonLikeAlbum = ({ cod_album, cod_usu, estado_megusta }) => {
+    // Estado para controlar si el álbum está marcado como like
     const [megusta, asignar_megusta] = useState(() => estado_megusta(cod_album));
 
+    // Actualizar el estado cuando cambie el código del álbum o el estado inicial delike
     useEffect(() => {
         asignar_megusta(estado_megusta(cod_album));
     }, [cod_album, estado_megusta]);
 
+    // Función para manejar la solicitud delike o unlike
     const albumes_gustados = async () => {
         try {
+            // Enviar una solicitud POST al servidor para actualizar el estado de like
             const respuesta_envio = await fetch('http://localhost:4321', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ cod_album, cod_usu }),
+                body: JSON.stringify({ cod_album, cod_usu }), // Enviar el código del álbum y del usuario
             });
 
             if (!respuesta_envio.ok) {
-                throw new Error('Error al enviar la los datos');
+                throw new Error('Error al enviar los datos'); // Manejar errores en la solicitud
             }
 
             const datos = await respuesta_envio.json();
-            asignar_megusta(!megusta);
+            asignar_megusta(!megusta); // Cambiar el estado de like
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Error:', error); // Mostrar errores en la consola
         }
     };
 
+    // Función para asignar o quitarlike  al álbum
     const cambio_estado = () => {
         albumes_gustados();
     };

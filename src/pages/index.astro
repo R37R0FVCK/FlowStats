@@ -1,7 +1,8 @@
 ---
-import Layout2 from "../layouts/Layout2.astro";
-import { Noticia1, Noticia2, Noticia3 } from "../api/ExtraerDatosBillboard.js";
-import BotonEstadisticasPrincipales from "../components/ComponentesPrincipal/BotonEstadisticasPrincipales.jsx";
+// Importaciones necesarias para el funcionamiento de la página
+import Layout2 from "../layouts/Layout2.astro"; // Layout principal de la página
+import { Noticia1, Noticia2, Noticia3 } from "../api/ExtraerDatosBillboard.js"; // Funciones para obtener noticias
+import BotonEstadisticasPrincipales from "../components/ComponentesPrincipal/BotonEstadisticasPrincipales.jsx"; // Componente para mostrar estadísticas principales
 import {
     db,
     Artista,
@@ -14,17 +15,20 @@ import {
     Gusta,
     Ve,
 } from "astro:db";
-import { desc, eq, and } from "astro:db";
+import { desc, eq, and } from "astro:db"; // Utilidades para consultas a la base de datos
 import { parse } from "cookie";
 
+// Recuperar las cookies del usuario para verificar si ha iniciado sesión
 const cookie_acceso = parse(Astro.request.headers.get("cookie") || "");
 const haentradoencuenta = cookie_acceso.auth === "true";
 const cod_usu = parseInt(cookie_acceso.codigo_usu);
 
+// Manejo de solicitudes POST para dar like o quitar  o unlike a canciones, artistas o álbumes
 if (Astro.request.method === "POST") {
     const { cod_cancion, cod_art, cod_album } = await Astro.request.json();
 
     if (haentradoencuenta && cod_usu) {
+        // Manejar like para canciones
         if (cod_cancion) {
             const esta_likeado = await db
                 .select()
@@ -38,6 +42,7 @@ if (Astro.request.method === "POST") {
                 .get();
 
             if (esta_likeado) {
+                // Si ya está marcado como like, eliminarlo
                 await db
                     .delete(Escucha)
                     .where(
@@ -47,11 +52,14 @@ if (Astro.request.method === "POST") {
                         ),
                     );
             } else {
+                // Si no está marcado como like, agregarlo
                 await db
                     .insert(Escucha)
                     .values({ cod_cancion: cod_cancion, cod_usuario: cod_usu });
             }
-        } else if (cod_art) {
+        }
+        // Manejar like para artistas
+        else if (cod_art) {
             const esta_likeado = await db
                 .select()
                 .from(Gusta)
@@ -77,7 +85,9 @@ if (Astro.request.method === "POST") {
                     .insert(Gusta)
                     .values({ cod_art: cod_art, cod_usuario: cod_usu });
             }
-        } else if (cod_album) {
+        }
+        // Manejar like para álbumes
+        else if (cod_album) {
             const esta_likeado = await db
                 .select()
                 .from(Ve)
@@ -105,11 +115,13 @@ if (Astro.request.method === "POST") {
             }
         }
 
+        // Respuesta exitosa
         return new Response(JSON.stringify({ success: true }), {
             status: 200,
             headers: { "Content-Type": "application/json" },
         });
     } else {
+        // Respuesta de error si el usuario no está autenticado
         return new Response(JSON.stringify({ success: false }), {
             status: 403,
             headers: { "Content-Type": "application/json" },
@@ -117,12 +129,14 @@ if (Astro.request.method === "POST") {
     }
 }
 
+// Consultar los artistas más populares
 const artistas_registrados = await db
     .select()
     .from(Artista)
     .orderBy(desc(Artista.oyentes_art))
     .limit(5);
 
+// Consultar los álbumes más populares
 const albumes = await db
     .select({
         id: Album.cod_album,
@@ -136,6 +150,7 @@ const albumes = await db
     .orderBy(desc(Album.num_canciones))
     .limit(5);
 
+// Consultar las canciones más reproducidas
 const canciones = await db
     .select({
         id: Cancion.cod_cancion,
@@ -152,6 +167,7 @@ const canciones = await db
     .orderBy(desc(Cancion.num_reproducciones))
     .limit(5);
 
+// Consultar los artistas relacionados con las canciones más reproducidas
 const ElegirArtistas = await Promise.all(
     canciones.map(async (cancion) => {
         const artistas = await db
@@ -159,7 +175,7 @@ const ElegirArtistas = await Promise.all(
                 nom_art: Artista.nom_art,
             })
             .from(Compone)
-            .innerJoin(Artista, eq(Compone.cod_art, Artista.cod_art))
+            .innerJoin(Artista, eq(Compone.cod_art, Artista.cod_art)) // Relacionar canciones con artistas
             .where(eq(Compone.cod_cancion, cancion.id));
         return {
             ...cancion,
@@ -168,6 +184,7 @@ const ElegirArtistas = await Promise.all(
     }),
 );
 
+//  si esta autenticado consultar las canciones gustadas por el usuario
 const canciones_gustadas = haentradoencuenta
     ? await db
           .select({
@@ -181,6 +198,7 @@ const canciones_gustadas = haentradoencuenta
           .where(eq(Escucha.cod_usuario, cod_usu))
     : [];
 
+//  si esta autenticado consultar los artistas gustados por el usuario
 const artistas_gustados = haentradoencuenta
     ? await db
           .select({
@@ -192,6 +210,7 @@ const artistas_gustados = haentradoencuenta
           .where(eq(Gusta.cod_usuario, cod_usu))
     : [];
 
+//  si esta autenticado consultar los álbumes gustados por el usuario
 const albumes_gustados = haentradoencuenta
     ? await db
           .select({
@@ -204,12 +223,14 @@ const albumes_gustados = haentradoencuenta
           .where(eq(Ve.cod_usuario, cod_usu))
     : [];
 
+// Obtener las noticias principales del scrappeo de Billboard
 const noticias1 = await Noticia1();
 const noticias2 = await Noticia2();
 const noticias3 = await Noticia3();
 ---
 
 <Layout2 title="FlowStats">
+    <!-- Sección de noticias principales -->
     <div class="text-center mt-4 mb-4">
         <h1 class="text-4xl font-bold text-gray-800 underline">
             Noticias Principales
@@ -312,6 +333,8 @@ const noticias3 = await Noticia3();
             )
         }
     </div>
+
+    <!-- Sección de estadísticas principales -->
     <div class="text-center mt-4 mb-4">
         <h1 class="text-4xl font-bold text-gray-800 underline">
             Estadisticas Principales

@@ -2,14 +2,18 @@ import React, { useState, useEffect } from 'react';
 import '../../../styles/corazonmegusta.css';
 
 const BotonLikeArtistas = ({ cod_art, cod_usu, estado_megusta }) => {
+    // Estado para controlar si el artista está marcado como like
     const [me_gusta, poner_megusta] = useState(() => estado_megusta(cod_art));
 
+    // Actualizar el estado cuando cambie el código del artista o el estado inicial de like
     useEffect(() => {
         poner_megusta(estado_megusta(cod_art));
     }, [cod_art, estado_megusta]);
 
+    // Función para manejar la solicitud de like o unlike
     const artistas_gustados = async () => {
         try {
+            // Enviar una solicitud POST al servidor para actualizar el estado de like
             const respuesta_envio = await fetch('http://localhost:4321', {
                 method: 'POST',
                 headers: {
@@ -29,6 +33,7 @@ const BotonLikeArtistas = ({ cod_art, cod_usu, estado_megusta }) => {
         }
     };
 
+    // Función para asignar o quitar like al artista
     const asignar_me_gusta = () => {
         artistas_gustados();
     };
@@ -36,6 +41,7 @@ const BotonLikeArtistas = ({ cod_art, cod_usu, estado_megusta }) => {
     return (
         <div title="Like" className="heart-container" onClick={asignar_me_gusta}>
             <input id="Give-It-An-Id" className="checkbox" type="checkbox" checked={me_gusta} readOnly />
+
             <div className={`svg-container ${me_gusta ? 'liked' : 'unliked'}`}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -47,6 +53,8 @@ const BotonLikeArtistas = ({ cod_art, cod_usu, estado_megusta }) => {
                     >
                     </path>
                 </svg>
+
+                { }
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className={`svg-filled ${me_gusta ? 'svg-liked' : ''}`}
@@ -57,6 +65,7 @@ const BotonLikeArtistas = ({ cod_art, cod_usu, estado_megusta }) => {
                     >
                     </path>
                 </svg>
+
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     height="100"

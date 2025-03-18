@@ -1,40 +1,50 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import BotonLikeCanciones from './LikesPrincipal/BotonLikeCanciones';
 import BotonLikeArtistas from './LikesPrincipal/BotonLikeArtistas';
 import BotonLikeAlbumes from './LikesPrincipal/BotonLikesAlbumes';
 
 const BotonEstadisticasPrincipales = ({ artistas_registrados, albumes, ElegirArtistas, haentradoencuenta, usuarioId, canciones_gustadas, artistas_gustados, albumes_gustados }) => {
+    // Estado para controlar el tipo de datos que se muestra (artistas, álbumes o canciones)
     const [tipoDato, setTipoDato] = useState('albumes');
+
+    // Estados para almacenar los elementos marcados como like
     const [artistas_con_like, setArtistasConLike] = useState(artistas_gustados);
     const [albumes_con_like, setAlbumesConLike] = useState(albumes_gustados);
     const [canciones_con_like, setCancionesConLike] = useState(canciones_gustadas);
 
+    // Actualizar el estado de artistas con like cuando cambien los datos
     useEffect(() => {
         setArtistasConLike(artistas_gustados);
     }, [artistas_gustados]);
 
+    // Actualizar el estado de álbumes con like cuando cambien los datos
     useEffect(() => {
         setAlbumesConLike(albumes_gustados);
     }, [albumes_gustados]);
 
+    // Actualizar el estado de canciones con like cuando cambien los datos
     useEffect(() => {
         setCancionesConLike(canciones_gustadas);
     }, [canciones_gustadas]);
 
+    // Función para cambiar el tipo de datos que se muestra
     const cambiarTipoDato = (tipo_dato) => {
         setTipoDato(tipo_dato);
     };
 
+    // Función para verificar si una canción está marcada como like
     const asignar_like_cancion = (id_cancion) => {
         const buscar_cancion = canciones_con_like.some(cancion => cancion.cod_cancion === id_cancion);
         return buscar_cancion;
     };
 
+    // Función para verificar si un artista está marcado como like
     const asignar_like_art = (id_artista) => {
         const encontrar_artista = artistas_con_like.some(artista => artista.id === id_artista);
         return encontrar_artista;
     };
 
+    // Función para verificar si un álbum está marcado como like
     const asignar_like_album = (id_album) => {
         const encontrar_album = albumes_con_like.some(album => album.id === id_album);
         return encontrar_album;
@@ -62,6 +72,7 @@ const BotonEstadisticasPrincipales = ({ artistas_registrados, albumes, ElegirArt
                     Canciones
                 </button>
             </div>
+            { /*si el boton es de artista se mapea el array de artista y se muestra la informacion de cada artista*/}
 
             {tipoDato === 'artistas' && (
                 <div className="flex flex-col items-center space-y-4">
@@ -82,7 +93,7 @@ const BotonEstadisticasPrincipales = ({ artistas_registrados, albumes, ElegirArt
                     ))}
                 </div>
             )}
-
+            { /*si el boton es de albumes se mapea el array de albumes y se muestra la informacion de cada album*/}
             {tipoDato === 'albumes' && (
                 <div className="flex flex-col items-center space-y-4">
                     {albumes.map((album) => (
@@ -100,7 +111,7 @@ const BotonEstadisticasPrincipales = ({ artistas_registrados, albumes, ElegirArt
                     ))}
                 </div>
             )}
-
+            { /*si el boton es de canciones se mapea el array de canciones y se muestra la informacion de cada cancion*/}
             {tipoDato === 'canciones' && (
                 <div className="flex flex-col items-center space-y-4">
                     {ElegirArtistas.map((cancion) => (

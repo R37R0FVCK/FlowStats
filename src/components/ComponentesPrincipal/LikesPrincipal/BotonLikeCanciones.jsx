@@ -1,20 +1,24 @@
 import { useState, useEffect } from 'react';
 
 const BotonLikeCanciones = ({ cod_cancion, cod_usu, estado_megusta }) => {
+    // Estado para controlar si la canción está marcada como like
     const [megusta, asignar_megusta] = useState(() => estado_megusta(cod_cancion));
 
+    // Actualizar el estado cuando cambie el código de la canción o el estado inicial de like
     useEffect(() => {
         asignar_megusta(estado_megusta(cod_cancion));
     }, [cod_cancion, estado_megusta]);
 
+    // Función para manejar la solicitud de like o unlike
     const canciones_gustadas = async () => {
         try {
+            // Enviar una solicitud POST al servidor para actualizar el estado de like
             const respuesta_envio = await fetch('http://localhost:4321', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ cod_cancion, cod_usu }),
+                body: JSON.stringify({ cod_cancion, cod_usu }), // Enviar el código de la canción y del usuario
             });
 
             if (!respuesta_envio.ok) {
@@ -28,6 +32,7 @@ const BotonLikeCanciones = ({ cod_cancion, cod_usu, estado_megusta }) => {
         }
     };
 
+    // Función para asignar o quitar like a la canción
     const cambio_estado = () => {
         canciones_gustadas();
     };

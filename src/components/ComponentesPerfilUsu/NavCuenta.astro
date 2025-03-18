@@ -2,49 +2,63 @@
 import { db, Usuario } from "astro:db";
 import { parse } from "cookie";
 
+// Recuperar las cookies del usuario para verificar si ha iniciado sesión
 const cookie_usu = parse(Astro.request.headers.get("cookie") || "");
-const haentradoencuenta = cookie_usu.auth === "true";
-const cod_usuario = cookie_usu.codigo_usu;
+const cod_usuario = cookie_usu.codigo_usu; // Obtener el código del usuario desde las cookies
 
+// Variables para almacenar información del usuario
 let usuario_accedido = null;
 let tipo_usuario = null;
 
 const cod_usu = parseInt(cod_usuario);
+
+// Consultar la base de datos para obtener los usuarios registrados
 const usuarios_registrados = await db.select().from(Usuario);
 
+// Buscar al usuario actual en la lista de usuarios registrados
 usuario_accedido = usuarios_registrados.find(
     (usuario_buscar) => usuario_buscar.cod_usuario === cod_usu,
 );
+
+// Si el usuario existe, obtener su tipo (administrador o usuario normal)
 if (usuario_accedido) {
     tipo_usuario = usuario_accedido.tipo_usu;
 }
 ---
 
+<!-- Barra de navegación lateral -->
 <nav
     class="bg-orange-400 border-r-4 border-black p-0 h-full w-full sm:w-40 flex flex-col"
 >
+    <!-- Botón para redirigir a la página de información general -->
     <button
         class="text-black py-2 w-full text-left fondoboton"
         onclick="window.location.href = '/Micuenta'"
     >
         Informacion general
     </button>
+
+    <!-- Botón para acciones de administrador (solo visible si el usuario es administrador) -->
     {
         tipo_usuario && (
             <button
                 class="text-black py-2 w-full text-left fondoboton"
-                onclick="window.location.href = '/AccionesAdmin'"
+                onclick="window.location.href = '/Admin/Accionesadmin/Opciones'"
             >
                 Acciones de Administrador
             </button>
         )
     }
+
+    <!-- Botón para redirigir a la página de modificación de datos -->
     <button
         class="text-black py-2 w-full text-left fondoboton"
         onclick="window.location.href = '/PersonalizarDatosUsuario/ModificacionDatos'"
     >
         Modificar Datos
     </button>
+
+    <!-- Botón para cerrar sesión (envía un formulario POST a /CerrarSesion) -->
     <form action="/CerrarSesion" method="post" class="w-full">
         <button
             type="submit"

@@ -81,7 +81,6 @@ if (usuario_accedido?.tipo_usu !== true) {
             >
                 <thead class="bg-gray-200 text-gray-700 uppercase text-sm">
                     <tr>
-                        <th>ID</th>
                         <th>Nombre</th>
                         <th>Apellidos</th>
                         <th>Teléfono</th>
@@ -93,7 +92,6 @@ if (usuario_accedido?.tipo_usu !== true) {
                     {
                         usuario_actual.map((usuario) => (
                             <tr>
-                                <td>{usuario.cod_usuario}</td>
                                 <td>{usuario.nombre_usuario}</td>
                                 <td>{usuario.apellidos}</td>
                                 <td>{usuario.telefono_usu}</td>

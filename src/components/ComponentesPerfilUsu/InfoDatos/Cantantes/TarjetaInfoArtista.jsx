@@ -1,4 +1,3 @@
-import React from 'react';
 import BotonCerrarAnimado from "../../../BotonCerrarAnimado.jsx";
 
 const TarjetaInfoArtista = ({ artista, onClose }) => {

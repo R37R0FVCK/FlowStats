@@ -90,6 +90,7 @@ if (usuario_accedido?.tipo_usu !== true) {
                 </thead>
                 <tbody>
                     {
+                        /*se mapea (recorre) todos los datos del usuario actual para sacar su informacion */
                         usuario_actual.map((usuario) => (
                             <tr>
                                 <td>{usuario.nombre_usuario}</td>

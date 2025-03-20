@@ -6,7 +6,7 @@ const BotonesAdmin = () => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center h-full py-10 bg-gray-100">
+        <div className="flex flex-col ml-60 items-center justify-center h-full py-10 bg-gray-100">
             {/* Título principal de la sección */}
             <h1 className="text-4xl font-bold mb-8 text-center text-gray-800">
                 Acciones de Administrador

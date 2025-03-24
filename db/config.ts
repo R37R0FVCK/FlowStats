@@ -97,7 +97,7 @@ const Concierto = defineTable({
   columns: {
     cod_concierto: column.number({ primaryKey: true, autoIncrement: true }),
     fecha_con: column.date(),
-    hora_con: column.date(),// posible cambio
+    hora_con: column.text(),// posible cambio
     ciudad_con: column.text(),
     ubicacion_con: column.text(),
     cod_art: column.number(),

@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "@types/datatables.net": "^1.10.28",
+    "@types/google.maps": "^3.58.1",
     "@types/jquery": "^3.5.32",
     "prisma": "^6.4.1"
   }

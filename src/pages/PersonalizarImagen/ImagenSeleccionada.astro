@@ -1,12 +1,14 @@
 ---
-// filepath: c:\Users\angel\Desktop\TFG-2DAM\FlowStats\src\pages\PersonalizarImagen\ImagenSeleccionada.astro
 import { db, Usuario } from "astro:db";
+
 import { parse } from "cookie";
 
+// Obtiene las cookies del usuario actual
 const cookie_usu_act = parse(Astro.request.headers.get("cookie") || "");
 const cod_usu = cookie_usu_act.codigo_usu;
 const haentradoencuenta = cookie_usu_act.auth === "true";
 
+// Redirige al usuario a la página de acceso si no ha iniciado sesión
 if (!haentradoencuenta) {
     return Astro.redirect("/Acceder");
 }
@@ -14,26 +16,33 @@ if (!haentradoencuenta) {
 const codigo_usu_buscar = parseInt(cod_usu);
 
 const usuarios_registrados = await db.select().from(Usuario);
+
+// Busca al usuario actual en la lista de usuarios registrados
 const usuario_accedido = usuarios_registrados.find(
     (usuarioactivo) => usuarioactivo.cod_usuario === codigo_usu_buscar,
 );
 
+// Si el usuario no existe, redirige a la página de acceso
 if (!usuario_accedido) {
     return Astro.redirect("/Acceder");
 }
 
+// Obtiene el parámetro de la URL de la imagen que se ha seleccionado
 const parametro_busqueda = new URLSearchParams(Astro.url.search);
 const img_seleccionada = parametro_busqueda.get("img");
 
+// Si el método de la solicitud es POST, actualiza la imagen del usuario
 if (Astro.request.method === "POST") {
     const dato_form = await Astro.request.formData();
     const imagen_act = dato_form.get("imagen_actualizar");
 
+    // Si hay una imagen seleccionada, actualiza la base de datos
     if (imagen_act) {
         await db.update(Usuario).set({
             img_usu: imagen_act.toString(),
         });
     }
+    // Redirige al usuario a la página Mi cuenta
     return Astro.redirect("/Micuenta");
 }
 ---
@@ -44,6 +53,7 @@ if (Astro.request.method === "POST") {
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Imagen Seleccionada</title>
+        <!-- Importa los estilos globales -->
         <link rel="stylesheet" href="/src/styles/global.css" />
     </head>
     <body
@@ -56,6 +66,7 @@ if (Astro.request.method === "POST") {
                 alt="Imagen seleccionada"
                 class="w-48 h-48 object-cover rounded-full mx-auto"
             />
+            <!-- Formulario para confirmar la selección de la imagen -->
             <form method="post">
                 <input
                     type="hidden"

@@ -1,5 +1,4 @@
 ---
-// filepath: c:\Users\angel\Desktop\TFG-2DAM\FlowStats\src\pages\PersonalizarImagen\ImgPredefinidas.astro
 import MostrarImgPredefinidas from "../../components/ComponentesPerfilUsu/ImagenesPerfil/MostrarImgPredefinidas.jsx";
 ---
 
@@ -9,11 +8,13 @@ import MostrarImgPredefinidas from "../../components/ComponentesPerfilUsu/Imagen
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Imagenes Predefinidas</title>
+        <!-- Importa el archivo de estilos globales -->
         <link rel="stylesheet" href="/src/styles/global.css" />
     </head>
     <body
         class="flex items-center justify-center min-h-screen bg-black text-white"
     >
+        <!-- Renderiza el componente MostrarImgPredefinidas en el cliente -->
         <MostrarImgPredefinidas client:load />
     </body>
 </html>

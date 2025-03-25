@@ -1,21 +1,25 @@
 ---
-import Layout from "../../../../layouts/Layout.astro";
+// Importaciones necesarias
 import Layout2 from "../../../../layouts/Layout2.astro";
-import { db, Usuario, Concierto } from "astro:db";
+import { db, Usuario, Artista, Concierto } from "astro:db";
 import { parse } from "cookie";
 
+// Obtener las cookies del usuario
 const cookie_acceso = parse(Astro.request.headers.get("cookie") || "");
 const cod_usu = parseInt(cookie_acceso.codigo_usu);
 const haentradoencuenta = cookie_acceso.auth === "true";
 
 let usuario_accedido;
 
+// Redirigir si el usuario no ha iniciado sesión
 if (!haentradoencuenta) {
     Astro.redirect("/Acceder");
 }
 
+// Consultar los usuarios registrados
 const usuariosregistrados = await db.select().from(Usuario);
 
+// Verificar si el usuario tiene permisos de administrador
 usuario_accedido = usuariosregistrados.find(
     (usuario_accedido) => usuario_accedido.cod_usuario === cod_usu,
 );
@@ -23,8 +27,224 @@ usuario_accedido = usuariosregistrados.find(
 if (usuario_accedido?.tipo_usu !== true) {
     Astro.redirect("/Usuario/CuentaUsu");
 }
+
+// Obtener la lista de artistas desde la base de datos
+const artistas = await db.select().from(Artista);
+
+// Manejar datos del formulario POST
+if (Astro.request.method === "POST") {
+    const datosformulario = await Astro.request.formData();
+    const fecha_con = datosformulario.get("fecha_con");
+    const hora_con = datosformulario.get("hora_con");
+    const ciudad_con = datosformulario.get("ciudad_con");
+    const ubicacion_con = datosformulario.get("ubicacion_con");
+    const cod_art_texto = datosformulario.get("cod_art");
+
+    if (
+        typeof fecha_con === "string" &&
+        typeof hora_con === "string" &&
+        typeof ciudad_con === "string" &&
+        typeof ubicacion_con === "string" &&
+        typeof cod_art_texto === "string"
+    ) {
+        // Conversión de datos al tipo adecuado
+        const cod_art = parseInt(cod_art_texto);
+        const fecha = new Date(fecha_con);
+        // Validar que todos los datos sean válidos
+        if (!isNaN(cod_art)) {
+            // Insertar los datos en la tabla Concierto
+            await db.insert(Concierto).values({
+                fecha_con: fecha,
+                hora_con,
+                ciudad_con,
+                ubicacion_con,
+                cod_art,
+            });
+
+            // Redirigir despues de insertar
+            Astro.redirect("/Admin/Accionesadmin/AdministrarDatos/Conciertos");
+        } else {
+            console.error("El código del artista no es válido.");
+        }
+    } else {
+        console.error("Faltan datos en el formulario o son inválidos.");
+    }
+}
 ---
 
 <Layout2 mostrarNavcuenta={true} title="Añadir Conciertos">
-    <div></div>
+    <div class="max-w-4xl mx-auto mt-10 p-8 bg-white shadow-lg rounded-lg">
+        <h1 class="text-3xl font-extrabold text-gray-800 text-center mb-6">
+            Añadir Concierto
+        </h1>
+        <form method="POST" class="space-y-6">
+            <!-- Campo para la fecha del concierto -->
+            <div>
+                <label
+                    for="fecha_con"
+                    class="block text-sm font-semibold text-gray-700"
+                    >Fecha del Concierto</label
+                >
+                <input
+                    type="date"
+                    id="fecha_con"
+                    name="fecha_con"
+                    required
+                    class="mt-2 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                />
+            </div>
+
+            <!-- Campo para la hora del concierto -->
+            <div>
+                <label
+                    for="hora_con"
+                    class="block text-sm font-semibold text-gray-700"
+                    >Hora del Concierto</label
+                >
+                <input
+                    type="time"
+                    id="hora_con"
+                    name="hora_con"
+                    required
+                    class="mt-2 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                />
+            </div>
+
+            <!-- Campo para la ciudad del concierto -->
+            <div>
+                <label
+                    for="ciudad_con"
+                    class="block text-sm font-semibold text-gray-700"
+                    >Ciudad</label
+                >
+                <select
+                    id="ciudad_con"
+                    name="ciudad_con"
+                    required
+                    class="mt-2 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                >
+                    <option value="">Selecciona una ciudad</option>
+                    <option value="Madrid">Madrid</option>
+                    <option value="Barcelona">Barcelona</option>
+                    <option value="Valencia">Valencia</option>
+                    <option value="Sevilla">Sevilla</option>
+                    <option value="Zaragoza">Zaragoza</option>
+                    <option value="Málaga">Málaga</option>
+                    <option value="Murcia">Murcia</option>
+                    <option value="Palma">Palma</option>
+                    <option value="Las Palmas">Las Palmas</option>
+                    <option value="Bilbao">Bilbao</option>
+                </select>
+            </div>
+
+            <!-- Campo para la ubicación del concierto -->
+            <div>
+                <label
+                    for="ubicacion_con"
+                    class="block text-sm font-semibold text-gray-700"
+                    >Ubicación</label
+                >
+                <input
+                    type="text"
+                    id="ubicacion_con"
+                    name="ubicacion_con"
+                    placeholder="Introduce la ubicación del concierto"
+                    required
+                    class="mt-2 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                />
+            </div>
+
+            <!-- Lista desplegable para seleccionar un artista -->
+            <div>
+                <label
+                    for="cod_art"
+                    class="block text-sm font-semibold text-gray-700"
+                    >Seleccionar Artista</label
+                >
+                <select
+                    id="cod_art"
+                    name="cod_art"
+                    required
+                    class="mt-2 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                >
+                    <option value="">Selecciona un artista</option>
+                    {
+                        artistas.map((artista) => (
+                            <option
+                                value={artista.cod_art}
+                                data-img={artista.img_art}
+                            >
+                                {artista.nom_art}
+                            </option>
+                        ))
+                    }
+                </select>
+                <div
+                    id="vista_art_seleccionado"
+                    class="mt-4 items-center space-x-4"
+                    style="display: none;"
+                >
+                    <div
+                        class="w-16 h-16 overflow-hidden rounded-full border border-gray-300 shadow-md"
+                    >
+                        <img
+                            id="artista_img"
+                            src=""
+                            alt="Imagen del artista"
+                            class="w-full h-full object-cover"
+                        />
+                    </div>
+                    <span
+                        id="artista_nombre"
+                        class="text-lg font-semibold text-gray-700"></span>
+                </div>
+            </div>
+
+            <!-- Botón para enviar el formulario -->
+            <div>
+                <button
+                    type="submit"
+                    class="w-full bg-black text-white py-3 px-6 rounded-lg font-semibold hover:bg-orange-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow-md"
+                >
+                    Añadir Concierto
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // extraer elementos del DOM mediante su id
+        const artistaseleccionado = document.getElementById("cod_art");
+        const vista_art = document.getElementById("vista_art_seleccionado");
+        const img_art = document.getElementById("artista_img");
+        const nom_art = document.getElementById("artista_nombre");
+        // añadir un evento de cambio  del elemento artistaseleccionado
+        if (artistaseleccionado) {
+            // evento que cambia el contenido de la vista previa del artista
+            artistaseleccionado.addEventListener("change", () => {
+                // obtener la opción seleccionada por el usuario
+                const opcion_seleccionada = (
+                    artistaseleccionado as HTMLSelectElement
+                ).options[
+                    (artistaseleccionado as HTMLSelectElement).selectedIndex
+                ];
+                // obtener la ruta de la imagen y el nombre del artista
+                const ruta_img = opcion_seleccionada.getAttribute("data-img");
+                const nombreArtista = opcion_seleccionada.textContent;
+                // mostrar la imagen y el nombre del artista si se ha seleccionado un artista
+                if (ruta_img && img_art instanceof HTMLImageElement) {
+                    img_art.src = ruta_img;
+                    if (vista_art) {
+                        vista_art.style.display = "flex";
+                    }
+                } else if (vista_art) {
+                    vista_art.style.display = "none";
+                }
+
+                if (nom_art) {
+                    nom_art.textContent = nombreArtista || "";
+                }
+            });
+        }
+    </script>
 </Layout2>

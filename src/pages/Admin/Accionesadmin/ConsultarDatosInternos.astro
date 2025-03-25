@@ -1,18 +1,7 @@
 ---
-// filepath: c:\Users\angel\Desktop\TFG-2DAM\FlowStats\src\pages\Admin\Accionesadmin\ConsultarDatosInternos.astro
 import Layout2 from "../../../layouts/Layout2.astro";
 import { eq } from "astro:db";
 import { db, Usuario, Concierto, Artista, Album, Cancion } from "astro:db";
-
-// Ensure the type definition for Concierto includes cod_concierto
-type Concierto = {
-    cod_concierto: number;
-    fecha_con: string;
-    hora_con: string;
-    ciudad_con: string;
-    ubicacion_con: string;
-    cod_art: number;
-};
 import { parse } from "cookie";
 
 // Recuperar cookies de acceso
@@ -53,12 +42,16 @@ const canciones = await db
     .from(Cancion)
     .innerJoin(Album, eq(Cancion.cod_album, Album.cod_album));
 
+    // Eliminar concierto si se ha enviado por el formulario POST
 if (Astro.request.method === "POST") {
+    // Obtener datos del formulario
     const datosformulario = await Astro.request.formData();
     const id_concierto = datosformulario.get("id_concierto") as string | null;
 
+    // Comprobar que el id del concierto es válido
     if (id_concierto && !isNaN(parseInt(id_concierto))) {
         try {
+            // Eliminar el concierto de la base de datos
             await db
                 .delete(Concierto)
                 .where(eq(Concierto.cod_concierto, parseInt(id_concierto)));
@@ -69,7 +62,7 @@ if (Astro.request.method === "POST") {
             console.error("Error al eliminar el concierto:", error);
         }
     } else {
-        console.error("ID de concierto inválido.");
+        console.error("No se ha podido eliminar el concierto");
     }
 }
 ---
@@ -120,40 +113,40 @@ if (Astro.request.method === "POST") {
     <div class="p-6 bg-gray-100 min-h-screen">
         <!-- Botones para alternar entre tablas -->
         <div class="flex items-center justify-center space-x-4 mb-6">
-            <!-- Botón para mostrar la tabla de usuarios -->
+            <!-- Boton para mostrar la tabla de usuarios -->
             <button
                 id="boton_usuarios"
                 class="px-4 py-2 bg-black text-white rounded-lg shadow-md hover:bg-orange-400 hover:text-black focus:outline-none"
             >
                 Usuario
             </button>
-            <!-- Botón para mostrar la tabla de conciertos -->
+            <!-- Boton para mostrar la tabla de conciertos -->
             <button
                 id="boton_conciertos"
                 class="px-4 py-2 bg-black text-white rounded-lg shadow-md hover:bg-orange-400 hover:text-black focus:outline-none"
             >
                 Concierto
             </button>
-            <!-- Botón para mostrar la tabla de artistas -->
+            <!-- Boton para mostrar la tabla de artistas -->
             <button
                 id="boton_artistas"
                 class="px-4 py-2 bg-black text-white rounded-lg shadow-md hover:bg-orange-400 hover:text-black focus:outline-none"
             >
                 Artista
             </button>
-            <!-- Botón para mostrar la tabla de álbumes -->
+            <!-- Boton para mostrar la tabla de álbumes -->
             <button
                 id="boton_albumes"
                 class="px-4 py-2 bg-black text-white rounded-lg shadow-md hover:bg-orange-400 hover:text-black focus:outline-none"
             >
                 Álbum
             </button>
-            <!-- Botón para mostrar la tabla de canciones -->
+            <!-- Boton para mostrar la tabla de canciones -->
             <button
                 id="boton_canciones"
                 class="px-4 py-2 bg-black text-white rounded-lg shadow-md hover:bg-orange-400 hover:text-black focus:outline-none"
             >
-                Canción
+                Cancion
             </button>
         </div>
 
@@ -211,6 +204,7 @@ if (Astro.request.method === "POST") {
                 </thead>
                 <tbody>
                     {
+                        //mapear los conciertos y mostrarlos en la tabla
                         conciertos.map((concierto) => (
                             <tr>
                                 <td>{concierto.fecha_con}</td>
@@ -275,6 +269,7 @@ if (Astro.request.method === "POST") {
                 </thead>
                 <tbody>
                     {
+                        //mapear los artistas y mostrarlos en la tabla
                         artistas.map((artista) => (
                             <tr>
                                 <td>
@@ -315,6 +310,7 @@ if (Astro.request.method === "POST") {
                 </thead>
                 <tbody>
                     {
+                        //mapear los albumes y mostrarlos en la tabla
                         albumes.map((album) => (
                             <tr>
                                 <td>
@@ -352,6 +348,7 @@ if (Astro.request.method === "POST") {
                 </thead>
                 <tbody>
                     {
+                        //mapear las canciones y mostrarlas en la tabla
                         canciones.map((cancion) => (
                             <tr>
                                 <td>
@@ -397,31 +394,31 @@ if (Astro.request.method === "POST") {
                 tabla_canciones?.classList.add("hidden");
             };
 
-            // Mostrar la tabla de usuarios al hacer clic en el botón correspondiente
+            // Mostrar la tabla de usuarios al hacer clic en el boton cambiar a usuarios
             boton_usuarios?.addEventListener("click", () => {
                 cambio_tabla();
                 tabla_usuarios?.classList.remove("hidden");
             });
 
-            // Mostrar la tabla de conciertos al hacer clic en el botón correspondiente
+            // Mostrar la tabla de conciertos al hacer clic en el boton  cambiar a conciertos
             boton_conciertos?.addEventListener("click", () => {
                 cambio_tabla();
                 tabla_conciertos?.classList.remove("hidden");
             });
 
-            // Mostrar la tabla de artistas al hacer clic en el botón correspondiente
+            // Mostrar la tabla de artistas al hacer clic en el boton cambiar a artistas
             boton_artistas?.addEventListener("click", () => {
                 cambio_tabla();
                 tabla_artistas?.classList.remove("hidden");
             });
 
-            // Mostrar la tabla de álbumes al hacer clic en el botón correspondiente
+            // Mostrar la tabla de álbumes al hacer clic en el boton  cambiar a albumes
             boton_albumes?.addEventListener("click", () => {
                 cambio_tabla();
                 tabla_albumes?.classList.remove("hidden");
             });
 
-            // Mostrar la tabla de canciones al hacer clic en el botón correspondiente
+            // Mostrar la tabla de canciones al hacer clic en el boton cambiar a canciones
             boton_canciones?.addEventListener("click", () => {
                 cambio_tabla();
                 tabla_canciones?.classList.remove("hidden");

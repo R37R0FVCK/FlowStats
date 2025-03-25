@@ -1,57 +1,115 @@
 ---
 // filepath: c:\Users\angel\Desktop\TFG-2DAM\FlowStats\src\pages\Admin\Accionesadmin\ConsultarDatosInternos.astro
 import Layout2 from "../../../layouts/Layout2.astro";
-import { db, Usuario } from "astro:db";
+import { eq } from "astro:db";
+import { db, Usuario, Concierto, Artista, Album, Cancion } from "astro:db";
+
+// Ensure the type definition for Concierto includes cod_concierto
+type Concierto = {
+    cod_concierto: number;
+    fecha_con: string;
+    hora_con: string;
+    ciudad_con: string;
+    ubicacion_con: string;
+    cod_art: number;
+};
 import { parse } from "cookie";
 
-/*
-recuperamos la cookies de acceso para obtener el id del usuario actual
-y comprobamos si ha entrado en cuenta
-*/
+// Recuperar cookies de acceso
 const cookie_acceso = parse(Astro.request.headers.get("cookie") || "");
 const cod_usu = parseInt(cookie_acceso.codigo_usu);
 const haentradoencuenta = cookie_acceso.auth === "true";
 
 let usuario_accedido = null;
 
-/*
-si no ha entrado en cuenta, redirigimos a la página de acceso
-*/
+// Redirigir si no ha iniciado sesión
 if (!haentradoencuenta) {
     return { redirect: "/Acceder" };
 }
 
-/*
-obtenemos los usuarios registrados y buscamos el usuario actual
-*/
+// Obtener usuarios registrados y buscar el usuario actual
 const usuario_actual = await db.select().from(Usuario);
 usuario_accedido = usuario_actual.find(
     (usuario) => usuario.cod_usuario === cod_usu,
 );
-/*
-si el usuario no es administrador, redirigimos a la página de cuenta de usuario
-*/
+
+// Redirigir si el usuario no es administrador
 if (usuario_accedido?.tipo_usu !== true) {
     return { redirect: "/Usuario/CuentaUsu" };
+}
+
+// Obtener los datos de los conciertos, artistas, álbumes y canciones
+const conciertos = await db.select().from(Concierto);
+const artistas = await db.select().from(Artista);
+const albumes = await db.select().from(Album);
+const canciones = await db
+    .select({
+        titulo_cancion: Cancion.titulo,
+        genero_cancion: Cancion.genero_cancion,
+        num_reproducciones: Cancion.num_reproducciones,
+        cod_album: Cancion.cod_album,
+        img_album: Album.img_album,
+    })
+    .from(Cancion)
+    .innerJoin(Album, eq(Cancion.cod_album, Album.cod_album));
+
+if (Astro.request.method === "POST") {
+    const datosformulario = await Astro.request.formData();
+    const id_concierto = datosformulario.get("id_concierto") as string | null;
+
+    if (id_concierto && !isNaN(parseInt(id_concierto))) {
+        try {
+            await db
+                .delete(Concierto)
+                .where(eq(Concierto.cod_concierto, parseInt(id_concierto)));
+            console.log(
+                `Concierto con ID ${id_concierto} eliminado correctamente.`,
+            );
+        } catch (error) {
+            console.error("Error al eliminar el concierto:", error);
+        }
+    } else {
+        console.error("ID de concierto inválido.");
+    }
 }
 ---
 
 <Layout2 title="Consultar Datos Internos">
-    <!--importaciones de jquery y CDN datatables  -->
+    <!-- Importaciones de jQuery y DataTables -->
     <script
         src="https://code.jquery.com/jquery-3.7.1.js"
         integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
-        crossorigin="anonymous"></script>;
-
+        crossorigin="anonymous"></script>
     <link
         rel="stylesheet"
         href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css"
     />
     <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
-
     <script>
         $(document).ready(function () {
-            $("#datosInternos").DataTable({
+            //eliminar mensajes de error de DataTables
+            $.fn.dataTable.ext.errMode = "none";
+            $("#t_usuario").DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/2.2.2/i18n/es-ES.json",
+                },
+            });
+            $("#t_concierto").DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/2.2.2/i18n/es-ES.json",
+                },
+            });
+            $("#t_artista").DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/2.2.2/i18n/es-ES.json",
+                },
+            });
+            $("#t_album").DataTable({
+                language: {
+                    url: "//cdn.datatables.net/plug-ins/2.2.2/i18n/es-ES.json",
+                },
+            });
+            $("#t_cancion").DataTable({
                 language: {
                     url: "//cdn.datatables.net/plug-ins/2.2.2/i18n/es-ES.json",
                 },
@@ -59,24 +117,50 @@ if (usuario_accedido?.tipo_usu !== true) {
         });
     </script>
 
-    <link
-        rel="stylesheet"
-        href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css"
-    />
-
     <div class="p-6 bg-gray-100 min-h-screen">
-        <div class="flex items-center justify-between mb-6">
-            <h1 class="text-3xl font-bold text-gray-800">
-                Consultar Datos Internos
-            </h1>
+        <!-- Botones para alternar entre tablas -->
+        <div class="flex items-center justify-center space-x-4 mb-6">
+            <!-- Botón para mostrar la tabla de usuarios -->
+            <button
+                id="boton_usuarios"
+                class="px-4 py-2 bg-black text-white rounded-lg shadow-md hover:bg-orange-400 hover:text-black focus:outline-none"
+            >
+                Usuario
+            </button>
+            <!-- Botón para mostrar la tabla de conciertos -->
+            <button
+                id="boton_conciertos"
+                class="px-4 py-2 bg-black text-white rounded-lg shadow-md hover:bg-orange-400 hover:text-black focus:outline-none"
+            >
+                Concierto
+            </button>
+            <!-- Botón para mostrar la tabla de artistas -->
+            <button
+                id="boton_artistas"
+                class="px-4 py-2 bg-black text-white rounded-lg shadow-md hover:bg-orange-400 hover:text-black focus:outline-none"
+            >
+                Artista
+            </button>
+            <!-- Botón para mostrar la tabla de álbumes -->
+            <button
+                id="boton_albumes"
+                class="px-4 py-2 bg-black text-white rounded-lg shadow-md hover:bg-orange-400 hover:text-black focus:outline-none"
+            >
+                Álbum
+            </button>
+            <!-- Botón para mostrar la tabla de canciones -->
+            <button
+                id="boton_canciones"
+                class="px-4 py-2 bg-black text-white rounded-lg shadow-md hover:bg-orange-400 hover:text-black focus:outline-none"
+            >
+                Canción
+            </button>
         </div>
-        <p class="mb-6 text-center text-gray-600">
-            Aquí puedes consultar los datos internos del sistema.
-        </p>
 
-        <div class="overflow-x-auto">
+        <!-- Tabla de usuarios -->
+        <div id="t_usuario_cont" class="overflow-x-auto">
             <table
-                id="datosInternos"
+                id="t_usuario"
                 class="display w-full bg-white border border-gray-300 rounded-lg shadow-md"
             >
                 <thead class="bg-gray-200 text-gray-700 uppercase text-sm">
@@ -90,7 +174,6 @@ if (usuario_accedido?.tipo_usu !== true) {
                 </thead>
                 <tbody>
                     {
-                        /*se mapea (recorre) todos los datos del usuario actual para sacar su informacion */
                         usuario_actual.map((usuario) => (
                             <tr>
                                 <td>{usuario.nombre_usuario}</td>
@@ -108,5 +191,241 @@ if (usuario_accedido?.tipo_usu !== true) {
                 </tbody>
             </table>
         </div>
+
+        <!-- Tabla de conciertos -->
+        <div id="t_concierto_cont" class="overflow-x-auto hidden">
+            <table
+                id="t_concierto"
+                class="display w-full bg-white border border-gray-300 rounded-lg shadow-md"
+            >
+                <thead class="bg-gray-200 text-gray-700 uppercase text-sm">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Ciudad</th>
+                        <th>Ubicación</th>
+                        <th>Código Artista</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        conciertos.map((concierto) => (
+                            <tr>
+                                <td>{concierto.fecha_con}</td>
+                                <td>{concierto.hora_con}</td>
+                                <td>{concierto.ciudad_con}</td>
+                                <td>{concierto.ubicacion_con}</td>
+                                <td>{concierto.cod_art}</td>
+                                <td>
+                                    <!-- Botón para editar un concierto -->
+                                    <button>
+                                        <img
+                                            src="https://imagedelivery.net/DX6aCRCKOB_y-l4MZVDT9w/aa6f93f9-9ced-4144-e3c0-0435bec7c200/public"
+                                            alt="Editar"
+                                            class="w-6 h-6 items-center object-cover"
+                                        />
+                                    </button>
+                                </td>
+                                <td>
+                                    <!-- Formulario para eliminar un concierto -->
+                                    <form method="POST">
+                                        <input
+                                            type="hidden"
+                                            name="id_concierto"
+                                            value={concierto.cod_concierto}
+                                        />
+                                        <button
+                                            type="submit"
+                                            class="eliminar-boton"
+                                        >
+                                            <img
+                                                src="https://imagedelivery.net/DX6aCRCKOB_y-l4MZVDT9w/60329de8-af5a-418b-b84e-e54402936a00/public"
+                                                alt="Eliminar"
+                                                class="w-6 h-6 items-center object-cover"
+                                            />
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        ))
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Tabla de artistas -->
+        <div id="t_artista_cont" class="overflow-x-auto hidden">
+            <table
+                id="t_artista"
+                class="display w-full bg-white border border-gray-300 rounded-lg shadow-md"
+            >
+                <thead class="bg-gray-200 text-gray-700 uppercase text-sm">
+                    <tr>
+                        <th>Imagen</th>
+                        <th>Nombre</th>
+                        <th>Nombre Real</th>
+                        <th>Apellidos</th>
+                        <th>Oyentes</th>
+                        <th>Edad</th>
+                        <th>Año de Comienzo</th>
+                        <th>País</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        artistas.map((artista) => (
+                            <tr>
+                                <td>
+                                    <img
+                                        src={artista.img_art}
+                                        alt={`Imagen de ${artista.nom_art}`}
+                                        class="w-16 h-16 object-cover rounded-full"
+                                    />
+                                </td>
+                                <td>{artista.nom_art}</td>
+                                <td>{artista.nombre_real_art}</td>
+                                <td>{artista.apel_art}</td>
+                                <td>{artista.oyentes_art}</td>
+                                <td>{artista.edad_art}</td>
+                                <td>{artista.anio_comienzo_art}</td>
+                                <td>{artista.nacionalidad_art}</td>
+                            </tr>
+                        ))
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Tabla de álbumes -->
+        <div id="t_album_cont" class="overflow-x-auto hidden">
+            <table
+                id="t_album"
+                class="display w-full bg-white border border-gray-300 rounded-lg shadow-md"
+            >
+                <thead class="bg-gray-200 text-gray-700 uppercase text-sm">
+                    <tr>
+                        <th>Portada</th>
+                        <th>Título</th>
+                        <th>Fecha de Lanzamiento</th>
+                        <th>Duración</th>
+                        <th>Número de Canciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        albumes.map((album) => (
+                            <tr>
+                                <td>
+                                    <img
+                                        src={album.img_album}
+                                        alt={`Album de ${album.nom_album}`}
+                                        class="w-16 h-16 object-cover rounded-lg"
+                                    />
+                                </td>
+                                <td>{album.nom_album}</td>
+                                <td>{album.fecha_lanzamiento_album}</td>
+                                <td>{album.duracion}</td>
+                                <td>{album.num_canciones}</td>
+                            </tr>
+                        ))
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Tabla de canciones -->
+        <div id="t_cancion_cont" class="overflow-x-auto hidden">
+            <table
+                id="t_cancion"
+                class="display w-full bg-white border border-gray-300 rounded-lg shadow-md"
+            >
+                <thead class="bg-gray-200 text-gray-700 uppercase text-sm">
+                    <tr>
+                        <th>Portada</th>
+                        <th>Título</th>
+                        <th>Género</th>
+                        <th>Reproducciones</th>
+                        <th>Código Álbum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        canciones.map((cancion) => (
+                            <tr>
+                                <td>
+                                    <img
+                                        src={cancion.img_album}
+                                        alt={`Cancion ${cancion.titulo_cancion}`}
+                                        class="w-16 h-16 object-cover rounded-lg"
+                                    />
+                                </td>
+                                <td>{cancion.titulo_cancion}</td>
+                                <td>{cancion.genero_cancion}</td>
+                                <td>{cancion.num_reproducciones}</td>
+                                <td>{cancion.cod_album}</td>
+                            </tr>
+                        ))
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <script>
+            // Referencias a las tablas y botones
+            const tabla_usuarios = document.getElementById("t_usuario_cont");
+            const tabla_conciertos =
+                document.getElementById("t_concierto_cont");
+            const tabla_artistas = document.getElementById("t_artista_cont");
+            const tabla_albumes = document.getElementById("t_album_cont");
+            const tabla_canciones = document.getElementById("t_cancion_cont");
+
+            const boton_usuarios = document.getElementById("boton_usuarios");
+            const boton_conciertos =
+                document.getElementById("boton_conciertos");
+            const boton_artistas = document.getElementById("boton_artistas");
+            const boton_albumes = document.getElementById("boton_albumes");
+            const boton_canciones = document.getElementById("boton_canciones");
+
+            // Función para ocultar todas las tablas quitando el atributo hidden
+            const cambio_tabla = () => {
+                tabla_usuarios?.classList.add("hidden");
+                tabla_conciertos?.classList.add("hidden");
+                tabla_artistas?.classList.add("hidden");
+                tabla_albumes?.classList.add("hidden");
+                tabla_canciones?.classList.add("hidden");
+            };
+
+            // Mostrar la tabla de usuarios al hacer clic en el botón correspondiente
+            boton_usuarios?.addEventListener("click", () => {
+                cambio_tabla();
+                tabla_usuarios?.classList.remove("hidden");
+            });
+
+            // Mostrar la tabla de conciertos al hacer clic en el botón correspondiente
+            boton_conciertos?.addEventListener("click", () => {
+                cambio_tabla();
+                tabla_conciertos?.classList.remove("hidden");
+            });
+
+            // Mostrar la tabla de artistas al hacer clic en el botón correspondiente
+            boton_artistas?.addEventListener("click", () => {
+                cambio_tabla();
+                tabla_artistas?.classList.remove("hidden");
+            });
+
+            // Mostrar la tabla de álbumes al hacer clic en el botón correspondiente
+            boton_albumes?.addEventListener("click", () => {
+                cambio_tabla();
+                tabla_albumes?.classList.remove("hidden");
+            });
+
+            // Mostrar la tabla de canciones al hacer clic en el botón correspondiente
+            boton_canciones?.addEventListener("click", () => {
+                cambio_tabla();
+                tabla_canciones?.classList.remove("hidden");
+            });
+        </script>
     </div>
 </Layout2>

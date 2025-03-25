@@ -29,7 +29,7 @@ const BotonesAdmin = () => {
                 {/* Botón para realizar acciones sobre usuarios */}
                 <button
                     onClick={() =>
-                        redirigirapagina("/Admin/Accionesadmin/AccionesUsuarios")
+                        redirigirapagina("/Admin/Accionesadmin/OpcionesUsuario/AccionesUsuario/Acciones")
                     }
                     className="px-6 py-3 bg-black text-white rounded-lg shadow-md hover:bg-orange-400 hover:text-black transition duration-300"
                 >

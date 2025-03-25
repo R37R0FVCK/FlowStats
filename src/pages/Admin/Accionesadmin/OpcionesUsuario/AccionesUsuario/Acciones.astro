@@ -1,0 +1,54 @@
+---
+// filepath: c:\Users\angel\Desktop\TFG-2DAM\FlowStats\src\pages\Admin\Accionesadmin\OpcionesUsuario\AccionesUsuario\Acciones.astro
+import Layout from "../../../../../layouts/Layout.astro";
+
+import { db, Usuario } from "astro:db";
+import { parse } from "cookie";
+
+const cookie_acceso = parse(Astro.request.headers.get("cookie") || "");
+const cod_usu = parseInt(cookie_acceso.codigo_usu);
+const haentradoencuenta = cookie_acceso.auth === "true";
+
+let usuario_accedido;
+
+if (!haentradoencuenta) {
+    Astro.redirect("/Acceder");
+}
+
+const usuariosregistrados = await db.select().from(Usuario);
+
+usuario_accedido = usuariosregistrados.find(
+    (usuario_accedido) => usuario_accedido.cod_usuario === cod_usu,
+);
+
+if (usuario_accedido?.tipo_usu !== true) {
+    Astro.redirect("/Usuario/CuentaUsu");
+}
+---
+
+<Layout mostrarNavcuenta={true} title="Acciones de Usuario">
+    <div
+        class="flex flex-col items-center justify-center ml-90 mt-10 space-y-8 bg-gray-300 p-8 rounded-lg shadow-lg"
+    >
+        <!-- Título -->
+        <h1 class="text-3xl font-bold text-gray-800">Gestión de Usuarios</h1>
+
+        <!-- Botones -->
+        <div class="flex space-x-6">
+            <!-- Botón para eliminar usuario -->
+            <button
+                class="px-6 py-3 bg-black text-white rounded-lg shadow-md hover:bg-orange-400 hover:text-black hover:shadow-lg focus:outline-none transition duration-300"
+                onclick="window.location.href='/Admin/Accionesadmin/OpcionesUsuario/OpcionesElegir/EliminarUsuario'"
+            >
+                Eliminar Usuario
+            </button>
+            <!-- Botón para añadir usuario -->
+            <button
+                class="px-6 py-3 bg-black text-white rounded-lg shadow-md hover:bg-orange-400 hover:text-black hover:shadow-lg focus:outline-none transition duration-300"
+                onclick="window.location.href='/Admin/Accionesadmin/OpcionesUsuario/OpcionesElegir/AgregarUsuario'"
+            >
+                Añadir Usuario
+            </button>
+        </div>
+    </div>
+</Layout>

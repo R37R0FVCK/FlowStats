@@ -1,0 +1,226 @@
+---
+// filepath: c:\Users\angel\Desktop\TFG-2DAM\FlowStats\src\pages\Admin\Accionesadmin\AdministrarDatos\ModificarDatos\ModificarConcierto.astro
+
+import { db, Concierto, Usuario } from "astro:db";
+import { eq } from "astro:db";
+import { parse } from "cookie";
+import Layout2 from "../../../../../layouts/Layout2.astro";
+
+// Leer la cookie del cliente
+const cookies_mix = parse(Astro.request.headers.get("cookie") || "");
+const cod_concierto = parseInt(cookies_mix.cod_concierto || "0");
+const cod_usuario = parseInt(cookies_mix.cod_usuario || "");
+const haentradoencuenta = cookies_mix.auth === "true";
+
+// Redirigir al usuario a la página de inicio de sesión si no ha iniciado sesión
+if (!haentradoencuenta) {
+    return Astro.redirect("/Acceder");
+}
+
+const codigo_usu_buscar = cod_usuario;
+
+const usuarios_registrados = await db.select().from(Usuario);
+
+const usuario_accedido = usuarios_registrados.find(
+    (usuarioactivo) => usuarioactivo.cod_usuario === codigo_usu_buscar,
+);
+
+if (!usuario_accedido) {
+    return Astro.redirect("/Acceder");
+}
+// Validar si el usuario es un administrador
+if (usuario_accedido.tipo_usu === false && haentradoencuenta) {
+    return Astro.redirect("/Usuario/CuentaUsu");
+}
+
+// Validar si el identificador del concierto es válido
+if (!cod_concierto) {
+    return Astro.redirect("/Admin/Accionesadmin/ConsultarDatosInternos");
+}
+
+// Obtener los datos del concierto desde la base de datos
+const concierto = await db
+    .select()
+    .from(Concierto)
+    .where(eq(Concierto.cod_concierto, cod_concierto))
+    .get();
+
+// Validar si el concierto existe
+if (!concierto) {
+    return Astro.redirect("/Admin/Accionesadmin/ConsultarDatosInternos");
+}
+
+// Si el método de la solicitud es POST, actualizar los datos del concierto
+if (Astro.request.method === "POST") {
+    const datosformulario = await Astro.request.formData();
+    const fechaRaw = datosformulario.get("fecha");
+    const fecha = fechaRaw ? new Date(fechaRaw.toString().trim()) : null;
+    const hora = datosformulario.get("hora")?.toString().trim() || null;
+    const ciudad = datosformulario.get("ciudad")?.toString().trim() || null;
+    const ubicacion =
+        datosformulario.get("ubicacion")?.toString().trim() || null;
+
+    // Validar que todos los campos estén completos
+    if (!fecha || !hora || !ciudad || !ubicacion) {
+        throw new Error("Todos los campos son obligatorios.");
+    }
+
+    // Actualizar el concierto en la base de datos
+    await db
+        .update(Concierto)
+        .set({
+            fecha_con: fecha,
+            hora_con: hora,
+            ciudad_con: ciudad,
+            ubicacion_con: ubicacion,
+        })
+        .where(eq(Concierto.cod_concierto, cod_concierto));
+
+    // Redirigir de vuelta a la página principal y eliminar la cookie
+    return new Response(null, {
+        status: 302,
+        headers: {
+            "Set-Cookie":
+                "cod_concierto=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT;",
+            Location: "/Admin/Accionesadmin/ConsultarDatosInternos",
+        },
+    });
+}
+---
+
+<Layout2 title="Editar Concierto">
+    <div
+        class="max-w-4xl mx-auto bg-gradient-to-r from-blue-50 to-white my-16 p-10 rounded-xl shadow-lg"
+    >
+        <h1 class="text-4xl font-extrabold text-gray-800 text-center mb-6">
+            Editar Concierto
+        </h1>
+
+        <form method="POST" class="space-y-6">
+            <!-- Campo para la fecha -->
+            <div>
+                <label
+                    for="fecha"
+                    class="block text-lg font-medium text-gray-700">Fecha</label
+                >
+                <input
+                    type="date"
+                    id="fecha"
+                    name="fecha"
+                    value={concierto.fecha_con
+                        ? concierto.fecha_con.toISOString().split("T")[0]
+                        : ""}
+                    class="w-full border border-gray-300 rounded-lg p-3 focus:ring-blue-500 focus:border-blue-500"
+                    required
+                />
+            </div>
+            <!-- Campo para la hora -->
+            <div>
+                <label
+                    for="hora"
+                    class="block text-lg font-medium text-gray-700">Hora</label
+                >
+                <input
+                    type="time"
+                    id="hora"
+                    name="hora"
+                    value={concierto.hora_con}
+                    class="w-full border border-gray-300 rounded-lg p-3 focus:ring-blue-500 focus:border-blue-500"
+                    required
+                />
+            </div>
+            <!-- Campo para la ciudad -->
+            <div>
+                <label
+                    for="ciudad"
+                    class="block text-lg font-medium text-gray-700"
+                    >Ciudad</label
+                >
+                <select
+                    id="ciudad"
+                    name="ciudad"
+                    required
+                    class="w-full border border-gray-300 rounded-lg p-3 focus:ring-blue-500 focus:border-blue-500"
+                >
+                    <option value="">Selecciona una ciudad</option>
+                    <option
+                        value="Madrid"
+                        selected={concierto.ciudad_con === "Madrid"}
+                        >Madrid</option
+                    >
+                    <option
+                        value="Barcelona"
+                        selected={concierto.ciudad_con === "Barcelona"}
+                        >Barcelona</option
+                    >
+                    <option
+                        value="Valencia"
+                        selected={concierto.ciudad_con === "Valencia"}
+                        >Valencia</option
+                    >
+                    <option
+                        value="Sevilla"
+                        selected={concierto.ciudad_con === "Sevilla"}
+                        >Sevilla</option
+                    >
+                    <option
+                        value="Zaragoza"
+                        selected={concierto.ciudad_con === "Zaragoza"}
+                        >Zaragoza</option
+                    >
+                    <option
+                        value="Málaga"
+                        selected={concierto.ciudad_con === "Málaga"}
+                        >Málaga</option
+                    >
+                    <option
+                        value="Murcia"
+                        selected={concierto.ciudad_con === "Murcia"}
+                        >Murcia</option
+                    >
+                    <option
+                        value="Palma"
+                        selected={concierto.ciudad_con === "Palma"}
+                        >Palma</option
+                    >
+                    <option
+                        value="Las Palmas"
+                        selected={concierto.ciudad_con === "Las Palmas"}
+                        >Las Palmas</option
+                    >
+                    <option
+                        value="Bilbao"
+                        selected={concierto.ciudad_con === "Bilbao"}
+                        >Bilbao</option
+                    >
+                </select>
+            </div>
+            <!-- Campo para la ubicación -->
+            <div>
+                <label
+                    for="ubicacion"
+                    class="block text-lg font-medium text-gray-700"
+                    >Ubicación</label
+                >
+                <input
+                    type="text"
+                    id="ubicacion"
+                    name="ubicacion"
+                    value={concierto.ubicacion_con}
+                    class="w-full border border-gray-300 rounded-lg p-3 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Introduce la ubicación del concierto"
+                    required
+                />
+            </div>
+            <!-- Botón para guardar cambios -->
+            <div class="text-center">
+                <button
+                    type="submit"
+                    class="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-gray-800 to-black text-white rounded-lg hover:from-orange-500 hover:to-orange-600 transition duration-300 shadow-lg"
+                >
+                    Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</Layout2>

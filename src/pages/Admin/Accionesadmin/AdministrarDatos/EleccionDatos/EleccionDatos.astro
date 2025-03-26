@@ -1,0 +1,65 @@
+---
+// filepath: c:\Users\angel\Desktop\TFG-2DAM\FlowStats\src\pages\Admin\Accionesadmin\AdministrarDatos\EleccionDatos\EleccionDatos.astro
+import Layout from "../../../../../layouts/Layout.astro";
+import { parse } from "cookie";
+import { db, Usuario } from "astro:db";
+// Obtiene las cookies del usuario actual
+const cookie_acceso = parse(Astro.request.headers.get("cookie") || "");
+const cod_usu = parseInt(cookie_acceso.codigo_usu);
+const haentradoencuenta = cookie_acceso.auth === "true";
+
+let usuario_accedido = null;
+// Redirige al usuario a la página de acceso si no ha iniciado sesión
+if (!haentradoencuenta) {
+    Astro.redirect("/Acceder");
+}
+// Busca al usuario actual en la lista de usuarios registrados
+const usuariosregistrados = await db.select().from(Usuario);
+
+usuario_accedido = usuariosregistrados.find(
+    (usuario_accedido) => usuario_accedido.cod_usuario === cod_usu,
+);
+// Si el usuario no es admin, redirige a la página de acceso
+if (usuario_accedido?.tipo_usu !== true) {
+    Astro.redirect("/Usuario/CuentaUsu");
+}
+---
+
+<Layout mostrarNavcuenta={true} title="Elegir Datos">
+    <div
+        class="min-h-screen bg-gray-100 ml-70 flex justify-center items-center"
+    >
+        <div class="text-center">
+            <h1 class="text-4xl font-extrabold text-gray-800 mb-6">
+                Selecciona una Categoría
+            </h1>
+            <div class="flex justify-center space-x-6">
+                <!-- Boton Artistas -->
+                <button
+                    class="px-6 py-3 bg-gradient-to-r from-gray-800 to-black text-white rounded-lg hover:from-orange-500 hover:to-orange-600 transition duration-300 shadow-lg"
+                >
+                    Artistas
+                </button>
+                <!-- Boton Canciones -->
+                <button
+                    class="px-6 py-3 bg-gradient-to-r from-gray-800 to-black text-white rounded-lg hover:from-orange-500 hover:to-orange-600 transition duration-300 shadow-lg"
+                >
+                    Canciones
+                </button>
+                <!-- Boton Álbumes -->
+                <button
+                    class="px-6 py-3 bg-gradient-to-r from-gray-800 to-black text-white rounded-lg hover:from-orange-500 hover:to-orange-600 transition duration-300 shadow-lg"
+                >
+                    Álbumes
+                </button>
+                <!-- Boton Conciertos -->
+                <button
+                    onclick="location.href= '/Admin/Accionesadmin/AdministrarDatos/AñadirConciertos'"
+                    class="px-6 py-3 bg-gradient-to-r from-gray-800 to-black text-white rounded-lg hover:from-orange-500 hover:to-orange-600 transition duration-300 shadow-lg"
+                >
+                    Conciertos
+                </button>
+            </div>
+        </div>
+    </div>
+</Layout>

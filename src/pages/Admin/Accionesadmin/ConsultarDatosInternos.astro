@@ -42,7 +42,7 @@ const canciones = await db
     .from(Cancion)
     .innerJoin(Album, eq(Cancion.cod_album, Album.cod_album));
 
-    // Eliminar concierto si se ha enviado por el formulario POST
+// Eliminar concierto si se ha enviado por el formulario POST
 if (Astro.request.method === "POST") {
     // Obtener datos del formulario
     const datosformulario = await Astro.request.formData();
@@ -213,8 +213,13 @@ if (Astro.request.method === "POST") {
                                 <td>{concierto.ubicacion_con}</td>
                                 <td>{concierto.cod_art}</td>
                                 <td>
-                                    <!-- Botón para editar un concierto -->
-                                    <button>
+                                    {/*Se crea una cookie para guardar el codigo del concierto */}
+                                    <button
+                                        onclick={`
+                                document.cookie = 'cod_concierto=${concierto.cod_concierto}; path=/';
+                                window.location.href = '/Admin/Accionesadmin/AdministrarDatos/ModificarDatos/ModificarConcierto';
+                            `}
+                                    >
                                         <img
                                             src="https://imagedelivery.net/DX6aCRCKOB_y-l4MZVDT9w/aa6f93f9-9ced-4144-e3c0-0435bec7c200/public"
                                             alt="Editar"
@@ -223,7 +228,7 @@ if (Astro.request.method === "POST") {
                                     </button>
                                 </td>
                                 <td>
-                                    <!-- Formulario para eliminar un concierto -->
+                                    {/* Formulario para eliminar el concierto */}
                                     <form method="POST">
                                         <input
                                             type="hidden"

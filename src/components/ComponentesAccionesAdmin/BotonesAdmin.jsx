@@ -21,8 +21,7 @@ const BotonesAdmin = () => {
                             "/Admin/Accionesadmin/ConsultarDatosInternos"
                         )
                     }
-                    className="px-6 py-3 bg-black text-white rounded-lg shadow-md hover:bg-orange-400 hover:text-black transition duration-300"
-                >
+                    className="px-6 py-3 bg-gradient-to-r from-gray-800 to-black text-white font-semibold rounded-lg shadow-lg hover:from-orange-500 hover:to-orange-600 hover:text-black transition duration-300">
                     Consultar Datos Internos
                 </button>
 
@@ -31,7 +30,7 @@ const BotonesAdmin = () => {
                     onClick={() =>
                         redirigirapagina("/Admin/Accionesadmin/OpcionesUsuario/AccionesUsuario/Acciones")
                     }
-                    className="px-6 py-3 bg-black text-white rounded-lg shadow-md hover:bg-orange-400 hover:text-black transition duration-300"
+                    className="px-6 py-3 bg-gradient-to-r from-gray-800 to-black text-white font-semibold rounded-lg shadow-lg hover:from-orange-500 hover:to-orange-600 hover:text-black transition duration-300"
                 >
                     Acciones sobre Usuarios
                 </button>
@@ -39,9 +38,9 @@ const BotonesAdmin = () => {
                 {/* Botón para administrar datos */}
                 <button
                     onClick={() =>
-                        redirigirapagina("/Admin/Accionesadmin/AdministrarDatos")
+                        redirigirapagina("/Admin/Accionesadmin/AdministrarDatos/EleccionDatos/EleccionDatos")
                     }
-                    className="px-6 py-3 bg-black text-white rounded-lg shadow-md hover:bg-orange-400 hover:text-black transition duration-300"
+                    className="px-6 py-3 bg-gradient-to-r from-gray-800 to-black text-white font-semibold rounded-lg shadow-lg hover:from-orange-500 hover:to-orange-600 hover:text-black transition duration-300"
                 >
                     Administrar Datos
                 </button>

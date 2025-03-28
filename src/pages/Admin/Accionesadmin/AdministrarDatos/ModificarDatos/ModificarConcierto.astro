@@ -12,9 +12,15 @@ const cod_concierto = parseInt(cookies_mix.cod_concierto);
 const cod_usuario = parseInt(cookies_mix.codigo_usu);
 const haentradoencuenta = cookies_mix.auth === "true";
 
-// Redirigir al usuario a la página de inicio de sesión si no ha iniciado sesión
+// Redirigir al usuario a la página de inicio de sesión si no ha iniciado sesión y eliminar la cookie de concierto
 if (!haentradoencuenta) {
-    return Astro.redirect("/Acceder");
+    return new Response(null, {
+        status: 302,
+        headers: {
+            "Set-Cookie": "cod_concierto=; Path=/; HttpOnly; Max-Age=0",
+            Location: "/Acceder",
+        },
+    });
 }
 
 const codigo_usu_buscar = cod_usuario;
@@ -25,17 +31,37 @@ const usuario_accedido = usuarios_registrados.find(
     (usuarioactivo) => usuarioactivo.cod_usuario === codigo_usu_buscar,
 );
 
+// Redirigir al usuario a la página de inicio de sesión si no ha iniciado sesión y eliminar la cookie de concierto
 if (!usuario_accedido) {
-    return Astro.redirect("/Acceder");
-}
-// Validar si el usuario es un administrador
-if (usuario_accedido.tipo_usu === false && haentradoencuenta) {
-    return Astro.redirect("/Usuario/CuentaUsu");
+    return new Response(null, {
+        status: 302,
+        headers: {
+            "Set-Cookie": "cod_concierto=; Path=/; HttpOnly; Max-Age=0",
+            Location: "/Acceder",
+        },
+    });
 }
 
-// Validar si el identificador del concierto es válido
+// Validar si el usuario es un administrador
+if (usuario_accedido.tipo_usu === false && haentradoencuenta) {
+    return new Response(null, {
+        status: 302,
+        headers: {
+            "Set-Cookie": "cod_concierto=; Path=/; HttpOnly; Max-Age=0",
+            Location: "/Usuario/CuentaUsu",
+        },
+    });
+}
+
+// Validar si el identificador del concierto es válido y eliminar la cookie de concierto
 if (!cod_concierto) {
-    return Astro.redirect("/Admin/Accionesadmin/ConsultarDatosInternos");
+    return new Response(null, {
+        status: 302,
+        headers: {
+            "Set-Cookie": "cod_concierto=; Path=/; HttpOnly; Max-Age=0",
+            Location: "/Admin/Accionesadmin/ConsultarDatosInternos",
+        },
+    });
 }
 
 // Obtener los datos del concierto desde la base de datos
@@ -45,9 +71,15 @@ const concierto = await db
     .where(eq(Concierto.cod_concierto, cod_concierto))
     .get();
 
-// Validar si el concierto existe
+// Validar si el concierto existe y eliminar la cookie de concierto
 if (!concierto) {
-    return Astro.redirect("/Admin/Accionesadmin/ConsultarDatosInternos");
+    return new Response(null, {
+        status: 302,
+        headers: {
+            "Set-Cookie": "cod_concierto=; Path=/; HttpOnly; Max-Age=0",
+            Location: "/Admin/Accionesadmin/ConsultarDatosInternos",
+        },
+    });
 }
 
 // Si el método de la solicitud es POST, actualizar los datos del concierto

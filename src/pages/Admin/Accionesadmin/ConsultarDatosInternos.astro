@@ -28,7 +28,18 @@ if (usuario_accedido?.tipo_usu !== true) {
 }
 
 // Obtener los datos de los conciertos, artistas, álbumes y canciones
-const conciertos = await db.select().from(Concierto);
+const conciertos = await db
+    .select({
+        fecha_con: Concierto.fecha_con,
+        hora_con: Concierto.hora_con,
+        ciudad_con: Concierto.ciudad_con,
+        ubicacion_con: Concierto.ubicacion_con,
+        cod_art: Concierto.cod_art,
+        cod_concierto: Concierto.cod_concierto,
+        nom_art: Artista.nom_art,
+    })
+    .from(Concierto)
+    .innerJoin(Artista, eq(Concierto.cod_art, Artista.cod_art));
 const artistas = await db.select().from(Artista);
 const albumes = await db.select().from(Album);
 const canciones = await db
@@ -116,35 +127,35 @@ if (Astro.request.method === "POST") {
             <!-- Boton para mostrar la tabla de usuarios -->
             <button
                 id="boton_usuarios"
-                class="px-4 py-2 bg-black text-white rounded-lg shadow-md hover:bg-orange-400 hover:text-black focus:outline-none"
+                class="px-4 py-2 bg-gradient-to-r from-gray-800 to-black text-white font-semibold rounded-lg shadow-lg hover:from-orange-500 hover:to-orange-600 hover:text-black transition duration-300 focus:outline-none"
             >
                 Usuario
             </button>
             <!-- Boton para mostrar la tabla de conciertos -->
             <button
                 id="boton_conciertos"
-                class="px-4 py-2 bg-black text-white rounded-lg shadow-md hover:bg-orange-400 hover:text-black focus:outline-none"
+                class="px-4 py-2 bg-gradient-to-r from-gray-800 to-black text-white font-semibold rounded-lg shadow-lg hover:from-orange-500 hover:to-orange-600 hover:text-black transition duration-300 focus:outline-none"
             >
                 Concierto
             </button>
             <!-- Boton para mostrar la tabla de artistas -->
             <button
                 id="boton_artistas"
-                class="px-4 py-2 bg-black text-white rounded-lg shadow-md hover:bg-orange-400 hover:text-black focus:outline-none"
+                class="px-4 py-2 bg-gradient-to-r from-gray-800 to-black text-white font-semibold rounded-lg shadow-lg hover:from-orange-500 hover:to-orange-600 hover:text-black transition duration-300 focus:outline-none"
             >
                 Artista
             </button>
             <!-- Boton para mostrar la tabla de álbumes -->
             <button
                 id="boton_albumes"
-                class="px-4 py-2 bg-black text-white rounded-lg shadow-md hover:bg-orange-400 hover:text-black focus:outline-none"
+                class="px-4 py-2 bg-gradient-to-r from-gray-800 to-black text-white font-semibold rounded-lg shadow-lg hover:from-orange-500 hover:to-orange-600 hover:text-black transition duration-300 focus:outline-none"
             >
                 Álbum
             </button>
             <!-- Boton para mostrar la tabla de canciones -->
             <button
                 id="boton_canciones"
-                class="px-4 py-2 bg-black text-white rounded-lg shadow-md hover:bg-orange-400 hover:text-black focus:outline-none"
+                class="px-4 py-2 bg-gradient-to-r from-gray-800 to-black text-white font-semibold rounded-lg shadow-lg hover:from-orange-500 hover:to-orange-600 hover:text-black transition duration-300 focus:outline-none"
             >
                 Cancion
             </button>
@@ -197,7 +208,7 @@ if (Astro.request.method === "POST") {
                         <th>Hora</th>
                         <th>Ciudad</th>
                         <th>Ubicación</th>
-                        <th>Código Artista</th>
+                        <th>Artista</th>
                         <th>Editar</th>
                         <th>Eliminar</th>
                     </tr>
@@ -211,7 +222,7 @@ if (Astro.request.method === "POST") {
                                 <td>{concierto.hora_con}</td>
                                 <td>{concierto.ciudad_con}</td>
                                 <td>{concierto.ubicacion_con}</td>
-                                <td>{concierto.cod_art}</td>
+                                <td>{concierto.nom_art}</td>
                                 <td>
                                     {/*Se crea una cookie para guardar el codigo del concierto */}
                                     <button

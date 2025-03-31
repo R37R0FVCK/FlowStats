@@ -81,7 +81,6 @@ if (Astro.request.method === "POST") {
     }
 }
 ---
-
 <Layout title="Registro">
     <div class="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
         <h2 class="text-2xl font-bold mb-6 text-center">Registro de Usuario</h2>
@@ -192,7 +191,14 @@ if (Astro.request.method === "POST") {
             </button>
         </form>
     </div>
+        <!-- Inyectar los datos directamente en el script -->
+    <script set:html={`
+        const correosRegistrados = ${JSON.stringify(correos_registrados.map(c => c.correo_electronico))};
+    `}></script>
 </Layout>
+
+
+
 
 <script>
     import {
@@ -200,44 +206,48 @@ if (Astro.request.method === "POST") {
         ContraseñaValida,
     } from "../scripts/VerificacionDatos/VerificacionDatos.js";
 
-    const registroForm = document.getElementById("registro-form");
-    if (registroForm) {
-        registroForm.addEventListener("submit", function (event) {
-            const errores = [];
-            const fechaNacimientoInput = document.getElementById(
-                "fecha_nacimiento",
-            ) as HTMLInputElement;
-            const contraseñaInput = document.getElementById(
-                "contraseña",
-            ) as HTMLInputElement;
+    document.addEventListener("DOMContentLoaded", function () {
+        const registroForm = document.getElementById("registro-form");
+        const erroresList = document.getElementById("errores");
 
-            const fechaNacimiento = fechaNacimientoInput?.value || "";
-            const contraseña = contraseñaInput?.value || "";
+        if (registroForm) {
+            registroForm.addEventListener("submit", function (event) {
+                const errores = [];
+                const correoElectronicoInput = document.getElementById("correo_electronico");
+                const correoElectronico = correoElectronicoInput?.value || "";
+                const contraseñaInput = document.getElementById("contraseña");
+                const contraseña = contraseñaInput?.value || "";
+                const fechaNacimientoInput = document.getElementById("fecha_nacimiento");
+                const fechaNacimientoTexto = fechaNacimientoInput?.value || "";
 
-            // Validar si el usuario es mayor de 16 años
-            if (!esMayorDe16(new Date(fechaNacimiento))) {
-                errores.push(
-                    "Debes tener 16 años o más para poder registrarte.",
-                );
-            }
+                // Validar si el correo electrónico ya está registrado
+                if (correosRegistrados.includes(correoElectronico)) {
+                    errores.push("El correo electrónico ya está registrado.");
+                }
 
-            // Validar si la contraseña es válida
-            const erroresContraseña = ContraseñaValida(contraseña);
-            errores.push(...erroresContraseña);
+                // Validar si la contraseña es válida
+                const erroresContraseña = ContraseñaValida(contraseña);
+                errores.push(...erroresContraseña);
 
-            // Mostrar errores si existen
-            const erroresList = document.getElementById("errores");
-            if (erroresList) {
+                // Validar si el usuario es mayor de 16 años
+                if (fechaNacimientoTexto) {
+                    const fechaNacimiento = new Date(fechaNacimientoTexto);
+                    if (!esMayorDe16(fechaNacimiento)) {
+                        errores.push("Debes tener 16 años o más para poder registrarte.");
+                    }
+                } else {
+                    errores.push("La fecha de nacimiento es obligatoria.");
+                }
+
+                // Mostrar errores si existen
                 if (errores.length > 0) {
                     event.preventDefault();
-                    erroresList.innerHTML = errores
-                        .map((error) => `<li>${error}</li>`)
-                        .join("");
+                    erroresList.innerHTML = errores.map((error) => `<li>${error}</li>`).join("");
                     erroresList.classList.remove("hidden");
                 } else {
                     erroresList.classList.add("hidden");
                 }
-            }
-        });
-    }
+            });
+        }
+    });
 </script>

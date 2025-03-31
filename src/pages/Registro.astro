@@ -1,9 +1,28 @@
 ---
-// filepath: /c:/Users/angel/Desktop/TFG-2DAM/FlowStats/src/pages/Registro.astro
+// filepath: c:\Users\angel\Desktop\TFG-2DAM\FlowStats\src\pages\Registro.astro
+
 import Layout from "../layouts/Layout.astro";
 import { db, Usuario } from "astro:db";
+import {
+    esMayorDe16,
+    ContraseñaValida,
+} from "../scripts/VerificacionDatos/VerificacionDatos.js";
 
 const fecha_actual = new Date();
+let errores = [];
+
+const correos_registrados = await db
+    .select({
+        correo_electronico: Usuario.correo_electronico,
+    })
+    .from(Usuario);
+
+const nombres_usu_registrados = await db
+    .select({
+        nombre_usuario: Usuario.nombre_usuario,
+    })
+    .from(Usuario);
+
 if (Astro.request.method === "POST") {
     const datosformulario = await Astro.request.formData();
     const nombre_usuario = datosformulario.get("nombre_usuario");
@@ -27,66 +46,51 @@ if (Astro.request.method === "POST") {
         typeof fechanacimientotexto === "string" &&
         typeof tipousuariotexto === "string"
     ) {
-        // conversiones de texto a sus tipos adecuados
         const fecha_nacimiento = new Date(fechanacimientotexto);
 
-        // Calcular la edad
-        const edadnuevousu =
-            new Date().getFullYear() - fecha_nacimiento.getFullYear();
-        const mesnuevousu = new Date().getMonth() + 1;
-        const dianuevousu = new Date().getDate();
-
-        const img_usu =
-            "https://imagedelivery.net/DX6aCRCKOB_y-l4MZVDT9w/67b1b1e8-6955-4edb-5238-7578e8090f00/public";
-
-        const respuestaerror =
-            " Lo siento pero no tienes la edad suficiente como para registrarte";
-        if (
-            edadnuevousu < 16 ||
-            (edadnuevousu === 16 &&
-                (fecha_nacimiento.getMonth() + 1 > mesnuevousu ||
-                    (fecha_nacimiento.getMonth() + 1 === mesnuevousu &&
-                        fecha_nacimiento.getDate() > dianuevousu)))
-        ) {
-            return new Response(respuestaerror, { status: 400 });
+        // Validar si el usuario es mayor de 16 años
+        if (!esMayorDe16(fecha_nacimiento)) {
+            errores.push("Debes tener 16 años o más para poder registrarte.");
         }
 
-        const tipo_usu = tipousuariotexto === "true";
-        const fecha_registro = fecha_actual;
+        // Validar si la contraseña es válida
+        const erroresContraseña = ContraseñaValida(contraseña);
+        errores = errores.concat(erroresContraseña);
 
-        await db.insert(Usuario).values({
-            nombre_usuario,
-            nombre,
-            apellidos,
-            contraseña,
-            correo_electronico,
-            direccion_usu,
-            telefono_usu,
-            tipo_usu,
-            img_usu,
-            fecha_nacimiento,
-            fecha_registro,
-        });
+        if (errores.length === 0) {
+            const tipo_usu = tipousuariotexto === "true";
+            const fecha_registro = fecha_actual;
+
+            const img_usu =
+                "https://imagedelivery.net/DX6aCRCKOB_y-l4MZVDT9w/67b1b1e8-6955-4edb-5238-7578e8090f00/public";
+
+            await db.insert(Usuario).values({
+                nombre_usuario,
+                nombre,
+                apellidos,
+                contraseña,
+                correo_electronico,
+                direccion_usu,
+                telefono_usu,
+                tipo_usu,
+                img_usu,
+                fecha_nacimiento,
+                fecha_registro,
+            });
+        }
     }
 }
-
-const usuarios = await db.select().from(Usuario);
 ---
 
 <Layout title="Registro">
     <div class="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
         <h2 class="text-2xl font-bold mb-6 text-center">Registro de Usuario</h2>
-        <!-- Mensaje de error si la edad no es suficiente -->
-        <div id="errormenor16" class="text-red-500 mb-4 hidden">
-            Lo siento, no tienes la edad suficiente para registrarte.
-        </div>
 
-        <form
-            method="POST"
-            class="flex flex-col space-y-4"
-            id="registro-form"
-            onsubmit="return mayorde16()"
-        >
+        <!-- Listado de errores -->
+        <ul id="errores" class="text-red-500 mb-4 list-disc pl-5 hidden"></ul>
+
+        <form method="POST" class="flex flex-col space-y-4" id="registro-form">
+            <!-- Campos del formulario -->
             <label class="block">
                 <span class="text-gray-700">Nombre de Usuario:</span>
                 <input
@@ -180,116 +184,60 @@ const usuarios = await db.select().from(Usuario);
                 </select>
             </label>
 
-            <div
-                id="errormenor16"
-                class="hidden bg-red-100 text-red-700 p-2 rounded-md"
-            >
-            </div>
-
             <button
                 type="submit"
                 class="w-full bg-indigo-500 text-white py-2 px-4 rounded-md shadow-sm hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >Registrar</button
             >
+                Registrar
+            </button>
         </form>
-        <div class="mt-10">
-            <h3 class="text-xl font-bold mb-4">Usuarios Registrados</h3>
-            {
-                usuarios.length === 0 ? (
-                    <p class="text-gray-700">No hay usuarios registrados.</p>
-                ) : (
-                    <ul class="space-y-2">
-                        {usuarios.map((usuario) => (
-                            <li class="p-4 bg-gray-100 rounded-md shadow-sm">
-                                <p>
-                                    <strong>Codigo de Usuario:</strong>{" "}
-                                    {usuario.cod_usuario}
-                                </p>
-                                <p>
-                                    <strong>Nombre de Usuario:</strong>{" "}
-                                    {usuario.nombre_usuario}
-                                </p>
-                                <p>
-                                    <strong>Nombre:</strong> {usuario.nombre}
-                                </p>
-                                <p>
-                                    <strong>Apellidos:</strong>{" "}
-                                    {usuario.apellidos}
-                                </p>
-                                <p>
-                                    <strong>Correo Electrónico:</strong>{" "}
-                                    {usuario.correo_electronico}
-                                </p>
-                                <p>
-                                    <strong>Dirección:</strong>{" "}
-                                    {usuario.direccion_usu}
-                                </p>
-                                <p>
-                                    <strong>Teléfono:</strong>{" "}
-                                    {usuario.telefono_usu}
-                                </p>
-                                <p>
-                                    <strong>Fecha de Nacimiento:</strong>{" "}
-                                    {usuario.fecha_nacimiento}
-                                </p>
-                                <p>
-                                    <strong>Tipo de Usuario:</strong>{" "}
-                                    {usuario.tipo_usu
-                                        ? "Administrador"
-                                        : "Usuario Normal"}
-                                </p>
-                                <p>
-                                    <strong>Fecha de Registro:</strong>{" "}
-                                    {usuario.fecha_registro}
-                                </p>
-                            </li>
-                        ))}
-                    </ul>
-                )
-            }
-        </div>
     </div>
 </Layout>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        function mayorde16() {
-            const fechaintroducidausu =
-                document.getElementById("fecha_nacimiento");
-            if (
-                !fechaintroducidausu ||
-                !(fechaintroducidausu instanceof HTMLInputElement)
-            ) {
-                return false;
-            }
-            const errormenor16 = document.getElementById("errormenor16");
-            if (!errormenor16) {
-                return false;
-            }
-            const fechaLimite = new Date();
-            fechaLimite.setFullYear(fechaLimite.getFullYear() - 16);
+    import {
+        esMayorDe16,
+        ContraseñaValida,
+    } from "../scripts/VerificacionDatos/VerificacionDatos.js";
 
-            if (
-                fechaintroducidausu.valueAsDate &&
-                fechaintroducidausu.valueAsDate > fechaLimite
-            ) {
-                errormenor16.textContent =
-                    "Debes tener 16 años o mas para poder registrarte.";
-                errormenor16.classList.remove("hidden");
-                return false;
+    const registroForm = document.getElementById("registro-form");
+    if (registroForm) {
+        registroForm.addEventListener("submit", function (event) {
+            const errores = [];
+            const fechaNacimientoInput = document.getElementById(
+                "fecha_nacimiento",
+            ) as HTMLInputElement;
+            const contraseñaInput = document.getElementById(
+                "contraseña",
+            ) as HTMLInputElement;
+
+            const fechaNacimiento = fechaNacimientoInput?.value || "";
+            const contraseña = contraseñaInput?.value || "";
+
+            // Validar si el usuario es mayor de 16 años
+            if (!esMayorDe16(new Date(fechaNacimiento))) {
+                errores.push(
+                    "Debes tener 16 años o más para poder registrarte.",
+                );
             }
 
-            errormenor16.classList.add("hidden");
-            return true;
-        }
-        const registroenproceso = document.getElementById("registro-form");
-        if (registroenproceso) {
-            registroenproceso.onsubmit = mayorde16;
-        }
+            // Validar si la contraseña es válida
+            const erroresContraseña = ContraseñaValida(contraseña);
+            errores.push(...erroresContraseña);
 
-        const errormenor16 = document.getElementById("errormenor16");
-        if (errormenor16 && window.location.search.includes("error=edad")) {
-            errormenor16.classList.remove("hidden");
-        }
-    });
+            // Mostrar errores si existen
+            const erroresList = document.getElementById("errores");
+            if (erroresList) {
+                if (errores.length > 0) {
+                    event.preventDefault();
+                    erroresList.innerHTML = errores
+                        .map((error) => `<li>${error}</li>`)
+                        .join("");
+                    erroresList.classList.remove("hidden");
+                } else {
+                    erroresList.classList.add("hidden");
+                }
+            }
+        });
+    }
 </script>

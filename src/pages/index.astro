@@ -21,7 +21,7 @@ import { parse } from "cookie";
 // Recuperar las cookies del usuario para verificar si ha iniciado sesión
 const cookie_acceso = parse(Astro.request.headers.get("cookie") || "");
 const haentradoencuenta = cookie_acceso.auth === "true";
-const cod_usu = parseInt(cookie_acceso.codigo_usu);
+const cod_usu = parseInt(cookie_acceso.codigo_usu || "0");
 
 // Manejo de solicitudes POST para dar like o quitar  o unlike a canciones, artistas o álbumes
 if (Astro.request.method === "POST") {

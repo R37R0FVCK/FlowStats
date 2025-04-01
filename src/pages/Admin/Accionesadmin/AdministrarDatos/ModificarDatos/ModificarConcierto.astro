@@ -8,8 +8,8 @@ import Layout2 from "../../../../../layouts/Layout2.astro";
 
 // Leer la cookie del cliente
 const cookies_mix = parse(Astro.request.headers.get("cookie") || "");
-const cod_concierto = parseInt(cookies_mix.cod_concierto);
-const cod_usuario = parseInt(cookies_mix.codigo_usu);
+const cod_concierto = parseInt(cookies_mix.cod_concierto || "0");
+const cod_usuario = parseInt(cookies_mix.codigo_usu || "0");
 const haentradoencuenta = cookies_mix.auth === "true";
 
 // Redirigir al usuario a la página de inicio de sesión si no ha iniciado sesión y eliminar la cookie de concierto

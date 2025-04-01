@@ -1,72 +1,80 @@
-// funciones que verifican los datos ingresados por el usuario
-// y que se encargan de mostrar los mensajes de error
-
-
-//funcion que verifica si la contraseña ingresada es valida
-
-function ContraseñaValida(contrasena) {
-
+function Contraseña_valida(contraseña_ingresar) {
     const numeros = "0123456789";
     const minusc = "abcdefghijklmnopqrstuvwxyz";
     const mayusc = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     const caracteres = "!@#$%^&*()_+~`|}{[]:;?><,./-=";
-    const longitud = 9;
+    const longitud_min = 9;
 
-    let contraseña_numeros = false;
-    let contraseña_minusc = false;
-    let contraseña_mayusc = false;
-    let contraseña_caracteres = false;
+    let errores_validacion = [];
 
-    //verifica si la contraseña tiene al menos un numero
-    for (let i = 0; i < contrasena.length; i++) {
-
-        if (numeros.indexOf(contrasena.charAt(i)) != -1) {
-            contraseña_numeros = true;
-        }
+    // Verificar si la contraseña tiene al menos un número
+    if (!contraseña_ingresar.split("").some((car_pal) => numeros.includes(car_pal))) {
+        errores_validacion.push("La contraseña debe tener al menos un número.");
     }
 
-    //verifica si la contraseña tiene al menos una letra minuscula
-    for (let i = 0; i < contraseña_caracteres.length; i++) {
-
-
-        if (minusc.indexOf(contrasena.charAt(i)) != -1) {
-
-            contraseña_minusc = true;
-        }
-
-    }
-    //verifica si la contraseña tiene al menos una letra mayuscula
-    for (let i = 0; i < contrasena.length; i++) {
-
-        if (mayusc.indexOf(contrasena.charAt(i)) != -1) {
-
-            contraseña_minusc = true;
-
-        }
-    }
-    //verifica si la contraseña tiene al menos un caracter especial
-
-    for (let i = 0; i < contrasena.length; i++) {
-        if (caracteres.indexOf(contrasena.charAt(i)) != -1) {
-
-            caracteres = true;
-
-        }
+    // Verificar si la contraseña tiene al menos una letra minúscula
+    if (!contraseña_ingresar.split("").some((car_pal) => minusc.includes(car_pal))) {
+        errores_validacion.push("La contraseña debe tener al menos una letra minúscula.");
     }
 
-    //verifica si la contraseña tiene la longitud adecuada
-    if (contrasena.length >= longitud) {
-
-        longitud = true;
+    // Verificar si la contraseña tiene al menos una letra mayúscula
+    if (!contraseña_ingresar.split("").some((car_pal) => mayusc.includes(car_pal))) {
+        errores_validacion.push("La contraseña debe tener al menos una letra mayúscula.");
     }
-    //verifica si la contraseña cumple todos los requisitos
-    if (contraseña_numeros && contraseña_minusc && contraseña_mayusc && contraseña_caracteres && longitud) {
 
-        return true;
+    // Verificar si la contraseña tiene al menos un carácter especial
+    if (!contraseña_ingresar.split("").some((car_pal) => caracteres.includes(car_pal))) {
+        errores_validacion.push("La contraseña debe tener al menos un carácter especial.");
+    }
 
+    // Verificar si la contraseña tiene la longitud mínima
+    if (contraseña_ingresar.length < longitud_min) {
+        errores_validacion.push(`La contraseña debe tener al menos ${longitud_min} caracteres.`);
     }
-    else {
-        return false;
-    }
+
+    return errores_validacion;
 }
-export default ContraseñaValida;
+
+export { Contraseña_valida };
+
+function mayor_16(fecha_nacimiento) {
+    const fecha_lim = new Date();
+    fecha_lim.setFullYear(fecha_lim.getFullYear() - 16);
+
+    const fecha_nac = new Date(fecha_nacimiento);
+
+    // Verificar si la fecha ingresada es válida
+    if (isNaN(fecha_nac.getTime())) {
+        return false; // Fecha inválida
+    }
+
+    // Comparar la fecha ingresada con la fecha límite
+    return fecha_nac <= fecha_lim;
+}
+
+export { mayor_16 };
+
+function fecha_valida_concierto(fecha_concierto) {
+    const fecha_actual = new Date();
+    const fecha_con = new Date(fecha_concierto);
+
+    // Verificar si la fecha ingresada es válida
+    if (isNaN(fecha_con.getTime())) {
+        return false; // Fecha inválida
+    }
+
+    // Comparar la fecha actual con la fecha ingresada
+    return fecha_actual > fecha_con;
+}
+
+export { fecha_valida_concierto };
+
+
+function numero_telf_valido(num_telf) {
+    const num_car = /^[0-9]{9}$/; // Acepta solo números con exactamente 9 dígitos
+
+    // Verificar si el número de teléfono cumple con el formato
+    return num_car.test(num_telf); // Devuelve true si es válido, false si no lo es
+}
+
+export { numero_telf_valido };

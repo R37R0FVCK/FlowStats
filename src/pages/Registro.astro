@@ -1,28 +1,30 @@
 ---
-// filepath: c:\Users\angel\Desktop\TFG-2DAM\FlowStats\src\pages\Registro.astro
-
 import Layout from "../layouts/Layout.astro";
-import { db, Usuario } from "astro:db";
+import { db, Usuario } from "astro:db"; // Importa la base de datos y el modelo de usuario
 import {
-    esMayorDe16,
-    ContraseñaValida,
-} from "../scripts/VerificacionDatos/VerificacionDatos.js";
+    mayor_16,
+    Contraseña_valida,
+    numero_telf_valido,
+} from "../scripts/VerificacionDatos/VerificacionDatos.js"; // Importa funciones de validación
 
-const fecha_actual = new Date();
-let errores = [];
+const fecha_actual = new Date(); // Obtiene la fecha actual
+let errores = []; // Array para almacenar errores de validación
 
+// Verificación en el servidor: Obtiene los correos electrónicos ya registrados en la base de datos
 const correos_registrados = await db
     .select({
         correo_electronico: Usuario.correo_electronico,
     })
     .from(Usuario);
 
+// Verificación en el servidor: Obtiene los nombres de usuario ya registrados en la base de datos
 const nombres_usu_registrados = await db
     .select({
         nombre_usuario: Usuario.nombre_usuario,
     })
     .from(Usuario);
 
+// Verificación en el servidor: Comprueba si el método de la solicitud es POST (envío del formulario)
 if (Astro.request.method === "POST") {
     const datosformulario = await Astro.request.formData();
     const nombre_usuario = datosformulario.get("nombre_usuario");
@@ -35,6 +37,7 @@ if (Astro.request.method === "POST") {
     const fechanacimientotexto = datosformulario.get("fecha_nacimiento");
     const tipousuariotexto = datosformulario.get("tipo_usu");
 
+    // Verificación en el servidor: Comprueba que todos los datos del formulario sean cadenas de texto
     if (
         typeof nombre_usuario === "string" &&
         typeof nombre === "string" &&
@@ -46,24 +49,42 @@ if (Astro.request.method === "POST") {
         typeof fechanacimientotexto === "string" &&
         typeof tipousuariotexto === "string"
     ) {
-        const fecha_nacimiento = new Date(fechanacimientotexto);
+        const fecha_nacimiento = new Date(fechanacimientotexto); // Convierte la fecha de nacimiento a un objeto Date
 
-        // Validar si el usuario es mayor de 16 años
-        if (!esMayorDe16(fecha_nacimiento)) {
+        // Verificación en el servidor: Validar si el usuario es mayor de 16 años
+        if (!mayor_16(fecha_nacimiento)) {
             errores.push("Debes tener 16 años o más para poder registrarte.");
         }
 
-        // Validar si la contraseña es válida
-        const erroresContraseña = ContraseñaValida(contraseña);
+        // Verificación en el servidor: Validar si la contraseña cumple con los requisitos
+        const erroresContraseña = Contraseña_valida(contraseña);
         errores = errores.concat(erroresContraseña);
 
+        // Verificación en el servidor: Validar si el nombre de usuario ya está registrado
+        if (
+            nombres_usu_registrados.some(
+                (n) => n.nombre_usuario === nombre_usuario,
+            )
+        ) {
+            errores.push("El nombre de usuario ya está registrado.");
+        }
+
+        // Verificación en el servidor: Validar si el número de teléfono tiene 9 dígitos
+        if (!numero_telf_valido(telefono_usu)) {
+            errores.push(
+                "El número de teléfono debe tener exactamente 9 dígitos.",
+            );
+        }
+
+        // Si no hay errores, inserta el nuevo usuario en la base de datos
         if (errores.length === 0) {
             const tipo_usu = tipousuariotexto === "true";
             const fecha_registro = fecha_actual;
 
             const img_usu =
-                "https://imagedelivery.net/DX6aCRCKOB_y-l4MZVDT9w/67b1b1e8-6955-4edb-5238-7578e8090f00/public";
+                "https://imagedelivery.net/DX6aCRCKOB_y-l4MZVDT9w/67b1b1e8-6955-4edb-5238-7578e8090f00/public"; // Imagen predeterminada del usuario
 
+            // Inserta los datos del usuario en la base de datos
             await db.insert(Usuario).values({
                 nombre_usuario,
                 nombre,
@@ -81,6 +102,7 @@ if (Astro.request.method === "POST") {
     }
 }
 ---
+
 <Layout title="Registro">
     <div class="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
         <h2 class="text-2xl font-bold mb-6 text-center">Registro de Usuario</h2>
@@ -191,49 +213,78 @@ if (Astro.request.method === "POST") {
             </button>
         </form>
     </div>
-        <!-- Inyectar los datos directamente en el script -->
-    <script set:html={`
-        const correosRegistrados = ${JSON.stringify(correos_registrados.map(c => c.correo_electronico))};
-    `}></script>
+    <!-- Inyectar los datos directamente en el script -->
+    <script
+        set:html={`
+        const correos_registrados = ${JSON.stringify(correos_registrados.map((c) => c.correo_electronico))};
+        const nombresusu_registrados = ${JSON.stringify(nombres_usu_registrados.map((n) => n.nombre_usuario))}
+    `}
+    />
 </Layout>
-
-
-
 
 <script>
     import {
-        esMayorDe16,
-        ContraseñaValida,
+        mayor_16,
+        Contraseña_valida,
+        numero_telf_valido,
     } from "../scripts/VerificacionDatos/VerificacionDatos.js";
 
     document.addEventListener("DOMContentLoaded", function () {
         const registroForm = document.getElementById("registro-form");
-        const erroresList = document.getElementById("errores");
+        const lista_errores = document.getElementById("errores");
 
         if (registroForm) {
             registroForm.addEventListener("submit", function (event) {
                 const errores = [];
-                const correoElectronicoInput = document.getElementById("correo_electronico");
-                const correoElectronico = correoElectronicoInput?.value || "";
-                const contraseñaInput = document.getElementById("contraseña");
-                const contraseña = contraseñaInput?.value || "";
-                const fechaNacimientoInput = document.getElementById("fecha_nacimiento");
-                const fechaNacimientoTexto = fechaNacimientoInput?.value || "";
+                const texto_correo = document.getElementById(
+                    "correo_electronico",
+                ) as HTMLInputElement;
+                const correo_electronico = texto_correo?.value || "";
+                const texto_nombreusu = document.getElementById(
+                    "nombre_usuario",
+                ) as HTMLInputElement;
+                const nombre_usu = texto_nombreusu?.value || "";
+                const texto_contraseña = document.getElementById(
+                    "contraseña",
+                ) as HTMLInputElement;
+                const contraseña_usu = texto_contraseña?.value || "";
+                const texto_telefono = document.getElementById(
+                    "telefono_usu",
+                ) as HTMLInputElement;
+                const telefono = texto_telefono?.value || "";
+                const texto_fechaNacimiento = document.getElementById(
+                    "fecha_nacimiento",
+                ) as HTMLInputElement;
+                const fecha_nac = texto_fechaNacimiento?.value || "";
 
-                // Validar si el correo electrónico ya está registrado
-                if (correosRegistrados.includes(correoElectronico)) {
+                // Verificación en el cliente: Validar si el correo electrónico ya está registrado
+                if (correos_registrados.includes(correo_electronico)) {
                     errores.push("El correo electrónico ya está registrado.");
                 }
 
-                // Validar si la contraseña es válida
-                const erroresContraseña = ContraseñaValida(contraseña);
+                // Verificación en el cliente: Validar si el nombre de usuario ya está registrado
+                if (nombresusu_registrados.includes(nombre_usu)) {
+                    errores.push("El nombre de usuario ya está registrado.");
+                }
+
+                // Verificación en el cliente: Validar si la contraseña es válida
+                const erroresContraseña = Contraseña_valida(contraseña_usu);
                 errores.push(...erroresContraseña);
 
-                // Validar si el usuario es mayor de 16 años
-                if (fechaNacimientoTexto) {
-                    const fechaNacimiento = new Date(fechaNacimientoTexto);
-                    if (!esMayorDe16(fechaNacimiento)) {
-                        errores.push("Debes tener 16 años o más para poder registrarte.");
+                // Verificación en el cliente: Validar si el número de teléfono es válido
+                if (!numero_telf_valido(telefono)) {
+                    errores.push(
+                        "El número de teléfono debe tener exactamente 9 dígitos.",
+                    );
+                }
+
+                // Verificación en el cliente: Validar si el usuario es mayor de 16 años
+                if (fecha_nac) {
+                    const fecha_nacimiento = new Date(fecha_nac);
+                    if (!mayor_16(fecha_nacimiento)) {
+                        errores.push(
+                            "Debes tener 16 años o más para poder registrarte.",
+                        );
                     }
                 } else {
                     errores.push("La fecha de nacimiento es obligatoria.");
@@ -242,10 +293,16 @@ if (Astro.request.method === "POST") {
                 // Mostrar errores si existen
                 if (errores.length > 0) {
                     event.preventDefault();
-                    erroresList.innerHTML = errores.map((error) => `<li>${error}</li>`).join("");
-                    erroresList.classList.remove("hidden");
+                    if (lista_errores) {
+                        lista_errores.innerHTML = errores
+                            .map((error) => `<li>${error}</li>`)
+                            .join("");
+                        lista_errores.classList.remove("hidden");
+                    }
                 } else {
-                    erroresList.classList.add("hidden");
+                    if (lista_errores) {
+                        lista_errores.classList.add("hidden");
+                    }
                 }
             });
         }

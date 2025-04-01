@@ -14,7 +14,7 @@ if (!haentradoencuenta) {
     return Astro.redirect("/Acceder");
 }
 
-const codigo_buscar = parseInt(codigo_usu);
+const codigo_buscar = parseInt(codigo_usu || "0");
 const usuarios_registrados = await db.select().from(Usuario);
 usuario_accedido = usuarios_registrados.find(
     (usuarioconifo) => usuarioconifo.cod_usuario === codigo_buscar,
